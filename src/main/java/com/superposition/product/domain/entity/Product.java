@@ -8,6 +8,5 @@ public class Product {
     private String title;
     private String picture;
     private int likeCount;
-    private int viewCount;
     private String artistName;
 }

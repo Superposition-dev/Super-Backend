@@ -14,6 +14,7 @@ public class ResponseProduct {
     private int likeCount;
     private int viewCount;
     private String artistName;
+    private String artistInstagram;
     private String profileImg;
     private List<TagList> tag;
 }

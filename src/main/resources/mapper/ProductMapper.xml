@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.superposition.product.domain.mapper.ProductMapper">
+    <select id="getAllProducts" resultType="com.superposition.product.dto.ResponseProducts">
 
+    </select>
+
+    <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ResponseProduct">
+
+    </select>
+
+    <select id="getAllViewById" parameterType="long" resultType="int">
+        SELECT basic_count + qr_count FROM product_view WHERE product_id = #{productId}
+    </select>
+
+    <update id="likeProduct" parameterType="long">
+
+    </update>
+
+    <update id="orderClickCount" parameterType="long">
+
+    </update>
+
+    <update id="instagramClickCount" parameterType="long">
+
+    </update>
+
+    <select id="getArtistId" parameterType="String" resultType="String">
+        SELECT artist_id FROM artist WHERE artist_name = #{artistName}
+    </select>
 </mapper>

@@ -1,11 +1,9 @@
 package com.superposition.product.controller;
 
 import com.superposition.product.dto.ResponseProduct;
+import com.superposition.product.dto.ResponseProducts;
 import com.superposition.product.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,13 +17,28 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ResponseProduct> getAllProducts(){
+    public List<ResponseProducts> getAllProducts(){
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{postId}")
-    public ResponseProduct getProductById(@PathVariable long postId){
-        return productService.getProductById(postId);
+    @GetMapping("/{productId}")
+    public ResponseProduct getProductById(@PathVariable long productId, @RequestParam(required = false) boolean isQr){
+        return productService.getProductById(productId);
+    }
+
+    @PatchMapping("/{productId}/like")
+    public void likeProduct(@PathVariable long productId){
+        productService.likeProduct(productId);
+    }
+
+    @PostMapping("/{productId}/count")
+    public void instagramClickCount(@PathVariable long productId){
+        productService.instagramClickCount(productId);
+    }
+
+    @PostMapping("/{productId}/orderCount")
+    public void orderClickCount(@PathVariable long productId){
+        productService.orderClickCount(productId);
     }
 
 }
