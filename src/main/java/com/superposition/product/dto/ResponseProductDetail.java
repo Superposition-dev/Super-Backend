@@ -7,10 +7,14 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class ResponseProduct {
+public class ResponseProductDetail {
     private long productId;
     private String picture;
-    private String[] tags;
     private String title;
+    private String[] tags;
     private String artist;
+    private PictureInfo pictureInfo;
+    private String description;
+    private String instar; // 작가 인스타
+    private int price;
 }

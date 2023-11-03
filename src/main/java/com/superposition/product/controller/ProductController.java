@@ -1,44 +1,48 @@
 package com.superposition.product.controller;
 
+import com.superposition.product.dto.ResponseProductDetail;
 import com.superposition.product.dto.ResponseProduct;
-import com.superposition.product.dto.ResponseProducts;
 import com.superposition.product.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public List<ResponseProducts> getAllProducts(){
+    public List<ResponseProduct> getAllProducts(){
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{productId}")
-    public ResponseProduct getProductById(@PathVariable long productId, @RequestParam(required = false) boolean isQr){
-        return productService.getProductById(productId);
+    @GetMapping("/products/{productId}")
+    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(required = false) boolean isQr){
+        return productService.getProductById(productId, isQr);
     }
 
-    @PatchMapping("/{productId}/like")
-    public void likeProduct(@PathVariable long productId){
-        productService.likeProduct(productId);
+    @PatchMapping("/products/{productId}/like")
+    public void likeProduct(@PathVariable long productId, boolean isLike){
+        productService.likeProduct(productId, isLike);
     }
 
-    @PostMapping("/{productId}/count")
+    @PatchMapping("/products/{productId}/count")
     public void instagramClickCount(@PathVariable long productId){
         productService.instagramClickCount(productId);
     }
 
-    @PostMapping("/{productId}/orderCount")
+    @PatchMapping("/products/{productId}/orderCount")
     public void orderClickCount(@PathVariable long productId){
         productService.orderClickCount(productId);
+    }
+
+    @PatchMapping("/views/{productId}")
+    public void view(@PathVariable long productId){
+
     }
 
 }

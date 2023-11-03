@@ -1,16 +1,16 @@
 package com.superposition.product.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@Builder
 @ToString
-public class ResponseProduct {
+public class ProductDto {
     private long productId;
     private String picture;
-    private String[] tags;
     private String title;
-    private String artist;
+    private String artistName;
+    private String description;
+    private String artistInstagramId; // 작가 인스타
+    private int price;
 }

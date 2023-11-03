@@ -2,15 +2,11 @@ package com.superposition.product.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@Builder
-@ToString
-public class ResponseProduct {
+public class ProductListDto {
     private long productId;
     private String picture;
-    private String[] tags;
     private String title;
-    private String artist;
+    private String artistName;
 }
