@@ -35,11 +35,13 @@ public class ProductServiceImpl implements ProductService{
         String instagramUri = toInstagramUri(productDto.getArtistInstagramId());
         //태그 값 세팅
         String[] tags = getTagsById(productId);
+        //이미지 값 세팅
+        String imgLink = toImgLink(productDto.getPicture());
 
 
         return ResponseProductDetail.builder().
                         productId(productDto.getProductId()).
-                        picture(productDto.getPicture()).
+                        picture(imgLink).
                         title(productDto.getTitle()).
                         tags(tags).
                         artist(productDto.getArtistName()).
@@ -70,6 +72,10 @@ public class ProductServiceImpl implements ProductService{
 
     private String toInstagramUri(String artistId){
         return instagramUri + artistId;
+    }
+
+    private String toImgLink(String picture){
+        return "https://kr.object.ncloudstorage.com/superposition-bucket/" + picture;
     }
 
     private PictureInfo getPictureInfo(long productId){
