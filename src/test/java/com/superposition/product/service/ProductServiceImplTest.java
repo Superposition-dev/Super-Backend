@@ -30,7 +30,7 @@ class ProductServiceImplTest {
         List<ResponseProduct> allProducts = productService.getAllProducts();
 
         //then
-        System.out.println("allProducts = " + allProducts);
+        assertThat(allProducts.size()).isEqualTo(4);
     }
 
     @Test
@@ -40,7 +40,6 @@ class ProductServiceImplTest {
 
         //when
         ResponseProductDetail responseProductDetail = productService.getProductById(postId, false);
-        System.out.println("responseProduct = " + responseProductDetail);
 
         //then
         assertThat(responseProductDetail).isNotNull();
