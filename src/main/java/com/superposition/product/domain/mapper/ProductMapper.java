@@ -8,7 +8,9 @@ import java.util.List;
 
 @Mapper
 public interface ProductMapper {
+    public boolean isExistsProduct(@Param("productId") long productId);
     public List<ProductListDto> getAllProducts();
+    public List<ProductListDto> getProductsByKeyword(@Param("keyword") String keyword);
     public ProductDto getProductById(@Param("productId") long productId);
     public PictureInfo getPictureInfoById(@Param("productId") long productId);
     public String[] getTagsById(@Param("productId") long productId);

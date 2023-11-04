@@ -1,8 +1,11 @@
 package com.superposition.product.controller;
 
+import com.superposition.product.dto.Payload;
 import com.superposition.product.dto.ResponseProductDetail;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.service.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,34 +18,34 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
-    public List<ResponseProduct> getAllProducts(){
-        return productService.getAllProducts();
+    @GetMapping("/products")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ResponseProduct> getAllProducts(@RequestParam(value = "filter", defaultValue = " ") String filter){
+        return productService.getAllProducts(filter);
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(required = false) boolean isQr){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(value = "isQr", defaultValue = "false") boolean isQr){
         return productService.getProductById(productId, isQr);
     }
 
     @PatchMapping("/products/{productId}/like")
-    public void likeProduct(@PathVariable long productId, boolean isLike){
-        productService.likeProduct(productId, isLike);
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Payload> likeProduct(@PathVariable long productId, @RequestBody Payload isLike){
+        return ResponseEntity.ok(productService.likeProduct(productId, isLike.isLike()));
     }
 
-    @PatchMapping("/products/{productId}/count")
+    @PatchMapping("/products/{productId}/insta")
+    @ResponseStatus(HttpStatus.OK)
     public void instagramClickCount(@PathVariable long productId){
         productService.instagramClickCount(productId);
     }
 
-    @PatchMapping("/products/{productId}/orderCount")
+    @PatchMapping("/products/{productId}/google")
+    @ResponseStatus(HttpStatus.OK)
     public void orderClickCount(@PathVariable long productId){
         productService.orderClickCount(productId);
-    }
-
-    @PatchMapping("/views/{productId}")
-    public void view(@PathVariable long productId){
-
     }
 
 }
