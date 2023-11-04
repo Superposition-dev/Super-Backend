@@ -1,6 +1,5 @@
 package com.superposition.product.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

@@ -3,6 +3,9 @@ package com.superposition.product.service;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.ResponseProductDetail;
 import com.superposition.product.dto.ResponseProduct;
+import com.superposition.product.exception.NoExistProductException;
+import com.superposition.product.exception.NoSearchException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -27,10 +31,29 @@ class ProductServiceImplTest {
     @Test
     void 게시물_전체_조회_테스트() {
         //when
-        List<ResponseProduct> allProducts = productService.getAllProducts();
+        List<ResponseProduct> allProducts = productService.getAllProducts(" ");
 
         //then
         assertThat(allProducts.size()).isEqualTo(4);
+    }
+
+    @Test
+    void 게시물_검색_조회_테스트() {
+        //when
+        List<ResponseProduct> allProducts = productService.getAllProducts("N");
+
+        //then
+        assertThat(allProducts.size()).isEqualTo(2);
+    }
+
+    @Test
+    void 게시물_검색_조회_실패_테스트() {
+        //when
+        NoSearchException nse = assertThrows(NoSearchException.class,
+                () -> productService.getAllProducts("test"));
+
+        //then
+        assertThat(nse.getClass()).isEqualTo(NoSearchException.class);
     }
 
     @Test
@@ -39,10 +62,23 @@ class ProductServiceImplTest {
         long postId = 1;
 
         //when
-        ResponseProductDetail responseProductDetail = productService.getProductById(postId, false);
+        ResponseProductDetail responseProductDetail = productService.getProductById(postId, true);
 
         //then
         assertThat(responseProductDetail).isNotNull();
+    }
+
+    @Test
+    void 게시물_개별_조회_실패_테스트() {
+        //given
+        long postId = 10;
+
+        //when
+        NoExistProductException ne = assertThrows(NoExistProductException.class,
+                        () -> productService.getProductById(postId, true));
+
+        //then
+        assertThat(ne.getClass()).isEqualTo(NoExistProductException.class);
     }
 
     @Test
