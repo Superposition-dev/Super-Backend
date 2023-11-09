@@ -48,4 +48,10 @@ public class ProductController {
         productService.orderClickCount(productId);
     }
 
+    @PatchMapping("/products/{productId}/view")
+    @ResponseStatus(HttpStatus.OK)
+    public void addView(@PathVariable long productId){
+        productService.addView(productId);
+    }
+
 }
