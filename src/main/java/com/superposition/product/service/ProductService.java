@@ -12,4 +12,5 @@ public interface ProductService {
     public Payload likeProduct(long productId, boolean isLike);
     public void instagramClickCount(long productId);
     public void orderClickCount(long productId);
+    public void addView(long productId);
 }

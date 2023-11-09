@@ -34,12 +34,16 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Payload likeProduct(long productId, boolean isLike) {
-        if (isLike){
-            productMapper.likeProduct(productId);
-            return Payload.builder().like(true).build();
+        if (isPlus(productId)) {
+            if (isLike){
+                productMapper.likeProduct(productId);
+                return Payload.builder().like(true).build();
+            } else {
+                productMapper.disLikeProduct(productId);
+                return Payload.builder().like(false).build();
+            }
         } else {
-            productMapper.disLikeProduct(productId);
-            return Payload.builder().like(false).build();
+            return null;
         }
     }
 
@@ -53,12 +57,16 @@ public class ProductServiceImpl implements ProductService{
         productMapper.orderClickCount(productId);
     }
 
+    @Override
+    public void addView(long productId) {
+        productMapper.addBasicView(productId);
+    }
+
     private String addView(long productId, boolean isQr){
         if(isQr){
             productMapper.addQrView(productId);
             return "QR 코드가 인정되었습니다.";
         } else {
-            productMapper.addBasicView(productId);
             return "일반 조회입니다.";
         }
     }
@@ -142,7 +150,16 @@ public class ProductServiceImpl implements ProductService{
         return Path.IMG_BUCKET_PATH + picture;
     }
 
-    private boolean isExistsProduct(long postId){
-        return productMapper.isExistsProduct(postId);
+    private boolean isExistsProduct(long productId){
+        return productMapper.isExistsProduct(productId);
+    }
+
+    private boolean isPlus(long productId){
+        int likeCount = productMapper.getLikeCount(productId);
+        if(likeCount >= 0){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
