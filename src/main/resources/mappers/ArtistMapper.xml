@@ -10,10 +10,10 @@
     </select>
 
     <select id="getArtistByName" parameterType="String" resultType="com.superposition.artist.dto.ResponseArtistDetail">
-        SELECT * FROM artist;
+        SELECT profile, name, introduct, isDisplay, description, instagramId FROM artist;
     </select>
 
-    <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
+    <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ArtistDto">
         SELECT profile, name FROM artist WHERE isDisplay = 1;
     </select>
 </mapper>

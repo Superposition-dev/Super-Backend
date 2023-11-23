@@ -1,5 +1,6 @@
 package com.superposition.artist.domain.mapper;
 
+import com.superposition.artist.dto.ArtistDto;
 import com.superposition.artist.dto.ResponseArtist;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
@@ -13,5 +14,5 @@ public interface ArtistMapper {
     public List<ResponseArtist> getAllArtist();
     public List<ResponseArtist> getArtistByKeyword(@Param("name") String name);
     public List<ResponseDisplayArtist> getDisplayArtist();
-    public ResponseArtistDetail getArtistByName(String name);
+    public ArtistDto getArtistByName(String name);
 }
