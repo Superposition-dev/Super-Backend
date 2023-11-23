@@ -20,7 +20,7 @@ public class ArtistController {
 
     @GetMapping("/artist")
     public List<? extends ResponseDisplayArtist> getAllArtist(@RequestParam(value = "search", defaultValue = " ") String search, @RequestParam(value = "isProductPage", defaultValue = "false") boolean isProductPage){
-        return artistService.getAllArtist(isProductPage);
+        return artistService.getAllArtist(search, isProductPage);
     }
 
     @GetMapping("/artist/{artistName}")
