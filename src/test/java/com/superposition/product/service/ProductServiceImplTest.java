@@ -59,7 +59,7 @@ class ProductServiceImplTest {
     @Test
     void 게시물_개별_조회_테스트() {
         //given
-        long postId = 1;
+        String postId = "1";
 
         //when
         ResponseProductDetail responseProductDetail = productService.getProductById(postId, true);
@@ -71,7 +71,7 @@ class ProductServiceImplTest {
     @Test
     void 게시물_개별_조회_실패_테스트() {
         //given
-        long postId = 10;
+        String postId = "10";
 
         //when
         NoExistProductException ne = assertThrows(NoExistProductException.class,
@@ -84,7 +84,7 @@ class ProductServiceImplTest {
     @Test
     void 좋아요_성공_테스트() {
         //given
-        long productId = 1;
+        String productId = "1";
 
         //when
         productService.likeProduct(productId, true);
@@ -97,7 +97,7 @@ class ProductServiceImplTest {
     @Test
     void 좋아요_취소_성공_테스트() {
         //given
-        long productId = 1;
+        String productId = "1";
         productService.likeProduct(productId, true);
 
         //when

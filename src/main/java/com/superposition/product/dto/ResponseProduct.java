@@ -8,7 +8,8 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ResponseProduct {
-    private long productId;
+    private String productId;
+    private long productNum;
     private String picture;
     private String[] tags;
     private String title;

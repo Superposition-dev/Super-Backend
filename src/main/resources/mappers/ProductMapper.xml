@@ -6,28 +6,28 @@
     </select>
 
     <select id="getAllProducts" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT product_id, picture, title, artist_name FROM product
+        SELECT pproduct_id, product_num, picture, title, artist_name FROM product
     </select>
 
     <select id="getProductsByKeyword" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT product_id, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
+        SELECT product_id, product_num, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
     </select>
 
-    <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT p.product_id, p.picture, p.title, p.artist_name, p.description, a.artist_instagram_id, p.price
+    <select id="getProductById" parameterType="String" resultType="com.superposition.product.dto.ProductDto">
+        SELECT p.product_id, p.product_num, p.picture, p.title, p.artist_name, p.description, a.artist_instagram_id, p.price
         FROM product p
         INNER JOIN artist a ON p.artist_name = a.artist_name WHERE product_id = #{productId}
     </select>
 
-    <select id="getLikeCount" parameterType="long" resultType="int">
+    <select id="getLikeCount" parameterType="String" resultType="int">
         SELECT p.like_count FROM product p WHERE product_id = #{productId}
     </select>
 
-    <select id="getPictureInfoById" parameterType="long" resultType="com.superposition.product.dto.PictureInfo">
+    <select id="getPictureInfoById" parameterType="String" resultType="com.superposition.product.dto.PictureInfo">
         SELECT pi.type, pi.size, pi.year FROM picture_info pi WHERE pi.product_id = #{productId}
     </select>
 
-    <select id="getTagsById" parameterType="long" resultType="String">
+    <select id="getTagsById" parameterType="String" resultType="String">
         SELECT t.name FROM tag t inner join product_with_tag pwt on t.tag_id = pwt.tag_id WHERE pwt.product_id = #{productId};
     </select>
 
@@ -36,27 +36,23 @@
         WHERE artist_name = #{name};
     </select>
 
-    <update id="addBasicView" parameterType="long">
+    <update id="addBasicView" parameterType="String">
         UPDATE product SET basic_view = basic_view + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="addQrView" parameterType="long">
+    <update id="addQrView" parameterType="String">
         UPDATE product SET qr_view = qr_view + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="likeProduct" parameterType="long">
+    <update id="likeProduct" parameterType="String">
         UPDATE product SET like_count = like_count + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="disLikeProduct" parameterType="long">
+    <update id="disLikeProduct" parameterType="String">
         UPDATE product SET like_count = like_count - 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="orderClickCount" parameterType="long">
+    <update id="orderClickCount" parameterType="String">
         UPDATE product SET order_count = order_count + 1 WHERE product_id = #{productId}
-    </update>
-
-    <update id="instagramClickCount" parameterType="long">
-        UPDATE product SET insta_count = insta_count + 1 WHERE product_id = #{productId}
     </update>
 </mapper>
