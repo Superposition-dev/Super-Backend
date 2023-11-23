@@ -20,8 +20,8 @@ public class ProductController {
 
     @GetMapping("/products")
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseProduct> getAllProducts(@RequestParam(value = "filter", defaultValue = " ") String filter){
-        return productService.getAllProducts(filter);
+    public List<ResponseProduct> getAllProducts(@RequestParam(value = "search", defaultValue = " ") String search){
+        return productService.getAllProducts(search);
     }
 
     @GetMapping("/products/{productId}")

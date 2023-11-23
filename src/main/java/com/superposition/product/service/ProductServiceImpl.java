@@ -20,9 +20,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ResponseProduct> getAllProducts(String filter) {
-        if (!filter.trim().isBlank()) {
-            return toResponseProducts(searchByKeyword(filter));
+    public List<ResponseProduct> getAllProducts(String search) {
+        if (!search.trim().isBlank()) {
+            return toResponseProducts(searchByKeyword(search));
         } else {
             return toResponseProducts(productMapper.getAllProducts());
         }
