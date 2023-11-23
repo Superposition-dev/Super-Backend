@@ -4,9 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class Product {
-    private long productId;
-    private String title;
+    private String productId; //UUID
+    private long productNum;
     private String picture;
-    private int likeCount;
+    private String title;
     private String artistName;
+    private String description;
+    private int price;
 }
