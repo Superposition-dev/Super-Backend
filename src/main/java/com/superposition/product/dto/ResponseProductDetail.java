@@ -8,14 +8,14 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ResponseProductDetail {
-    private long productId;
+    private String productId;
+    private long productNum;
     private String picture;
     private String title;
     private String[] tags;
     private String artist;
     private PictureInfo pictureInfo;
     private String description;
-    private String instar; // 작가 인스타
     private int price;
     private String message;
 }

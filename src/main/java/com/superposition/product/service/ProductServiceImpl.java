@@ -9,32 +9,37 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
-    private final String extension = ".jpg";
 
     public ProductServiceImpl(ProductMapper productMapper) {
         this.productMapper = productMapper;
     }
 
     @Override
-    public List<ResponseProduct> getAllProducts(String filter) {
-        if (!filter.trim().isBlank()) {
-            return toResponseProducts(searchByKeyword(filter));
+    public List<ResponseProduct> getAllProducts(String search) {
+        if (!search.trim().isBlank()) {
+            return toResponseProducts(searchByKeyword(search));
         } else {
             return toResponseProducts(productMapper.getAllProducts());
         }
     }
 
     @Override
-    public ResponseProductDetail getProductById(long productId, boolean isQr) {
-        return toReponseBuild(productId, isQr);
+    public ResponseProductDetail getProductById(String productId, boolean isQr) {
+        return toResponseBuild(productId, isQr);
     }
 
     @Override
-    public Payload likeProduct(long productId, boolean isLike) {
+    public Map<String, String> getProductByName(String name) {
+        return productMapper.getProductByName(name);
+    }
+
+    @Override
+    public Payload likeProduct(String productId, boolean isLike) {
         if (isPlus(productId)) {
             if (isLike) {
                 productMapper.likeProduct(productId);
@@ -49,21 +54,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void instagramClickCount(long productId) {
-        productMapper.instagramClickCount(productId);
-    }
-
-    @Override
-    public void orderClickCount(long productId) {
+    public void orderClickCount(String productId) {
         productMapper.orderClickCount(productId);
     }
 
     @Override
-    public void addView(long productId) {
+    public void addView(String productId) {
         productMapper.addBasicView(productId);
     }
 
-    private String addView(long productId, boolean isQr) {
+    private String addView(String productId, boolean isQr) {
         if (isQr) {
             productMapper.addQrView(productId);
             return "QR 코드가 인정되었습니다.";
@@ -77,16 +77,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private List<ResponseProduct> toResponseProducts(List<ProductListDto> products) {
-        List<ResponseProduct> responseProducts = new ArrayList<>();
+        List<ResponseProduct> responseProducts = new ArrayList<>(products.size());
 
         for (ProductListDto product : products) {
             String[] tags = getTagsById(product.getProductId());
-            String imgLink = toImgLink(product.getPicture());
 
             ResponseProduct responseProduct =
                     ResponseProduct.builder().
                             productId(product.getProductId())
-                            .picture(imgLink)
+                            .picture(product.getPicture())
                             .tags(tags)
                             .title(product.getTitle())
                             .artist(product.getArtistName())
@@ -102,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
         return responseProducts;
     }
 
-    private ResponseProductDetail toReponseBuild(long productId, boolean isQr) {
+    private ResponseProductDetail toResponseBuild(String productId, boolean isQr) {
         if (isExistsProduct(productId)) {
             //리턴 메세지
             String message = addView(productId, isQr);
@@ -112,22 +111,17 @@ public class ProductServiceImpl implements ProductService {
 
             //사진 설명 세팅
             PictureInfo pictureInfo = getPictureInfo(productId);
-            //인스타그램 전체 uri 세팅
-            String instagramUri = toInstagramUri(productDto.getArtistInstagramId());
             //태그 값 세팅
             String[] tags = getTagsById(productId);
-            //이미지 값 세팅
-            String imgLink = toImgLink(productDto.getPicture());
 
             return ResponseProductDetail.builder().
                     productId(productDto.getProductId()).
-                    picture(imgLink).
+                    picture(productDto.getPicture()).
                     title(productDto.getTitle()).
                     tags(tags).
                     artist(productDto.getArtistName()).
                     pictureInfo(pictureInfo).
                     description(productDto.getDescription()).
-                    instar(instagramUri).
                     price(productDto.getPrice())
                     .message(message).build();
         } else {
@@ -135,27 +129,19 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private PictureInfo getPictureInfo(long productId) {
+    private PictureInfo getPictureInfo(String productId) {
         return productMapper.getPictureInfoById(productId);
     }
 
-    private String[] getTagsById(long productId) {
+    private String[] getTagsById(String productId) {
         return productMapper.getTagsById(productId);
     }
 
-    private String toInstagramUri(String artistId) {
-        return Path.INSTAGRAM_URI + artistId;
-    }
-
-    private String toImgLink(String picture) {
-        return Path.IMG_BUCKET_PATH + picture + extension;
-    }
-
-    private boolean isExistsProduct(long productId) {
+    private boolean isExistsProduct(String productId) {
         return productMapper.isExistsProduct(productId);
     }
 
-    private boolean isPlus(long productId) {
+    private boolean isPlus(String productId) {
         int likeCount = productMapper.getLikeCount(productId);
         if (likeCount >= 0) {
             return true;

@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class ProductListDto {
-    private long productId;
+    private String productId;
+    private long productNum;
     private String picture;
     private String title;
     private String artistName;
