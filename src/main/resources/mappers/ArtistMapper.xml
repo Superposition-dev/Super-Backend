@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.artist.domain.mapper.ArtistMapper">
+    <select id="getAllArtist" resultType="com.superposition.artist.dto.ResponseArtist">
+        SELECT profile, name, introduce, isDisplay FROM artist;
+    </select>
+
+    <select id="getArtistByName" parameterType="String" resultType="com.superposition.artist.dto.ResponseArtistDetail">
+        SELECT * FROM artist;
+    </select>
+
+    <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
+        SELECT profile, name FROM artist WHERE isDisplay = 1;
+    </select>
+</mapper>
