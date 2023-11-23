@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
+    private final String extension = ".jpg";
 
     public ProductServiceImpl(ProductMapper productMapper) {
         this.productMapper = productMapper;
@@ -20,7 +21,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ResponseProduct> getAllProducts(String filter) {
-        if(!filter.trim().isBlank()){
+        if (!filter.trim().isBlank()) {
             return toResponseProducts(searchByKeyword(filter));
         } else {
             return toResponseProducts(productMapper.getAllProducts());
@@ -35,7 +36,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Payload likeProduct(long productId, boolean isLike) {
         if (isPlus(productId)) {
-            if (isLike){
+            if (isLike) {
                 productMapper.likeProduct(productId);
                 return Payload.builder().like(true).build();
             } else {
@@ -62,8 +63,8 @@ public class ProductServiceImpl implements ProductService{
         productMapper.addBasicView(productId);
     }
 
-    private String addView(long productId, boolean isQr){
-        if(isQr){
+    private String addView(long productId, boolean isQr) {
+        if (isQr) {
             productMapper.addQrView(productId);
             return "QR 코드가 인정되었습니다.";
         } else {
@@ -71,11 +72,11 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private List<ProductListDto> searchByKeyword(String keyword){
+    private List<ProductListDto> searchByKeyword(String keyword) {
         return productMapper.getProductsByKeyword(keyword);
     }
 
-    private List<ResponseProduct> toResponseProducts(List<ProductListDto> products){
+    private List<ResponseProduct> toResponseProducts(List<ProductListDto> products) {
         List<ResponseProduct> responseProducts = new ArrayList<>();
 
         for (ProductListDto product : products) {
@@ -94,15 +95,15 @@ public class ProductServiceImpl implements ProductService{
             responseProducts.add(responseProduct);
         }
 
-        if(responseProducts.isEmpty()) {
+        if (responseProducts.isEmpty()) {
             throw new NoSearchException("키워드에 해당하는 게시물이 없습니다.");
         }
 
         return responseProducts;
     }
 
-    private ResponseProductDetail toReponseBuild(long productId, boolean isQr){
-        if(isExistsProduct(productId)){
+    private ResponseProductDetail toReponseBuild(long productId, boolean isQr) {
+        if (isExistsProduct(productId)) {
             //리턴 메세지
             String message = addView(productId, isQr);
 
@@ -134,7 +135,7 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private PictureInfo getPictureInfo(long productId){
+    private PictureInfo getPictureInfo(long productId) {
         return productMapper.getPictureInfoById(productId);
     }
 
@@ -142,21 +143,21 @@ public class ProductServiceImpl implements ProductService{
         return productMapper.getTagsById(productId);
     }
 
-    private String toInstagramUri(String artistId){
+    private String toInstagramUri(String artistId) {
         return Path.INSTAGRAM_URI + artistId;
     }
 
-    private String toImgLink(String picture){
-        return Path.IMG_BUCKET_PATH + picture;
+    private String toImgLink(String picture) {
+        return Path.IMG_BUCKET_PATH + picture + extension;
     }
 
-    private boolean isExistsProduct(long productId){
+    private boolean isExistsProduct(long productId) {
         return productMapper.isExistsProduct(productId);
     }
 
-    private boolean isPlus(long productId){
+    private boolean isPlus(long productId) {
         int likeCount = productMapper.getLikeCount(productId);
-        if(likeCount >= 0){
+        if (likeCount >= 0) {
             return true;
         } else {
             return false;
