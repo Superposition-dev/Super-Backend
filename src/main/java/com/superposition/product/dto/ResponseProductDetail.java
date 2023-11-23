@@ -16,7 +16,6 @@ public class ResponseProductDetail {
     private String artist;
     private PictureInfo pictureInfo;
     private String description;
-    private String instar; // 작가 인스타
     private int price;
     private String message;
 }
