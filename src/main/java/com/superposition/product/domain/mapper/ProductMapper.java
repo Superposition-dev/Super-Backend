@@ -20,7 +20,6 @@ public interface ProductMapper {
     public void addQrView(@Param("productId") String productId);
     public void likeProduct(@Param("productId") String productId);
     public void disLikeProduct(@Param("productId") String productId);
-    public void instagramClickCount(@Param("productId") String productId);
     public void orderClickCount(@Param("productId") String productId);
     public int getLikeCount(@Param("productId") String productId);
 }
