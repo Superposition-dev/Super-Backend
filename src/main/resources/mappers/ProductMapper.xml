@@ -31,6 +31,11 @@
         SELECT t.name FROM tag t inner join product_with_tag pwt on t.tag_id = pwt.tag_id WHERE pwt.product_id = #{productId};
     </select>
 
+    <select id="getProductByName" parameterType="String" resultType="java.util.Map">
+        SELECT product_id, picture FROM product
+        WHERE artist_name = #{name};
+    </select>
+
     <update id="addBasicView" parameterType="long">
         UPDATE product SET basic_view = basic_view + 1 WHERE product_id = #{productId}
     </update>
