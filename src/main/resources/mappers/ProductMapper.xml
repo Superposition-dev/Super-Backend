@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.product.domain.mapper.ProductMapper">
+    <select id="isExistsProduct" resultType="boolean">
+        SELECT EXISTS (SELECT product_id FROM product WHERE product_id = #{productId});
+    </select>
+
+    <select id="getAllProducts" resultType="com.superposition.product.dto.ProductListDto">
+        SELECT product_id, picture, title, artist_name FROM product
+    </select>
+
+    <select id="getProductsByKeyword" resultType="com.superposition.product.dto.ProductListDto">
+        SELECT product_id, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
+    </select>
+
+    <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
+        SELECT p.product_id, p.picture, p.title, p.artist_name, p.description, a.artist_instagram_id, p.price
+        FROM product p
+        INNER JOIN artist a ON p.artist_name = a.artist_name WHERE product_id = #{productId}
+    </select>
+
+    <select id="getLikeCount" parameterType="long" resultType="int">
+        SELECT p.like_count FROM product p WHERE product_id = #{productId}
+    </select>
+
+    <select id="getPictureInfoById" parameterType="long" resultType="com.superposition.product.dto.PictureInfo">
+        SELECT pi.type, pi.size, pi.year FROM picture_info pi WHERE pi.product_id = #{productId}
+    </select>
+
+    <select id="getTagsById" parameterType="long" resultType="String">
+        SELECT t.name FROM tag t inner join product_with_tag pwt on t.tag_id = pwt.tag_id WHERE pwt.product_id = #{productId};
+    </select>
+
+    <update id="addBasicView" parameterType="long">
+        UPDATE product SET basic_view = basic_view + 1 WHERE product_id = #{productId}
+    </update>
+
+    <update id="addQrView" parameterType="long">
+        UPDATE product SET qr_view = qr_view + 1 WHERE product_id = #{productId}
+    </update>
+
+    <update id="likeProduct" parameterType="long">
+        UPDATE product SET like_count = like_count + 1 WHERE product_id = #{productId}
+    </update>
+
+    <update id="disLikeProduct" parameterType="long">
+        UPDATE product SET like_count = like_count - 1 WHERE product_id = #{productId}
+    </update>
+
+    <update id="orderClickCount" parameterType="long">
+        UPDATE product SET order_count = order_count + 1 WHERE product_id = #{productId}
+    </update>
+
+    <update id="instagramClickCount" parameterType="long">
+        UPDATE product SET insta_count = insta_count + 1 WHERE product_id = #{productId}
+    </update>
+</mapper>
