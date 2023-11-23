@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Map<String, String> getProductByName(String name) {
+    public List<Map<String, String>> getProductByName(String name) {
         return productMapper.getProductByName(name);
     }
 

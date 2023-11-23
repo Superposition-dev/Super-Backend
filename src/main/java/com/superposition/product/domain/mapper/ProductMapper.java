@@ -15,7 +15,7 @@ public interface ProductMapper {
     public ProductDto getProductById(@Param("productId") String productId);
     public PictureInfo getPictureInfoById(@Param("productId") String productId);
     public String[] getTagsById(@Param("productId") String productId);
-    public Map<String, String> getProductByName(@Param("name") String name);
+    public List<Map<String, String>> getProductByName(@Param("name") String name);
     public void addBasicView(@Param("productId") String productId);
     public void addQrView(@Param("productId") String productId);
     public void likeProduct(@Param("productId") String productId);
