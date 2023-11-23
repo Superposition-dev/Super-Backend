@@ -6,7 +6,7 @@
     </select>
 
     <select id="getArtistByKeyword" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, isDisplay FROM artist WHERE name = #{name};
+        SELECT profile, name, introduce, isDisplay FROM artist WHERE name LIKE concat('%',#{name},'%' );
     </select>
 
     <select id="getArtistByName" parameterType="String" resultType="com.superposition.artist.dto.ResponseArtistDetail">
