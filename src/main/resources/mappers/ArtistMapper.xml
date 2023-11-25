@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.superposition.artist.domain.mapper.ArtistMapper">
+    <select id="isExistsArtist" parameterType="String" resultType="boolean">
+        SELECT EXISTS (SELECT name FROM artist WHERE name = #{name});
+    </select>
+
+    <select id="isExistsResult" parameterType="String" resultType="boolean">
+        SELECT EXISTS (SELECT name FROM artist WHERE name LIKE concat('%',#{name},'%' ));
+    </select>
+
     <select id="getAllArtist" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, isDisplay FROM artist;
+        SELECT profile, name, introduce, is_display FROM artist;
     </select>
 
     <select id="getArtistByKeyword" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, isDisplay FROM artist WHERE name LIKE concat('%',#{name},'%' );
+        SELECT profile, name, introduce, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' );
     </select>
 
-    <select id="getArtistByName" parameterType="String" resultType="com.superposition.artist.dto.ResponseArtistDetail">
-        SELECT profile, name, introduct, isDisplay, description, instagramId FROM artist;
+    <select id="getArtistInfoByName" parameterType="String" resultType="com.superposition.artist.dto.ArtistInfo">
+        SELECT profile, name, introduce, is_display, description, instagram_id FROM artist WHERE name = #{name};
     </select>
 
-    <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ArtistDto">
-        SELECT profile, name FROM artist WHERE isDisplay = 1;
+    <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
+        SELECT profile, name FROM artist WHERE is_display = 1;
+    </select>
+
+    <insert id="addViewCountByName" parameterType="String">
+        UPDATE artist SET view = view + 1 WHERE name = #{name};
+    </insert>
+
+    <select id="getViewCount" parameterType="String" resultType="int">
+        SELECT view FROM artist WHERE name = #{name};
     </select>
 </mapper>

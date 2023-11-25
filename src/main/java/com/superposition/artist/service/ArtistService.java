@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ArtistService {
     public List<? extends ResponseDisplayArtist> getAllArtist(String search, boolean isProductPage);
-    public ResponseArtistDetail getArtistByName(String name);
-
+    public ResponseArtistDetail getArtistInfoByName(String name);
+    public void addViewCountByName(String name);
 }

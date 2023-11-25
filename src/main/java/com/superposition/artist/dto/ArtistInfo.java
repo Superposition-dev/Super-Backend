@@ -3,7 +3,7 @@ package com.superposition.artist.dto;
 import lombok.Getter;
 
 @Getter
-public class ArtistDto {
+public class ArtistInfo {
     private String profile;
     private String name;
     private String introduce;

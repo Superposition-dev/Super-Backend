@@ -3,10 +3,8 @@ package com.superposition.artist.controller;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
 import com.superposition.artist.service.ArtistService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,12 +17,20 @@ public class ArtistController {
     }
 
     @GetMapping("/artist")
+    @ResponseStatus(HttpStatus.OK)
     public List<? extends ResponseDisplayArtist> getAllArtist(@RequestParam(value = "search", defaultValue = " ") String search, @RequestParam(value = "isProductPage", defaultValue = "false") boolean isProductPage){
-        return artistService.getAllArtist(search, isProductPage);
+        return artistService.getAllArtist(search.trim(), isProductPage);
     }
 
     @GetMapping("/artist/{artistName}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseArtistDetail getArtistByName(@PathVariable String artistName){
-        return null;
+        return artistService.getArtistInfoByName(artistName);
+    }
+
+    @PatchMapping("/artist/{artistName}/view")
+    @ResponseStatus(HttpStatus.OK)
+    public void addViewCountByName(@PathVariable String artistName){
+        artistService.addViewCountByName(artistName);
     }
 }

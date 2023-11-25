@@ -1,11 +1,13 @@
 package com.superposition.artist.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
 
 @Builder
+@Getter
 public class ResponseArtistDetail {
     private String profile;
     private String name;
