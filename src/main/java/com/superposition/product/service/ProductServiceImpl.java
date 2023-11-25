@@ -3,8 +3,7 @@ package com.superposition.product.service;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.product.exception.NoSearchException;
-import com.superposition.product.utils.Path;
+import com.superposition.utils.exception.NoSearchException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -95,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (responseProducts.isEmpty()) {
-            throw new NoSearchException("키워드에 해당하는 게시물이 없습니다.");
+            throw new NoSearchException();
         }
 
         return responseProducts;
