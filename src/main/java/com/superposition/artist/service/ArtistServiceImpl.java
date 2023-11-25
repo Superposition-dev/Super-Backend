@@ -1,7 +1,7 @@
 package com.superposition.artist.service;
 
 import com.superposition.artist.domain.mapper.ArtistMapper;
-import com.superposition.artist.dto.ArtistDto;
+import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.artist.dto.ResponseArtist;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
@@ -9,7 +9,6 @@ import com.superposition.product.service.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ArtistServiceImpl implements ArtistService{
@@ -34,14 +33,14 @@ public class ArtistServiceImpl implements ArtistService{
 
     @Override
     public ResponseArtistDetail getArtistByName(String name) {
-        return dtoToResponse(artistMapper.getArtistByName(name), name);
+        return dtoToResponse(artistMapper.getArtistInfoByName(name), name);
     }
 
     private List<ResponseArtist> searchByKeyword(String keyword){
         return artistMapper.getArtistByKeyword(keyword);
     }
 
-    private ResponseArtistDetail dtoToResponse(ArtistDto dto, String name){
+    private ResponseArtistDetail dtoToResponse(ArtistInfo dto, String name){
         return ResponseArtistDetail.builder()
                 .profile(dto.getProfile())
                 .name(dto.getName())
