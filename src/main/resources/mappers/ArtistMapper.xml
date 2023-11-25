@@ -17,8 +17,8 @@
         SELECT profile, name, introduce, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' );
     </select>
 
-    <select id="getArtistInfoByName" parameterType="String" resultType="com.superposition.artist.dto.ResponseArtistDetail">
-        SELECT profile, name, introduct, is_display, description, instagramId FROM artist;
+    <select id="getArtistInfoByName" parameterType="String" resultType="com.superposition.artist.dto.ArtistInfo">
+        SELECT profile, name, introduce, is_display, description, instagram_id FROM artist WHERE name = #{name};
     </select>
 
     <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
@@ -28,4 +28,8 @@
     <insert id="addViewCountByName" parameterType="String">
         UPDATE artist SET view = view + 1 WHERE name = #{name};
     </insert>
+
+    <select id="getViewCount" parameterType="String" resultType="int">
+        SELECT view FROM artist WHERE name = #{name};
+    </select>
 </mapper>
