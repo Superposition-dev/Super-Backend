@@ -5,6 +5,7 @@ import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.artist.dto.ResponseArtist;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
+import com.superposition.artist.exception.NoExistArtistException;
 import com.superposition.product.service.ProductService;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,15 @@ public class ArtistServiceImpl implements ArtistService{
 
     @Override
     public ResponseArtistDetail getArtistInfoByName(String name) {
-        return dtoToResponse(artistMapper.getArtistInfoByName(name), name);
+        if(isExistsArtist(name)){
+            return dtoToResponse(artistMapper.getArtistInfoByName(name), name);
+        } else {
+            throw new NoExistArtistException();
+        }
+    }
+
+    private boolean isExistsArtist(String name){
+        return artistMapper.isExistsArtist(name);
     }
 
     private List<ResponseArtist> searchByKeyword(String keyword){
