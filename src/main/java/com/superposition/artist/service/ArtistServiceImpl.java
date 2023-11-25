@@ -52,7 +52,15 @@ public class ArtistServiceImpl implements ArtistService{
     }
 
     private List<ResponseArtist> searchByKeyword(String keyword){
-        return artistMapper.getArtistByKeyword(keyword);
+        if(isExistsResult(keyword)){
+            return artistMapper.getArtistByKeyword(keyword);
+        } else {
+            throw new NoSearchException();
+        }
+    }
+
+    private boolean isExistsResult(String keyword){
+        return artistMapper.isExistsResult(keyword);
     }
 
     private ResponseArtistDetail dtoToResponse(ArtistInfo dto, String name){
