@@ -32,7 +32,7 @@ public class ArtistServiceImpl implements ArtistService{
     }
 
     @Override
-    public ResponseArtistDetail getArtistByName(String name) {
+    public ResponseArtistDetail getArtistInfoByName(String name) {
         return dtoToResponse(artistMapper.getArtistInfoByName(name), name);
     }
 

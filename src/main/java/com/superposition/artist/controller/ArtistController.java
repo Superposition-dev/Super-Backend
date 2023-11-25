@@ -3,10 +3,7 @@ package com.superposition.artist.controller;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
 import com.superposition.artist.service.ArtistService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +22,6 @@ public class ArtistController {
 
     @GetMapping("/artist/{artistName}")
     public ResponseArtistDetail getArtistByName(@PathVariable String artistName){
-        return null;
+        return artistService.getArtistInfoByName(artistName);
     }
 }
