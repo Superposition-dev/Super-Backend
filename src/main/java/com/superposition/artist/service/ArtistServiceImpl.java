@@ -5,6 +5,7 @@ import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.artist.dto.ResponseArtist;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
+import com.superposition.artist.exception.BadRequestException;
 import com.superposition.artist.exception.NoExistArtistException;
 import com.superposition.product.service.ProductService;
 import com.superposition.utils.exception.NoSearchException;
@@ -23,11 +24,13 @@ public class ArtistServiceImpl implements ArtistService{
     }
 
     @Override
-    public List<? extends ResponseDisplayArtist> getAllArtist(String keyword, boolean isProductPage) {
+    public List<? extends ResponseDisplayArtist> getAllArtist(String search, boolean isProductPage) {
+        checkRequest(search, isProductPage);
+
         if(isProductPage) return artistMapper.getDisplayArtist();
 
-        if(!keyword.trim().isBlank()) {
-            return searchByKeyword(keyword);
+        if(!search.isBlank()) {
+            return searchByKeyword(search);
         } else {
             return artistMapper.getAllArtist();
         }
@@ -44,7 +47,15 @@ public class ArtistServiceImpl implements ArtistService{
 
     @Override
     public void addViewCountByName(String name) {
-        artistMapper.addViewCountByName(name);
+        if (isExistsArtist(name)){
+            artistMapper.addViewCountByName(name);
+        } else {
+            throw new NoExistArtistException();
+        }
+    }
+
+    private void checkRequest(String search, boolean isProductPage){
+        if (!search.isBlank() && isProductPage) throw new BadRequestException();
     }
 
     private boolean isExistsArtist(String name){
