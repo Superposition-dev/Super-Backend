@@ -16,4 +16,8 @@
     <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
         SELECT profile, name FROM artist WHERE is_display = 1;
     </select>
+
+    <insert id="addViewCountByName" parameterType="String">
+        UPDATE artist SET view = view + 1 WHERE name = #{name};
+    </insert>
 </mapper>

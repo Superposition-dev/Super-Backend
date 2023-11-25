@@ -7,6 +7,7 @@ import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
 import com.superposition.artist.exception.NoExistArtistException;
 import com.superposition.product.service.ProductService;
+import com.superposition.utils.exception.NoSearchException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +40,11 @@ public class ArtistServiceImpl implements ArtistService{
         } else {
             throw new NoExistArtistException();
         }
+    }
+
+    @Override
+    public void addViewCountByName(String name) {
+        artistMapper.addViewCountByName(name);
     }
 
     private boolean isExistsArtist(String name){
