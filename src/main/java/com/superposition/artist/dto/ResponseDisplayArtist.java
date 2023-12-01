@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class ResponseDisplayArtist {
     private String profile;
     private String name;
+    private String instagramId;
 }

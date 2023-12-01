@@ -16,6 +16,12 @@ public class ArtistController {
         this.artistService = artistService;
     }
 
+    @GetMapping("/about")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ResponseDisplayArtist> getAboutArtist(){
+        return artistService.getAboutArtist();
+    }
+
     @GetMapping("/artist")
     @ResponseStatus(HttpStatus.OK)
     public List<? extends ResponseDisplayArtist> getAllArtist(@RequestParam(value = "search", defaultValue = " ") String search, @RequestParam(value = "isProductPage", defaultValue = "false") boolean isProductPage){

@@ -12,6 +12,7 @@ import java.util.List;
 public interface ArtistMapper {
     public boolean isExistsArtist(@Param("name") String name);
     public boolean isExistsResult(@Param("name") String name);
+    public List<ResponseDisplayArtist> getAboutArtist();
     public List<ResponseArtist> getAllArtist();
     public List<ResponseArtist> getArtistByKeyword(@Param("name") String name);
     public List<ResponseDisplayArtist> getDisplayArtist();

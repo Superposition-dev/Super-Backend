@@ -9,6 +9,10 @@
         SELECT EXISTS (SELECT name FROM artist WHERE name LIKE concat('%',#{name},'%' ));
     </select>
 
+    <select id="getAboutArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
+        SELECT profile, name, instagram_id FROM artist WHERE is_about = 1;
+    </select>
+
     <select id="getAllArtist" resultType="com.superposition.artist.dto.ResponseArtist">
         SELECT profile, name, introduce, is_display FROM artist;
     </select>
@@ -22,7 +26,7 @@
     </select>
 
     <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
-        SELECT profile, name FROM artist WHERE is_display = 1;
+        SELECT profile, name, instagram_id FROM artist WHERE is_display = 1;
     </select>
 
     <insert id="addViewCountByName" parameterType="String">
@@ -32,4 +36,6 @@
     <select id="getViewCount" parameterType="String" resultType="int">
         SELECT view FROM artist WHERE name = #{name};
     </select>
+
+
 </mapper>

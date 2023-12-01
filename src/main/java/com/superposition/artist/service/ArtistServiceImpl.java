@@ -24,6 +24,11 @@ public class ArtistServiceImpl implements ArtistService{
     }
 
     @Override
+    public List<ResponseDisplayArtist> getAboutArtist() {
+        return artistMapper.getAboutArtist();
+    }
+
+    @Override
     public List<? extends ResponseDisplayArtist> getAllArtist(String search, boolean isProductPage) {
         checkRequest(search, isProductPage);
 
