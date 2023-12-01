@@ -6,8 +6,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ProductDto {
-    private String productId;
-    private long productNum;
+    private long productId;
     private String picture;
     private String title;
     private String artistName;

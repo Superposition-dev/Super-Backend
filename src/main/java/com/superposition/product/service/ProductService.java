@@ -9,9 +9,9 @@ import java.util.Map;
 
 public interface ProductService {
     public List<ResponseProduct> getAllProducts(String search);
-    public ResponseProductDetail getProductById(String productId, boolean isQr);
+    public ResponseProductDetail getProductById(long productId, boolean isQr);
     public List<Map<String, String>> getProductByName(String name);
-    public Payload likeProduct(String productId, boolean isLike);
-    public void orderClickCount(String productId);
-    public void addView(String productId);
+    public Payload likeProduct(long productId, boolean isLike);
+    public void orderClickCount(long productId);
+    public void addView(long productId);
 }

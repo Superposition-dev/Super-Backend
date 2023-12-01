@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseProductDetail getProductById(String productId, boolean isQr) {
+    public ResponseProductDetail getProductById(long productId, boolean isQr) {
         return toResponseBuild(productId, isQr);
     }
 
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Payload likeProduct(String productId, boolean isLike) {
+    public Payload likeProduct(long productId, boolean isLike) {
         if (isPlus(productId)) {
             if (isLike) {
                 productMapper.likeProduct(productId);
@@ -53,16 +53,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void orderClickCount(String productId) {
+    public void orderClickCount(long productId) {
         productMapper.orderClickCount(productId);
     }
 
     @Override
-    public void addView(String productId) {
+    public void addView(long productId) {
         productMapper.addBasicView(productId);
     }
 
-    private String addView(String productId, boolean isQr) {
+    private String addView(long productId, boolean isQr) {
         if (isQr) {
             productMapper.addQrView(productId);
             return "QR 코드가 인정되었습니다.";
@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
         return responseProducts;
     }
 
-    private ResponseProductDetail toResponseBuild(String productId, boolean isQr) {
+    private ResponseProductDetail toResponseBuild(long productId, boolean isQr) {
         if (isExistsProduct(productId)) {
             //리턴 메세지
             String message = addView(productId, isQr);
@@ -128,19 +128,19 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private PictureInfo getPictureInfo(String productId) {
+    private PictureInfo getPictureInfo(long productId) {
         return productMapper.getPictureInfoById(productId);
     }
 
-    private String[] getTagsById(String productId) {
+    private String[] getTagsById(long productId) {
         return productMapper.getTagsById(productId);
     }
 
-    private boolean isExistsProduct(String productId) {
+    private boolean isExistsProduct(long productId) {
         return productMapper.isExistsProduct(productId);
     }
 
-    private boolean isPlus(String productId) {
+    private boolean isPlus(long productId) {
         int likeCount = productMapper.getLikeCount(productId);
         if (likeCount >= 0) {
             return true;

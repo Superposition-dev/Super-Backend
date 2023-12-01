@@ -6,15 +6,15 @@
     </select>
 
     <select id="getAllProducts" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT pproduct_id, product_num, picture, title, artist_name FROM product
+        SELECT product_id, picture, title, artist_name FROM product
     </select>
 
     <select id="getProductsByKeyword" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT product_id, product_num, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
+        SELECT product_id, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
     </select>
 
     <select id="getProductById" parameterType="String" resultType="com.superposition.product.dto.ProductDto">
-        SELECT product_id, product_num, picture, title, artist_name, description, price
+        SELECT product_id, picture, title, artist_name, description, price
         FROM product WHERE product_id = #{productId}
     </select>
 
@@ -26,7 +26,7 @@
         SELECT pi.type, pi.size, pi.year FROM picture_info pi WHERE pi.product_id = #{productId}
     </select>
 
-    <select id="getTagsById" parameterType="String" resultType="String">
+    <select id="getTagsById" parameterType="long" resultType="String">
         SELECT t.name FROM tag t inner join product_with_tag pwt on t.tag_id = pwt.tag_id WHERE pwt.product_id = #{productId};
     </select>
 
