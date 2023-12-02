@@ -10,12 +10,13 @@ import java.util.List;
 
 @Mapper
 public interface ArtistMapper {
-    public boolean isExistsArtist(@Param("name") String name);
+    public boolean isExistsArtist(@Param("instagramId") String instagramId);
     public boolean isExistsResult(@Param("name") String name);
+    public List<ResponseDisplayArtist> getAboutArtist();
     public List<ResponseArtist> getAllArtist();
     public List<ResponseArtist> getArtistByKeyword(@Param("name") String name);
     public List<ResponseDisplayArtist> getDisplayArtist();
-    public ArtistInfo getArtistInfoByName(@Param("name") String name);
-    public void addViewCountByName(@Param("name") String name);
-    public int getViewCount(@Param("name") String name);
+    public ArtistInfo getArtistInfoById(@Param("instagramId") String instagramId);
+    public void addViewCountById(@Param("instagramId") String instagramId);
+    public int getViewCount(@Param("instagramId") String instagramId);
 }

@@ -13,5 +13,6 @@ public class ResponseArtist extends ResponseDisplayArtist {
     private String profile;
     private String name;
     private String introduce;
+    private String instagramId;
     private boolean isDisplay;
 }

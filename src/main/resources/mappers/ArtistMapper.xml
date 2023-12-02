@@ -2,34 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.superposition.artist.domain.mapper.ArtistMapper">
     <select id="isExistsArtist" parameterType="String" resultType="boolean">
-        SELECT EXISTS (SELECT name FROM artist WHERE name = #{name});
+        SELECT EXISTS (SELECT name FROM artist WHERE instagram_id = #{instagramId});
     </select>
 
     <select id="isExistsResult" parameterType="String" resultType="boolean">
         SELECT EXISTS (SELECT name FROM artist WHERE name LIKE concat('%',#{name},'%' ));
     </select>
 
+    <select id="getAboutArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
+        SELECT profile, name, instagram_id FROM artist WHERE is_about = 1;
+    </select>
+
     <select id="getAllArtist" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, is_display FROM artist;
+        SELECT profile, name, introduce, instagram_id, is_display FROM artist;
     </select>
 
     <select id="getArtistByKeyword" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' );
+        SELECT profile, name, introduce, instagram_id, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' );
     </select>
 
-    <select id="getArtistInfoByName" parameterType="String" resultType="com.superposition.artist.dto.ArtistInfo">
-        SELECT profile, name, introduce, is_display, description, instagram_id FROM artist WHERE name = #{name};
+    <select id="getArtistInfoById" parameterType="String" resultType="com.superposition.artist.dto.ArtistInfo">
+        SELECT profile, name, introduce, is_display, description, instagram_id FROM artist WHERE instagram_id = #{instagramId};
     </select>
 
     <select id="getDisplayArtist" resultType="com.superposition.artist.dto.ResponseDisplayArtist">
-        SELECT profile, name FROM artist WHERE is_display = 1;
+        SELECT profile, name, instagram_id FROM artist WHERE is_display = 1;
     </select>
 
-    <insert id="addViewCountByName" parameterType="String">
-        UPDATE artist SET view = view + 1 WHERE name = #{name};
+    <insert id="addViewCountById" parameterType="String">
+        UPDATE artist SET view = view + 1 WHERE instagram_id = #{instagramId};
     </insert>
 
     <select id="getViewCount" parameterType="String" resultType="int">
         SELECT view FROM artist WHERE name = #{name};
     </select>
+
+
 </mapper>

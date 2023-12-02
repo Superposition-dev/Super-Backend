@@ -103,16 +103,17 @@ class ArtistServiceImplTest {
     }
 
     @Test
-    @DisplayName("작가 이름으로 조회")
+    @DisplayName("작가 ID로 조회")
     void 작가_조회() {
         //given
-        String name = "바켠";
+        String id = "bakyun.artsy";
 
         //when
-        ResponseArtistDetail info = artistService.getArtistInfoByName(name);
+        ResponseArtistDetail info = artistService.getArtistInfoById(id);
+        System.out.println("info = " + info);
 
         //then
-        assertThat(info.getName()).isEqualTo(name);
+        assertThat(info.getInstaId()).isEqualTo(id);
     }
 
     @Test
@@ -123,7 +124,7 @@ class ArtistServiceImplTest {
 
         //when
         NoExistArtistException noExistArtistException =
-                assertThrows(NoExistArtistException.class, () -> artistService.getArtistInfoByName(name));
+                assertThrows(NoExistArtistException.class, () -> artistService.getArtistInfoById(name));
 
         //then
         assertThat(noExistArtistException.getClass()).isEqualTo(NoExistArtistException.class);
@@ -136,7 +137,7 @@ class ArtistServiceImplTest {
         String name = "바켠";
 
         //when
-        artistService.addViewCountByName(name);
+        artistService.addViewCountById(name);
 
         //then
         assertThat(artistMapper.getViewCount(name)).isEqualTo(1);
@@ -150,7 +151,7 @@ class ArtistServiceImplTest {
 
         //when
         NoExistArtistException noExistArtistException =
-                assertThrows(NoExistArtistException.class, () -> artistService.addViewCountByName(name));
+                assertThrows(NoExistArtistException.class, () -> artistService.addViewCountById(name));
 
         //then
         assertThat(noExistArtistException.getClass()).isEqualTo(NoExistArtistException.class);
