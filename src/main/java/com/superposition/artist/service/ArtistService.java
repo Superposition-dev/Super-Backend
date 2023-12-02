@@ -8,6 +8,6 @@ import java.util.List;
 public interface ArtistService {
     public List<ResponseDisplayArtist> getAboutArtist();
     public List<? extends ResponseDisplayArtist> getAllArtist(String search, boolean isProductPage);
-    public ResponseArtistDetail getArtistInfoByName(String name);
-    public void addViewCountByName(String name);
+    public ResponseArtistDetail getArtistInfoById(String instagramId);
+    public void addViewCountById(String instagramId);
 }

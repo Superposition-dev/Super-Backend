@@ -28,15 +28,15 @@ public class ArtistController {
         return artistService.getAllArtist(search.trim(), isProductPage);
     }
 
-    @GetMapping("/artist/{artistName}")
+    @GetMapping("/artist/{instagramId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseArtistDetail getArtistByName(@PathVariable String artistName){
-        return artistService.getArtistInfoByName(artistName);
+    public ResponseArtistDetail getArtistByName(@PathVariable String instagramId){
+        return artistService.getArtistInfoById(instagramId);
     }
 
-    @PatchMapping("/artist/{artistName}/view")
+    @PatchMapping("/artist/{instagramId}/view")
     @ResponseStatus(HttpStatus.OK)
-    public void addViewCountByName(@PathVariable String artistName){
-        artistService.addViewCountByName(artistName);
+    public void addViewCountByName(@PathVariable String instagramId){
+        artistService.addViewCountById(instagramId);
     }
 }

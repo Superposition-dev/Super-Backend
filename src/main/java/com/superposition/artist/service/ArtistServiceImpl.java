@@ -42,18 +42,18 @@ public class ArtistServiceImpl implements ArtistService{
     }
 
     @Override
-    public ResponseArtistDetail getArtistInfoByName(String name) {
-        if(isExistsArtist(name)){
-            return dtoToResponse(artistMapper.getArtistInfoByName(name), name);
+    public ResponseArtistDetail getArtistInfoById(String instagramId) {
+        if(isExistsArtist(instagramId)){
+            return dtoToResponse(artistMapper.getArtistInfoById(instagramId));
         } else {
             throw new NoExistArtistException();
         }
     }
 
     @Override
-    public void addViewCountByName(String name) {
-        if (isExistsArtist(name)){
-            artistMapper.addViewCountByName(name);
+    public void addViewCountById(String instagramId) {
+        if (isExistsArtist(instagramId)){
+            artistMapper.addViewCountById(instagramId);
         } else {
             throw new NoExistArtistException();
         }
@@ -63,8 +63,8 @@ public class ArtistServiceImpl implements ArtistService{
         if (!search.isBlank() && isProductPage) throw new BadRequestException();
     }
 
-    private boolean isExistsArtist(String name){
-        return artistMapper.isExistsArtist(name);
+    private boolean isExistsArtist(String instagramId){
+        return artistMapper.isExistsArtist(instagramId);
     }
 
     private List<ResponseArtist> searchByKeyword(String keyword){
@@ -79,14 +79,14 @@ public class ArtistServiceImpl implements ArtistService{
         return artistMapper.isExistsResult(keyword);
     }
 
-    private ResponseArtistDetail dtoToResponse(ArtistInfo dto, String name){
+    private ResponseArtistDetail dtoToResponse(ArtistInfo dto){
         return ResponseArtistDetail.builder()
                 .profile(dto.getProfile())
                 .name(dto.getName())
                 .introduce(dto.getIntroduce())
                 .isDisplay(dto.isDisplay())
                 .description(dto.getDescription())
-                .products(productService.getProductByName(name))
+                .products(productService.getProductByName(dto.getName()))
                 .instaId(dto.getInstagramId()).build();
     }
 }
