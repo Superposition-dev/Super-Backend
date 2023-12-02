@@ -26,25 +26,25 @@ public class ProductController {
 
     @GetMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseProductDetail getProductById(@PathVariable String productId, @RequestParam(value = "isQr", defaultValue = "false") boolean isQr){
+    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(value = "isQr", defaultValue = "false") boolean isQr){
         return productService.getProductById(productId, isQr);
     }
 
     @PatchMapping("/products/{productId}/like")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Payload> likeProduct(@PathVariable String productId, @RequestBody Payload isLike){
+    public ResponseEntity<Payload> likeProduct(@PathVariable long productId, @RequestBody Payload isLike){
         return ResponseEntity.ok(productService.likeProduct(productId, isLike.isLike()));
     }
 
     @PatchMapping("/products/{productId}/google")
     @ResponseStatus(HttpStatus.OK)
-    public void orderClickCount(@PathVariable String productId){
+    public void orderClickCount(@PathVariable long productId){
         productService.orderClickCount(productId);
     }
 
     @PatchMapping("/products/{productId}/view")
     @ResponseStatus(HttpStatus.OK)
-    public void addView(@PathVariable String productId){
+    public void addView(@PathVariable long productId){
         productService.addView(productId);
     }
 
