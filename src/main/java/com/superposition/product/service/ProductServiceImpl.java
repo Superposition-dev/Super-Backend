@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Map<String, String>> getProductByName(String name) {
+    public List<SimpleProduct> getProductByName(String name) {
         return productMapper.getProductByName(name);
     }
 
