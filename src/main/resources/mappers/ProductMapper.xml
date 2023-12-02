@@ -13,16 +13,16 @@
         SELECT product_id, picture, title, artist_name FROM product WHERE artist_name LIKE concat('%',#{keyword},'%' ) OR title LIKE concat('%',#{keyword},'%' )
     </select>
 
-    <select id="getProductById" parameterType="String" resultType="com.superposition.product.dto.ProductDto">
+    <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
         SELECT product_id, picture, title, artist_name, description, price
         FROM product WHERE product_id = #{productId}
     </select>
 
-    <select id="getLikeCount" parameterType="String" resultType="int">
+    <select id="getLikeCount" parameterType="long" resultType="int">
         SELECT p.like_count FROM product p WHERE product_id = #{productId}
     </select>
 
-    <select id="getPictureInfoById" parameterType="String" resultType="com.superposition.product.dto.PictureInfo">
+    <select id="getPictureInfoById" parameterType="long" resultType="com.superposition.product.dto.PictureInfo">
         SELECT pi.type, pi.size, pi.year FROM picture_info pi WHERE pi.product_id = #{productId}
     </select>
 
@@ -35,23 +35,23 @@
         WHERE artist_name = #{name};
     </select>
 
-    <update id="addBasicView" parameterType="String">
+    <update id="addBasicView" parameterType="long">
         UPDATE product SET basic_view = basic_view + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="addQrView" parameterType="String">
+    <update id="addQrView" parameterType="long">
         UPDATE product SET qr_view = qr_view + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="likeProduct" parameterType="String">
+    <update id="likeProduct" parameterType="long">
         UPDATE product SET like_count = like_count + 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="disLikeProduct" parameterType="String">
+    <update id="disLikeProduct" parameterType="long">
         UPDATE product SET like_count = like_count - 1 WHERE product_id = #{productId}
     </update>
 
-    <update id="orderClickCount" parameterType="String">
+    <update id="orderClickCount" parameterType="long">
         UPDATE product SET order_count = order_count + 1 WHERE product_id = #{productId}
     </update>
 </mapper>
