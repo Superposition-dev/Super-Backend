@@ -12,7 +12,8 @@ public class ResponseProductDetail {
     private String picture;
     private String title;
     private String[] tags;
-    private String artist;
+    private String artistName;
+    private String instagramId;
     private PictureInfo pictureInfo;
     private String description;
     private int price;

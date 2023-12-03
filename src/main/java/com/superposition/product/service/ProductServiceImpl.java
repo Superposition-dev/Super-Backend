@@ -118,7 +118,8 @@ public class ProductServiceImpl implements ProductService {
                     picture(productDto.getPicture()).
                     title(productDto.getTitle()).
                     tags(tags).
-                    artist(productDto.getArtistName()).
+                    artistName(productDto.getArtistName()).
+                    instagramId(productDto.getInstagramId()).
                     pictureInfo(pictureInfo).
                     description(productDto.getDescription()).
                     price(productDto.getPrice())
