@@ -112,14 +112,15 @@ public class ProductServiceImpl implements ProductService {
             PictureInfo pictureInfo = getPictureInfo(productId);
             //태그 값 세팅
             String[] tags = getTagsById(productId);
+            //작가 정보 세팅
+            ArtistInfoInProduct artistInfo = buildInfo(productDto.getArtistName(), productDto.getInstagramId(), productDto.getProfile());
 
             return ResponseProductDetail.builder().
                     productId(productDto.getProductId()).
                     picture(productDto.getPicture()).
                     title(productDto.getTitle()).
                     tags(tags).
-                    artistName(productDto.getArtistName()).
-                    instagramId(productDto.getInstagramId()).
+                    artistInfo(artistInfo).
                     pictureInfo(pictureInfo).
                     description(productDto.getDescription()).
                     price(productDto.getPrice())
@@ -127,6 +128,13 @@ public class ProductServiceImpl implements ProductService {
         } else {
             throw new NoExistProductException("해당하는 게시물이 없습니다.");
         }
+    }
+
+    private ArtistInfoInProduct buildInfo(String name, String instagramId, String profile){
+        return ArtistInfoInProduct.builder()
+                .artistName(name)
+                .instagramId(instagramId)
+                .profile(profile).build();
     }
 
     private PictureInfo getPictureInfo(long productId) {
