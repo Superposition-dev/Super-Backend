@@ -14,8 +14,9 @@
     </select>
 
     <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT product_id, picture, title, artist_name, description, price
-        FROM product WHERE product_id = #{productId}
+        SELECT p.product_id, p.picture, p.title, p.artist_name, a.instagram_id, p.description, p.price
+        FROM product p INNER JOIN artist a ON p.artist_name = a.name
+        WHERE p.product_id =  #{productId}
     </select>
 
     <select id="getLikeCount" parameterType="long" resultType="int">

@@ -10,6 +10,7 @@ public class ProductDto {
     private String picture;
     private String title;
     private String artistName;
+    private String instagramId;
     private String description;
     private int price;
 }
