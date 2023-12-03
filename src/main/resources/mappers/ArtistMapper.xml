@@ -14,11 +14,11 @@
     </select>
 
     <select id="getAllArtist" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, instagram_id, is_display FROM artist;
+        SELECT profile, name, introduce, instagram_id, is_display FROM artist ORDER BY is_display DESC, collaboration_date;
     </select>
 
     <select id="getArtistByKeyword" resultType="com.superposition.artist.dto.ResponseArtist">
-        SELECT profile, name, introduce, instagram_id, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' );
+        SELECT profile, name, introduce, instagram_id, is_display FROM artist WHERE name LIKE concat('%',#{name},'%' ) ORDER BY is_display DESC, collaboration_date;
     </select>
 
     <select id="getArtistInfoById" parameterType="String" resultType="com.superposition.artist.dto.ArtistInfo">
