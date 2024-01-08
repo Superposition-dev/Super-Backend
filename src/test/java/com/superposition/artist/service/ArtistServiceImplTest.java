@@ -113,7 +113,7 @@ class ArtistServiceImplTest {
         System.out.println("info = " + info);
 
         //then
-        assertThat(info.getInstaId()).isEqualTo(id);
+        assertThat(info.getInstagramId()).isEqualTo(id);
     }
 
     @Test

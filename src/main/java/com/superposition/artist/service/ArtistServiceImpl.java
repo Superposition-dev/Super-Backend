@@ -87,6 +87,6 @@ public class ArtistServiceImpl implements ArtistService{
                 .isDisplay(dto.isDisplay())
                 .description(dto.getDescription())
                 .products(productService.getProductByName(dto.getName()))
-                .instaId(dto.getInstagramId()).build();
+                .instagramId(dto.getInstagramId()).build();
     }
 }

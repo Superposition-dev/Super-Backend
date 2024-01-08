@@ -17,5 +17,5 @@ public class ResponseArtistDetail {
     private boolean isDisplay;
     private String description;
     private List<SimpleProduct> products;
-    private String instaId;
+    private String instagramId;
 }
