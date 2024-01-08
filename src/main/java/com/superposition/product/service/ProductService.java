@@ -12,7 +12,7 @@ public interface ProductService {
     public List<ResponseProduct> getAllProducts(String search);
     public ResponseProductDetail getProductById(long productId, boolean isQr);
     public List<SimpleProduct> getProductByName(String name);
-    public Payload likeProduct(long productId, boolean isLike);
+    public Payload likeProduct(long productId, Boolean isLike);
     public void orderClickCount(long productId);
     public void addView(long productId);
 }

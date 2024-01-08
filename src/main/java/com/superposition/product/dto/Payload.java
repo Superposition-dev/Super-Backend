@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Payload {
-    private boolean like;
+    private Boolean like;
 }

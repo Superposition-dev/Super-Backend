@@ -1,5 +1,6 @@
 package com.superposition.product.service;
 
+import com.superposition.artist.exception.BadRequestException;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
@@ -38,7 +39,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Payload likeProduct(long productId, boolean isLike) {
+    public Payload likeProduct(long productId, Boolean isLike) {
+        if (isLike == null) throw new BadRequestException();
+
         if (isPlus(productId)) {
             if (isLike) {
                 productMapper.likeProduct(productId);
@@ -48,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
                 return Payload.builder().like(false).build();
             }
         } else {
-            return null;
+            throw new RuntimeException("Mysql Error");
         }
     }
 
