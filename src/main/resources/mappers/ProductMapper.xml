@@ -14,9 +14,9 @@
     </select>
 
     <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT p.product_id, p.picture, p.title, p.artist_name, p.description, a.artist_instagram_id, p.price
-        FROM product p
-        INNER JOIN artist a ON p.artist_name = a.artist_name WHERE product_id = #{productId}
+        SELECT p.product_id, p.picture, p.title, a.profile, p.artist_name, a.instagram_id, p.description, p.price
+        FROM product p INNER JOIN artist a ON p.artist_name = a.name
+        WHERE p.product_id =  #{productId}
     </select>
 
     <select id="getLikeCount" parameterType="long" resultType="int">
@@ -29,6 +29,11 @@
 
     <select id="getTagsById" parameterType="long" resultType="String">
         SELECT t.name FROM tag t inner join product_with_tag pwt on t.tag_id = pwt.tag_id WHERE pwt.product_id = #{productId};
+    </select>
+
+    <select id="getProductByName" parameterType="String" resultType="com.superposition.product.dto.SimpleProduct">
+        SELECT product_id, picture FROM product
+        WHERE artist_name = #{name};
     </select>
 
     <update id="addBasicView" parameterType="long">
@@ -49,9 +54,5 @@
 
     <update id="orderClickCount" parameterType="long">
         UPDATE product SET order_count = order_count + 1 WHERE product_id = #{productId}
-    </update>
-
-    <update id="instagramClickCount" parameterType="long">
-        UPDATE product SET insta_count = insta_count + 1 WHERE product_id = #{productId}
     </update>
 </mapper>

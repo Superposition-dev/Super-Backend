@@ -4,8 +4,7 @@ import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.ResponseProductDetail;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.product.exception.NoSearchException;
-import org.junit.jupiter.api.Assertions;
+import com.superposition.utils.exception.NoSearchException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,7 +58,7 @@ class ProductServiceImplTest {
     @Test
     void 게시물_개별_조회_테스트() {
         //given
-        long postId = 1;
+        long postId = 1L;
 
         //when
         ResponseProductDetail responseProductDetail = productService.getProductById(postId, true);
@@ -84,7 +83,7 @@ class ProductServiceImplTest {
     @Test
     void 좋아요_성공_테스트() {
         //given
-        long productId = 1;
+        long productId = 1L;
 
         //when
         productService.likeProduct(productId, true);
@@ -97,7 +96,7 @@ class ProductServiceImplTest {
     @Test
     void 좋아요_취소_성공_테스트() {
         //given
-        long productId = 1;
+        long productId = 1L;
         productService.likeProduct(productId, true);
 
         //when

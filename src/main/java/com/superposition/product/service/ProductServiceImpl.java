@@ -1,17 +1,18 @@
 package com.superposition.product.service;
 
+import com.superposition.artist.exception.BadRequestException;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.product.exception.NoSearchException;
-import com.superposition.product.utils.Path;
+import com.superposition.utils.exception.NoSearchException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     public ProductServiceImpl(ProductMapper productMapper) {
@@ -19,9 +20,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ResponseProduct> getAllProducts(String filter) {
-        if(!filter.trim().isBlank()){
-            return toResponseProducts(searchByKeyword(filter));
+    public List<ResponseProduct> getAllProducts(String search) {
+        if (!search.trim().isBlank()) {
+            return toResponseProducts(searchByKeyword(search));
         } else {
             return toResponseProducts(productMapper.getAllProducts());
         }
@@ -29,13 +30,20 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ResponseProductDetail getProductById(long productId, boolean isQr) {
-        return toReponseBuild(productId, isQr);
+        return toResponseBuild(productId, isQr);
     }
 
     @Override
-    public Payload likeProduct(long productId, boolean isLike) {
+    public List<SimpleProduct> getProductByName(String name) {
+        return productMapper.getProductByName(name);
+    }
+
+    @Override
+    public Payload likeProduct(long productId, Boolean isLike) {
+        if (isLike == null) throw new BadRequestException();
+
         if (isPlus(productId)) {
-            if (isLike){
+            if (isLike) {
                 productMapper.likeProduct(productId);
                 return Payload.builder().like(true).build();
             } else {
@@ -43,13 +51,8 @@ public class ProductServiceImpl implements ProductService{
                 return Payload.builder().like(false).build();
             }
         } else {
-            return null;
+            throw new RuntimeException("Mysql Error");
         }
-    }
-
-    @Override
-    public void instagramClickCount(long productId) {
-        productMapper.instagramClickCount(productId);
     }
 
     @Override
@@ -62,8 +65,8 @@ public class ProductServiceImpl implements ProductService{
         productMapper.addBasicView(productId);
     }
 
-    private String addView(long productId, boolean isQr){
-        if(isQr){
+    private String addView(long productId, boolean isQr) {
+        if (isQr) {
             productMapper.addQrView(productId);
             return "QR 코드가 인정되었습니다.";
         } else {
@@ -71,21 +74,20 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private List<ProductListDto> searchByKeyword(String keyword){
+    private List<ProductListDto> searchByKeyword(String keyword) {
         return productMapper.getProductsByKeyword(keyword);
     }
 
-    private List<ResponseProduct> toResponseProducts(List<ProductListDto> products){
-        List<ResponseProduct> responseProducts = new ArrayList<>();
+    private List<ResponseProduct> toResponseProducts(List<ProductListDto> products) {
+        List<ResponseProduct> responseProducts = new ArrayList<>(products.size());
 
         for (ProductListDto product : products) {
             String[] tags = getTagsById(product.getProductId());
-            String imgLink = toImgLink(product.getPicture());
 
             ResponseProduct responseProduct =
                     ResponseProduct.builder().
                             productId(product.getProductId())
-                            .picture(imgLink)
+                            .picture(product.getPicture())
                             .tags(tags)
                             .title(product.getTitle())
                             .artist(product.getArtistName())
@@ -94,15 +96,15 @@ public class ProductServiceImpl implements ProductService{
             responseProducts.add(responseProduct);
         }
 
-        if(responseProducts.isEmpty()) {
-            throw new NoSearchException("키워드에 해당하는 게시물이 없습니다.");
+        if (responseProducts.isEmpty()) {
+            throw new NoSearchException();
         }
 
         return responseProducts;
     }
 
-    private ResponseProductDetail toReponseBuild(long productId, boolean isQr){
-        if(isExistsProduct(productId)){
+    private ResponseProductDetail toResponseBuild(long productId, boolean isQr) {
+        if (isExistsProduct(productId)) {
             //리턴 메세지
             String message = addView(productId, isQr);
 
@@ -111,22 +113,19 @@ public class ProductServiceImpl implements ProductService{
 
             //사진 설명 세팅
             PictureInfo pictureInfo = getPictureInfo(productId);
-            //인스타그램 전체 uri 세팅
-            String instagramUri = toInstagramUri(productDto.getArtistInstagramId());
             //태그 값 세팅
             String[] tags = getTagsById(productId);
-            //이미지 값 세팅
-            String imgLink = toImgLink(productDto.getPicture());
+            //작가 정보 세팅
+            ArtistInfoInProduct artistInfo = buildInfo(productDto.getArtistName(), productDto.getInstagramId(), productDto.getProfile());
 
             return ResponseProductDetail.builder().
                     productId(productDto.getProductId()).
-                    picture(imgLink).
+                    picture(productDto.getPicture()).
                     title(productDto.getTitle()).
                     tags(tags).
-                    artist(productDto.getArtistName()).
+                    artistInfo(artistInfo).
                     pictureInfo(pictureInfo).
                     description(productDto.getDescription()).
-                    instar(instagramUri).
                     price(productDto.getPrice())
                     .message(message).build();
         } else {
@@ -134,7 +133,14 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private PictureInfo getPictureInfo(long productId){
+    private ArtistInfoInProduct buildInfo(String name, String instagramId, String profile){
+        return ArtistInfoInProduct.builder()
+                .artistName(name)
+                .instagramId(instagramId)
+                .profile(profile).build();
+    }
+
+    private PictureInfo getPictureInfo(long productId) {
         return productMapper.getPictureInfoById(productId);
     }
 
@@ -142,21 +148,13 @@ public class ProductServiceImpl implements ProductService{
         return productMapper.getTagsById(productId);
     }
 
-    private String toInstagramUri(String artistId){
-        return Path.INSTAGRAM_URI + artistId;
-    }
-
-    private String toImgLink(String picture){
-        return Path.IMG_BUCKET_PATH + picture;
-    }
-
-    private boolean isExistsProduct(long productId){
+    private boolean isExistsProduct(long productId) {
         return productMapper.isExistsProduct(productId);
     }
 
-    private boolean isPlus(long productId){
+    private boolean isPlus(long productId) {
         int likeCount = productMapper.getLikeCount(productId);
-        if(likeCount >= 0){
+        if (likeCount >= 0) {
             return true;
         } else {
             return false;
