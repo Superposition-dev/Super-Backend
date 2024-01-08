@@ -33,7 +33,7 @@ public class ProductController {
     @PatchMapping("/products/{productId}/like")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Payload> likeProduct(@PathVariable long productId, @RequestBody Payload isLike){
-        return ResponseEntity.ok(productService.likeProduct(productId, isLike.isLike()));
+        return ResponseEntity.ok(productService.likeProduct(productId, isLike.getLike()));
     }
 
     @PatchMapping("/products/{productId}/google")
