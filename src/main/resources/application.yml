@@ -27,3 +27,7 @@ server:
     key-store-type: PKCS12
     key-alias: superposition
   port: 443
+
+cors:
+  pathPattern: /**
+  allowedOrigins: https://www.spp-art.com
