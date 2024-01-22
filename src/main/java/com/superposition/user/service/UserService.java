@@ -1,7 +1,8 @@
 package com.superposition.user.service;
 
 import com.superposition.user.dto.TokenDTO;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
-    TokenDTO loginByKakao(String code);
+    ResponseEntity<?> loginByKakao(String code);
 }
