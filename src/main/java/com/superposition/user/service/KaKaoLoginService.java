@@ -15,6 +15,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Random;
+
 @Service
 public class KaKaoLoginService implements OAuthLoginService {
     private final String KAKAO_AUTH_URI = "https://kauth.kakao.com/oauth/token";
@@ -109,7 +111,7 @@ public class KaKaoLoginService implements OAuthLoginService {
 
             long id = (long) responseObj.get("id");
             String email = String.valueOf(kakaoAccount.get("email"));
-            String nickname = String.valueOf(profile.get("nickname"));
+            String nickname = addIdentifier(String.valueOf(profile.get("nickname")));
             String imageUrl = String.valueOf(profile.get("profile_image_url"));
 
             return KakaoResponse.builder().
@@ -120,5 +122,19 @@ public class KaKaoLoginService implements OAuthLoginService {
         } catch (ParseException e) {
             throw new ParsingException();
         }
+    }
+
+    private String addIdentifier(String nickName){
+        StringBuilder sb = new StringBuilder();
+        sb.append(nickName);
+        sb.append("#");
+        sb.append(getRandomNum());
+
+        return sb.toString();
+    }
+
+    private int getRandomNum(){
+        Random r = new Random();
+        return r.nextInt(888) + 111;
     }
 }
