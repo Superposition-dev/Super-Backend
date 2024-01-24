@@ -1,17 +1,11 @@
 package com.superposition.user.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
+@Builder
 public class LoginResponse {
-    private KakaoResponse kakaoResponse;
-    private TokenDTO token;
-
-    private LoginResponse(){}
-
-    public LoginResponse(KakaoResponse kakaoResponse, TokenDTO token) {
-        this.kakaoResponse = kakaoResponse;
-        this.token = token;
-    }
+    private UserInfo userInfo;
+    private String accessToken;
 }

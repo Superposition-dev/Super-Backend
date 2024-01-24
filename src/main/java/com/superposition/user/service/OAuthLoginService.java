@@ -1,8 +1,8 @@
 package com.superposition.user.service;
 
-import com.superposition.user.dto.KakaoResponse;
+import com.superposition.user.dto.UserInfo;
 
 public interface OAuthLoginService {
     public String getAccessTokenByCode(String code);
-    public KakaoResponse getUserInfoByToken(String accessToken);
+    public UserInfo getUserInfoByToken(String accessToken);
 }

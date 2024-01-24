@@ -1,8 +1,7 @@
 package com.superposition.user.service;
 
-import com.superposition.user.dto.KakaoResponse;
+import com.superposition.user.dto.UserInfo;
 import com.superposition.user.exception.InvalidTokenException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ class KaKaoLoginServiceTest {
         String accessToken = "5woLw9I7NXJ0elFzgMpiiEn52rK91WkqnNMKPXQRAAABjRpVCr_E017PSiBv1Q";
 
         //when
-        KakaoResponse userInfo = oAuthLoginService.getUserInfoByToken(accessToken);
+        UserInfo userInfo = oAuthLoginService.getUserInfoByToken(accessToken);
 
         //then
         assertThat(userInfo).isNotNull();

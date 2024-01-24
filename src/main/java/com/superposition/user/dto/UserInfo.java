@@ -7,8 +7,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class KakaoResponse {
-    private long id;
+public class UserInfo {
     private String email;
     private String nickname;
     private String profileImage;

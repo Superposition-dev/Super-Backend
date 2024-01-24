@@ -1,6 +1,6 @@
 package com.superposition.user.service;
 
-import com.superposition.user.dto.KakaoResponse;
+import com.superposition.user.dto.UserInfo;
 import com.superposition.user.exception.ApiCallFailedException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.exception.ParsingException;
@@ -67,7 +67,7 @@ public class KaKaoLoginService implements OAuthLoginService {
     }
 
     @Override
-    public KakaoResponse getUserInfoByToken(String accessToken){
+    public UserInfo getUserInfoByToken(String accessToken){
         try {
             //헤더 설정
             HttpHeaders headers = new HttpHeaders();
@@ -102,22 +102,20 @@ public class KaKaoLoginService implements OAuthLoginService {
         }
     }
 
-    private KakaoResponse jsonToDTO(String response){
+    private UserInfo jsonToDTO(String response){
         JSONParser jsonParser = new JSONParser();
         try {
             JSONObject responseObj = (JSONObject) jsonParser.parse(response);
             JSONObject kakaoAccount = (JSONObject) responseObj.get("kakao_account");
             JSONObject profile = (JSONObject) kakaoAccount.get("profile");
 
-            long id = (long) responseObj.get("id");
             String email = String.valueOf(kakaoAccount.get("email"));
-            String nickname = addIdentifier(String.valueOf(profile.get("nickname")));
+            String nickname = String.valueOf(profile.get("nickname"));
             String imageUrl = String.valueOf(profile.get("profile_image_url"));
 
-            return KakaoResponse.builder().
-                    id(id).
+            return UserInfo.builder().
                     email(email).
-                    nickname(nickname).
+                    nickname(addIdentifier(nickname)).
                     profileImage(imageUrl).build();
         } catch (ParseException e) {
             throw new ParsingException();
