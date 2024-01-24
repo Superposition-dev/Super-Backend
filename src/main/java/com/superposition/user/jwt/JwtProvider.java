@@ -1,6 +1,6 @@
 package com.superposition.user.jwt;
 
-import com.superposition.user.dto.TokenDTO;
+import com.superposition.user.dto.JwtToken;
 import com.superposition.utils.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -33,7 +33,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    public TokenDTO generateTokenDto(String email) {
+    public JwtToken generateTokenDto(String email) {
 
         long now = (new Date()).getTime();
 
@@ -52,7 +52,8 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return TokenDTO.builder()
+        return JwtToken.builder()
+                .email(email)
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())

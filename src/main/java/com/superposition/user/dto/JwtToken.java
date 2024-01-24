@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TokenDTO {
-    private String grantType;   // Bearer
+public class JwtToken {
+    private String email;
+    private String grantType; // Bearer
     private String accessToken;
+    private long accessTokenExpiresIn;
     private String refreshToken;
-    private Long accessTokenExpiresIn;
 }
