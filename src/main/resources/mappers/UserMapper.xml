@@ -2,6 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.superposition.user.domain.mapper.UserMapper">
     <select id="isExistUserByEmail" parameterType="String" resultType="boolean">
-        SELECT EXISTS(SELECT COUNT(*) FROM user WHERE email = #{email})
+        SELECT EXISTS(SELECT email FROM user WHERE email = #{email})
     </select>
+
+    <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
+        INSERT INTO user(email, name, nickname, profile, gender, birth_date)
+        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate});
+    </insert>
+
+    <insert id="saveEmail" parameterType="String">
+        INSERT INTO user('email') VALUES(#{email});
+    </insert>
 </mapper>
