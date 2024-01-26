@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -89,10 +91,19 @@ public class UserServiceImpl implements UserService{
     private User toEntity(RequestUserInfo userInfo){
         return User.builder()
                 .email(userInfo.getEmail())
-                .nickname(userInfo.getNickname())
+                .nickname(addIdentifier(userInfo.getNickname()))
                 .profile(userInfo.getProfile())
                 .gender(userInfo.getGender())
                 .birthDate(userInfo.getBirthDate()).build();
+    }
+
+    private String addIdentifier(String originNickName){
+        return originNickName + getRandomNum();
+    }
+
+    private int getRandomNum(){
+        Random r = new Random();
+        return r.nextInt(8888) + 1111;
     }
 
 }

@@ -115,24 +115,10 @@ public class KaKaoLoginService implements OAuthLoginService {
 
             return UserInfo.builder().
                     email(email).
-                    nickname(addIdentifier(nickname)).
+                    nickname(nickname).
                     profileImage(imageUrl).build();
         } catch (ParseException e) {
             throw new ParsingException();
         }
-    }
-
-    private String addIdentifier(String nickName){
-        StringBuilder sb = new StringBuilder();
-        sb.append(nickName);
-        sb.append("#");
-        sb.append(getRandomNum());
-
-        return sb.toString();
-    }
-
-    private int getRandomNum(){
-        Random r = new Random();
-        return r.nextInt(888) + 111;
     }
 }
