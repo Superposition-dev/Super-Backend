@@ -10,5 +10,5 @@ public class JwtToken {
     private String grantType; // Bearer
     private String accessToken;
     private long accessTokenExpiresIn;
-    private String refreshToken;
+    private RefreshToken refreshToken;
 }

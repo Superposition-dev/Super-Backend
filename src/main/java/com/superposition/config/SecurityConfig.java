@@ -4,12 +4,13 @@ import com.superposition.user.jwt.JwtAccessDeniedHandler;
 import com.superposition.user.jwt.JwtAuthenticationEntryPoint;
 import com.superposition.user.jwt.JwtAuthenticationFilter;
 import com.superposition.user.jwt.JwtProvider;
+import com.superposition.utils.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,6 +22,11 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final JwtAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler customAccessDeniedHandler;
+
+    @Bean
+    public WebSecurityCustomizer ignoringCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/products/**");
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,7 +46,9 @@ public class SecurityConfig {
 
                 // 접근 권한 설정부
                 .and().authorizeHttpRequests()
-                .antMatchers("/**").permitAll()
+//                .antMatchers("/products/**").permitAll()
+                .antMatchers("/artist/**", "/about").permitAll()
+                .antMatchers("/users/**").permitAll()
                 .anyRequest().authenticated()
 
                 // JWT 토큰 예외처리부

@@ -7,5 +7,9 @@ import org.springframework.http.ResponseEntity;
 public interface UserService {
     ResponseEntity<?> loginByKakao(String code);
 
+    void logout(String email);
+
     LoginResponse signup(RequestUserInfo userInfo);
+
+    ResponseEntity<?> regenerateToken(String email);
 }
