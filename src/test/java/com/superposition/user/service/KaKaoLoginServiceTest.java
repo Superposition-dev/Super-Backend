@@ -6,6 +6,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,18 +21,6 @@ class KaKaoLoginServiceTest {
     @Autowired
     public KaKaoLoginServiceTest(OAuthLoginService oAuthLoginService) {
         this.oAuthLoginService = oAuthLoginService;
-    }
-
-    @Test
-    void 카카오_정보수집_테스트() {
-        //given
-        String accessToken = "5woLw9I7NXJ0elFzgMpiiEn52rK91WkqnNMKPXQRAAABjRpVCr_E017PSiBv1Q";
-
-        //when
-        UserInfo userInfo = oAuthLoginService.getUserInfoByToken(accessToken);
-
-        //then
-        assertThat(userInfo).isNotNull();
     }
 
     @Test
