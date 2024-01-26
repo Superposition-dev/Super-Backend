@@ -6,11 +6,11 @@
     </select>
 
     <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
-        INSERT INTO user(email, name, nickname, profile, gender, birth_date)
-        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate});
+        INSERT INTO user(email, name, nickname, profile, gender, birth_date, create_at)
+        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate}, NOW());
     </insert>
 
-    <insert id="saveEmail" parameterType="String">
-        INSERT INTO user('email') VALUES(#{email});
-    </insert>
+    <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.RequestUserInfo">
+        SELECT email, name, nickname, profile, gender, birth_date FROM user WHERE email = #{email}
+    </select>
 </mapper>

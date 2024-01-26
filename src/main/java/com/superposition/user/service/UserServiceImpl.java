@@ -3,6 +3,7 @@ package com.superposition.user.service;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.*;
+import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService{
         if (existUser) { //유저 존재 O 토큰 리턴
             return ResponseEntity.ok(LoginResponse.builder()
                     .userInfo(userInfo)
-                    .accessToken(getJwtToken(userInfo.getEmail()).getAccessToken())
+                    .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
                     .build());
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
@@ -38,7 +40,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void logout(String email) {
-        tokenService.deleteTokenValue(email);
+        if(StringUtils.hasText(email)){
+            tokenService.deleteTokenValue(email);
+        } else {
+            throw new EmptyEmailException();
+        }
     }
 
     @Override
@@ -54,12 +60,23 @@ public class UserServiceImpl implements UserService{
 
         return LoginResponse.builder()
                 .userInfo(userInfo)
-                .accessToken(getJwtToken(userInfo.getEmail()).getAccessToken())
+                .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
                 .build();
     }
 
     @Override
+    public ResponseEntity<?> getUserInfo(String email) {
+        if(StringUtils.hasText(email)){
+            return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
+        } else {
+            throw new EmptyEmailException();
+        }
+    }
+
+    @Override
     public ResponseEntity<?> regenerateToken(String email) {
+        if(!StringUtils.hasText(email)) throw new EmptyEmailException();
+
         try {
             RefreshToken refreshToken = tokenService.getTokenValue(
                     email, RefreshToken.class);
@@ -76,10 +93,6 @@ public class UserServiceImpl implements UserService{
                 .profile(userInfo.getProfile())
                 .gender(userInfo.getGender())
                 .birthDate(userInfo.getBirthDate()).build();
-    }
-
-    private JwtToken getJwtToken(String email){
-        return jwtProvider.generateJwtToken(email);
     }
 
 }

@@ -18,14 +18,14 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping(value = "/login/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestParam String code){
-        return userService.loginByKakao(code);
-    }
-
     @PostMapping(value = "/signup")
     public ResponseEntity<LoginResponse> signup(@RequestBody @Valid RequestUserInfo userInfo){
         return ResponseEntity.ok(userService.signup(userInfo));
+    }
+
+    @GetMapping(value = "/login/kakao")
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code){
+        return userService.loginByKakao(code);
     }
 
     @GetMapping(value = "/logout")
@@ -34,8 +34,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value = "/me")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String accessToken){
+        return userService.getUserInfo(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
     @GetMapping(value = "/regenerateToken")
-    public ResponseEntity<?> regenerateToken(@AuthenticationPrincipal String accessToken){
+    public ResponseEntity<?> regenerateToken(@AuthenticationPrincipal String accessToken) {
         return userService.regenerateToken(
                 SecurityContextHolder.getContext().getAuthentication().getName());
     }

@@ -11,5 +11,7 @@ public interface UserService {
 
     LoginResponse signup(RequestUserInfo userInfo);
 
+    ResponseEntity<?> getUserInfo(String email);
+
     ResponseEntity<?> regenerateToken(String email);
 }
