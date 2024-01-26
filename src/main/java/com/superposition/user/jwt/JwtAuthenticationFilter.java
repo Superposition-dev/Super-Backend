@@ -1,5 +1,6 @@
 package com.superposition.user.jwt;
 
+import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,16 +15,12 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
     private final JwtProvider jwtProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-
         String jwt = resolveToken(request);
 
         if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
@@ -35,8 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+        String bearerToken = request.getHeader(JwtUtils.AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtUtils.BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
         return null;

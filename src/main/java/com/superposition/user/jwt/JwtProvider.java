@@ -1,11 +1,16 @@
 package com.superposition.user.jwt;
 
 import com.superposition.user.dto.JwtToken;
+import com.superposition.user.dto.RefreshToken;
+import com.superposition.user.service.TokenService;
 import com.superposition.utils.Authority;
+import com.superposition.utils.JwtUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -20,57 +26,68 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Component
 public class JwtProvider {
     private final Key key;
-    private static final String AUTHORITIES_KEY = "auth";
-    private static final String BEARER_TYPE = "bearer";
-    private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //refresh 7일
+    private final TokenService tokenService;
 
-    public JwtProvider(@Value("${spring.security.jwt.token.secret-key}") String secretKey) {
+    public JwtProvider(@Value("${spring.security.jwt.token.secret-key}") String secretKey, TokenService tokenService) {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        this.tokenService = tokenService;
     }
 
-    public JwtToken generateTokenDto(String email) {
-
-        long now = (new Date()).getTime();
+    public JwtToken generateJwtToken(String email) {
+        Date now = new Date();
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        Date accessTokenExpiresIn = new Date(now.getTime() + JwtUtils.ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(email) //payload "sub" : "name"
-                .claim(AUTHORITIES_KEY, Authority.ROLE_USER) //payload "auth" : "ROLE_USER" Authority.ROLE_USER
-                .setExpiration(accessTokenExpiresIn) //payload "exp" : 1234567890 (10자리)
+                .setSubject(email) //payload "sub" : "email"
+                .claim(JwtUtils.AUTHORIZATION_HEADER, Authority.ROLE_USER) //payload "auth" : "ROLE_USER"
+                .setIssuedAt(now)
+                .setExpiration(accessTokenExpiresIn) //payload "exp" : 2 hours
                 .signWith(key, SignatureAlgorithm.HS512) //header "alg" : 해싱 알고리즘 HS512
-                .compact();
-
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         return JwtToken.builder()
                 .email(email)
-                .grantType(BEARER_TYPE)
+                .grantType(JwtUtils.BEARER_PREFIX)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+                .refreshToken(generateRefreshToken(email, now))
+                .build();
+    }
+
+    private RefreshToken generateRefreshToken(String email, Date now){
+        long refreshTokenExpireIn = (now.getTime()) + JwtUtils.REFRESH_TOKEN_EXPIRE_TIME;
+
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(refreshTokenExpireIn))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        RefreshToken token = RefreshToken.builder()
+                .email(email)
                 .refreshToken(refreshToken)
                 .build();
+
+        tokenService.setToeknValue(token);
+
+        return token;
     }
 
     public Authentication getAuthentication(String accessToken) {
 
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get(AUTHORITIES_KEY) == null) {
+        if (claims.get(JwtUtils.AUTHORIZATION_HEADER) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get(JwtUtils.AUTHORIZATION_HEADER).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
@@ -80,23 +97,25 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
-
-        try{
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            /* 커스텀 에러처리 */
+            log.error("서명 혹은 구조가 잘못된 JWT");
+            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
-            /* 커스텀 에러처리 */
+            log.error("유효 기간이 만료된 토큰");
+            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "유효 기간이 만료된 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            /* 커스텀 에러처리 */
+            log.error("지원하는 형식과 일치하지 않는 토큰");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
-            /* 커스텀 에러처리 */
+            log.error("Claims가 비어있는 토큰");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
