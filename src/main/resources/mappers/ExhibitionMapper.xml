@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.art.domain.mapper.ExhibitionMapper">
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM exhibition;
+    </select>
+
+    <select id="findExhibitions" resultType="com.superposition.art.domain.entity.Exhibition">
+        SELECT *
+        FROM exhibition
+        <where>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY exhibition_id desc
+        LIMIT #{offset}, #{limit};
+    </select>
+</mapper>
