@@ -37,7 +37,7 @@ class ExhibitionMapperTest {
         //then
         assertThat(actual)
                 .hasSize(10)
-                .extracting("title", "subheading", "location", "startDate", "endDate", "status", "poster")
+                .extracting("title", "subHeading", "location", "startDate", "endDate", "status", "poster")
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
                                 "The exhibition and catalogue are made possible by Morgan Stanley.", "MET",
@@ -90,7 +90,7 @@ class ExhibitionMapperTest {
         //then
         assertThat(actual)
                 .hasSize(9)
-                .extracting("title", "subheading", "location", "startDate", "endDate", "status", "poster")
+                .extracting("title", "subHeading", "location", "startDate", "endDate", "status", "poster")
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
                                 "The exhibition and catalogue are made possible by Morgan Stanley.", "MET",
@@ -140,7 +140,7 @@ class ExhibitionMapperTest {
         //then
         assertThat(actual)
                 .hasSize(6)
-                .extracting("title", "subheading", "location", "startDate", "endDate", "status", "poster")
+                .extracting("title", "subHeading", "location", "startDate", "endDate", "status", "poster")
                 .containsExactlyInAnyOrder(
                         tuple("Van Gogh’s Cypresses",
                                 "Van Gogh’s Cypresses is the first exhibition to focus on the trees", "MET",

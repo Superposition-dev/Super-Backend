@@ -1,4 +1,4 @@
-INSERT INTO exhibition (title, subheading, location, start_date, end_date, status, poster)
+INSERT INTO exhibition (title, subHeading, location, start_date, end_date, status, poster)
 VALUES ('Christmas Tree and Neapolitan Baroque Crèche',
         'The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.', 'MET',
         '2023-11-21', '2024-01-07', 'END', 'tree.jpg'),
@@ -24,7 +24,7 @@ VALUES ('Christmas Tree and Neapolitan Baroque Crèche',
         'MET', '2023-12-16', '2024-06-04', 'CURRENT', 'Pottery.jpg'),
        ('여기는 따뜻해', '성수지앵XSuperposition 겨울 전시', '성수지앵', '2023-12-16', '2023-12-25', 'CURRENT', 'dsafsdafsdfaroghg.jpg');
 
-INSERT INTO exhibition (title, subheading, location, start_date, end_date, status, poster)
+INSERT INTO exhibition (title, subHeading, location, start_date, end_date, status, poster)
 VALUES ('여기는 따뜻해', '성수지앵XSuperposition 겨울 전시', '성수지앵', '2023-12-16', '2023-12-25', 'CURRENT', 'dsafsdafsdfaroghg.jpg'),
        ('여기는 따뜻해', '성수지앵XSuperposition 겨울 전시', '성수지앵', '2023-12-16', '2023-12-25', 'CURRENT', 'dsafsdafsdfaroghg.jpg'),
        ('여기는 따뜻해', '성수지앵XSuperposition 겨울 전시', '성수지앵', '2023-12-16', '2023-12-25', 'CURRENT', 'dsafsdafsdfaroghg.jpg'),

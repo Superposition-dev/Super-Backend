@@ -10,7 +10,7 @@ public class ResponseExhibition {
 
     private final Long exhibitionId;
     private final String title;
-    private final String subheading;
+    private final String subHeading;
     private final String location;
     private final LocalDate startDate;
     private final LocalDate endDate;
@@ -18,12 +18,12 @@ public class ResponseExhibition {
     private final String poster;
 
     @Builder
-    public ResponseExhibition(Long exhibitionId, String title, String subheading, String location, LocalDate startDate,
+    public ResponseExhibition(Long exhibitionId, String title, String subHeading, String location, LocalDate startDate,
                               LocalDate endDate, String status, String poster) {
 
         this.exhibitionId = exhibitionId;
         this.title = title;
-        this.subheading = subheading;
+        this.subHeading = subHeading;
         this.location = location;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -35,7 +35,7 @@ public class ResponseExhibition {
         return ResponseExhibition.builder()
                 .exhibitionId(exhibition.getId())
                 .title(exhibition.getTitle())
-                .subheading(exhibition.getSubheading())
+                .subHeading(exhibition.getSubHeading())
                 .location(exhibition.getLocation())
                 .startDate(exhibition.getStartDate())
                 .endDate(exhibition.getEndDate())

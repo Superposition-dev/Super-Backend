@@ -35,7 +35,7 @@ class ExhibitionServiceTest {
                 .contains(1, 10, 15);
         assertThat(actual.getData())
                 .hasSize(10)
-                .extracting("title", "subheading", "location", "startDate", "endDate", "status", "poster")
+                .extracting("title", "subHeading", "location", "startDate", "endDate", "status", "poster")
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
                                 "The exhibition and catalogue are made possible by Morgan Stanley.", "MET",
