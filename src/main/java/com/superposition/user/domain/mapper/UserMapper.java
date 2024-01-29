@@ -4,6 +4,7 @@ import com.superposition.user.domain.entity.User;
 import com.superposition.user.dto.RequestUserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 @Mapper
 public interface UserMapper {
@@ -11,5 +12,7 @@ public interface UserMapper {
 
     void saveUserInfo(User user);
 
-    RequestUserInfo getUserInfoByEmail(String email);
+    RequestUserInfo getUserInfoByEmail(@Param("email") String email);
+
+    boolean isAvailableChange(@Param("email") String email);
 }

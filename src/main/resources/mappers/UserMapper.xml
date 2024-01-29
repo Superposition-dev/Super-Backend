@@ -6,11 +6,18 @@
     </select>
 
     <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
-        INSERT INTO user(email, name, nickname, profile, gender, birth_date, create_at)
-        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate}, NOW());
+        INSERT INTO user(email, name, nickname, profile, gender, birth_date)
+        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate});
     </insert>
 
     <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.RequestUserInfo">
         SELECT email, name, nickname, profile, gender, birth_date FROM user WHERE email = #{email}
+    </select>
+    
+    <select id="isAvailableChange" parameterType="String" resultType="boolean">
+        SELECT EXISTS(
+        SELECT * FROM user
+                 WHERE NOW() <![CDATA[<]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
+                 AND email = #{email});
     </select>
 </mapper>

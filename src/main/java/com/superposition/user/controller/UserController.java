@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,18 +30,24 @@ public class UserController {
     }
 
     @GetMapping(value = "/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal String accessToken){
-        userService.logout(SecurityContextHolder.getContext().getAuthentication().getName());
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserDetails user){
+        userService.logout(user.getUsername());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/me")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String accessToken){
-        return userService.getUserInfo(SecurityContextHolder.getContext().getAuthentication().getName());
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetails user){
+        return userService.getUserInfo(user.getUsername());
+    }
+
+    @GetMapping(value = "/isAvailable")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean checkUserNickname(@AuthenticationPrincipal UserDetails user){
+        return userService.checkNickname(user.getUsername());
     }
 
     @GetMapping(value = "/regenerateToken")
-    public ResponseEntity<?> regenerateToken(@AuthenticationPrincipal String accessToken) {
+    public ResponseEntity<?> regenerateToken(@AuthenticationPrincipal UserDetails accessToken) {
         return userService.regenerateToken(
                 SecurityContextHolder.getContext().getAuthentication().getName());
     }

@@ -76,6 +76,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public boolean checkNickname(String email) {
+        return userMapper.isAvailableChange(email);
+    }
+
+    @Override
     public ResponseEntity<?> regenerateToken(String email) {
         if(!StringUtils.hasText(email)) throw new EmptyEmailException();
 
