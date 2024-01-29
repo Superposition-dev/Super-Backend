@@ -12,21 +12,26 @@ spring:
     restart:
       enabled: true
 
+#Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
-# SSL Setting
-server:
-  ssl:
-    enabled: true
-    key-store: /etc/letsencrypt/live/api.spp-art.com/keystore.p12
-    key-store-password: #비밀번호
-    key-store-type: PKCS12
-    key-alias: superposition
-  port: 443
+## SSL Setting
+#server:
+#  ssl:
+#    enabled: true
+#    key-store: /etc/letsencrypt/live/api.spp-art.com/keystore.p12
+#    key-store-password: #비밀번호
+#    key-store-type: PKCS12
+#    key-alias: superposition
+#  port: 443
 
 cors:
   pathPattern: /**
