@@ -41,36 +41,36 @@ class ExhibitionMapperTest {
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
                                 "The exhibition and catalogue are made possible by Morgan Stanley.", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"), ExhibitionStatus.current,
                                 "women.jpg"),
                         tuple("Africa & Byzantium",
                                 "The exhibition is made possible by the Ford Foundation, The Giorgi Family Foundation, and Mary Jaharis.",
                                 "MET", LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"),
-                                ExhibitionStatus.CURRENT, "africa.jpg"),
+                                ExhibitionStatus.current, "africa.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT, "dsafsdafsdfaroghg.jpg"),
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current, "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("Grounded in Clay: The Spirit of Pueblo Pottery",
                                 "Pueblo Indian pottery embodies four main natural elements", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-06-04"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-06-04"), ExhibitionStatus.current,
                                 "Pottery.jpg"),
                         tuple("The Facade Commission: Nairy Baghramian, Scratching the Back",
                                 "For The Met Fifth Avenue’s facade niches,", "MET", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2024-05-28"), ExhibitionStatus.CURRENT, "commission.jpg"),
+                                LocalDate.parse("2024-05-28"), ExhibitionStatus.current, "commission.jpg"),
                         tuple("Lineages: Korean Art at The Met", "METXSuperposition 겨울 전시", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "Lineages.jpg"),
                         tuple("Van Gogh’s Cypresses",
                                 "Van Gogh’s Cypresses is the first exhibition to focus on the trees", "MET",
-                                LocalDate.parse("2023-05-22"), LocalDate.parse("2023-08-27"), ExhibitionStatus.END,
+                                LocalDate.parse("2023-05-22"), LocalDate.parse("2023-08-27"), ExhibitionStatus.end,
                                 "cypresses.jpg"));
     }
 
@@ -82,7 +82,7 @@ class ExhibitionMapperTest {
         Pageable pageable = PageRequest.of(1, 10);
         int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize();
         int limit = 10;
-        ExhibitionStatus status = ExhibitionStatus.CURRENT;
+        ExhibitionStatus status = ExhibitionStatus.current;
 
         //when
         List<Exhibition> actual = exhibitionMapper.findExhibitions(offset, limit, status);
@@ -94,33 +94,33 @@ class ExhibitionMapperTest {
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
                                 "The exhibition and catalogue are made possible by Morgan Stanley.", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"), ExhibitionStatus.current,
                                 "women.jpg"),
                         tuple("Africa & Byzantium",
                                 "The exhibition is made possible by the Ford Foundation, The Giorgi Family Foundation, and Mary Jaharis.",
                                 "MET", LocalDate.parse("2023-12-16"), LocalDate.parse("2024-03-03"),
-                                ExhibitionStatus.CURRENT, "africa.jpg"),
+                                ExhibitionStatus.current, "africa.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("여기는 따뜻해", "성수지앵XSuperposition 겨울 전시", "성수지앵", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "dsafsdafsdfaroghg.jpg"),
                         tuple("Grounded in Clay: The Spirit of Pueblo Pottery",
                                 "Pueblo Indian pottery embodies four main natural elements", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-06-04"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2024-06-04"), ExhibitionStatus.current,
                                 "Pottery.jpg"),
                         tuple("The Facade Commission: Nairy Baghramian, Scratching the Back",
                                 "For The Met Fifth Avenue’s facade niches,", "MET", LocalDate.parse("2023-12-16"),
-                                LocalDate.parse("2024-05-28"), ExhibitionStatus.CURRENT, "commission.jpg"),
+                                LocalDate.parse("2024-05-28"), ExhibitionStatus.current, "commission.jpg"),
                         tuple("Lineages: Korean Art at The Met", "METXSuperposition 겨울 전시", "MET",
-                                LocalDate.parse("2023-12-16"), LocalDate.parse("2023-12-25"), ExhibitionStatus.CURRENT,
+                                LocalDate.parse("2023-12-16"), LocalDate.parse("2023-12-25"), ExhibitionStatus.current,
                                 "Lineages.jpg"));
     }
 
@@ -132,7 +132,7 @@ class ExhibitionMapperTest {
         Pageable pageable = PageRequest.of(1, 10);
         int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize();
         int limit = 10;
-        ExhibitionStatus status = ExhibitionStatus.END;
+        ExhibitionStatus status = ExhibitionStatus.end;
 
         //when
         List<Exhibition> actual = exhibitionMapper.findExhibitions(offset, limit, status);
@@ -144,29 +144,29 @@ class ExhibitionMapperTest {
                 .containsExactlyInAnyOrder(
                         tuple("Van Gogh’s Cypresses",
                                 "Van Gogh’s Cypresses is the first exhibition to focus on the trees", "MET",
-                                LocalDate.parse("2023-05-22"), LocalDate.parse("2023-08-27"), ExhibitionStatus.END,
+                                LocalDate.parse("2023-05-22"), LocalDate.parse("2023-08-27"), ExhibitionStatus.end,
                                 "cypresses.jpg"),
                         tuple("Art for the Millions: American Culture and Politics in the 1930s",
                                 "The 1930s was a decade of political and social upheaval in the United States,", "MET",
-                                LocalDate.parse("2023-09-07"), LocalDate.parse("2023-12-10"), ExhibitionStatus.END,
+                                LocalDate.parse("2023-09-07"), LocalDate.parse("2023-12-10"), ExhibitionStatus.end,
                                 "1930s.jpg"),
                         tuple("Picasso: A Cubist Commission in Brooklyn",
                                 "In 1910 Pablo Picasso (1881–1973) embarked on a decorative commission for the Brooklyn residence of artist",
                                 "MET", LocalDate.parse("2023-09-14"), LocalDate.parse("2024-01-14"),
-                                ExhibitionStatus.END, "Picasso.jpg"),
+                                ExhibitionStatus.end, "Picasso.jpg"),
                         tuple("Vertigo of Color: Matisse, Derain, and the Origins of Fauvism",
                                 "The exhibition is made possible by The Florence Gould Foundation.", "MET",
-                                LocalDate.parse("2023-10-13"), LocalDate.parse("2024-01-21"), ExhibitionStatus.END,
+                                LocalDate.parse("2023-10-13"), LocalDate.parse("2024-01-21"), ExhibitionStatus.end,
                                 "Fauvism.jpg"),
                         tuple("Proof: Maxime Du Camp’s Photographs of the Eastern Mediterranean and North Africa",
                                 "Officially encouraged to exploit photography’s “uncontestable exactitude,",
                                 "MET", LocalDate.parse("2023-10-23"), LocalDate.parse("2024-01-21"),
-                                ExhibitionStatus.END,
+                                ExhibitionStatus.end,
                                 "Mediterranean.jpg"),
                         tuple("Christmas Tree and Neapolitan Baroque Crèche",
                                 "The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.",
                                 "MET",
-                                LocalDate.parse("2023-11-21"), LocalDate.parse("2024-01-07"), ExhibitionStatus.END,
+                                LocalDate.parse("2023-11-21"), LocalDate.parse("2024-01-07"), ExhibitionStatus.end,
                                 "tree.jpg"));
     }
 }

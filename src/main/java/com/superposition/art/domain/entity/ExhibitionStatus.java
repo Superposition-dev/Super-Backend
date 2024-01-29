@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ExhibitionStatus {
-    CURRENT("전시중"),
-    END("전시 종료");
+    current("전시중"),
+    end("전시 종료");
 
     private final String value;
 
