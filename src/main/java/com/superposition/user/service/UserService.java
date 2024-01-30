@@ -15,5 +15,7 @@ public interface UserService {
 
     boolean checkNickname(String email);
 
+    void deleteUser(String email);
+
     ResponseEntity<?> regenerateToken(String email);
 }

@@ -15,4 +15,6 @@ public interface UserMapper {
     RequestUserInfo getUserInfoByEmail(@Param("email") String email);
 
     boolean isAvailableChange(@Param("email") String email);
+
+    void deleteUserByEmail(@Param("email") String email);
 }

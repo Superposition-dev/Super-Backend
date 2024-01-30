@@ -20,4 +20,8 @@
                  WHERE NOW() <![CDATA[<]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
                  AND email = #{email});
     </select>
+
+    <update id="deleteUserByEmail" parameterType="String">
+        UPDATE user SET delete_at = NOW(), is_active = 0 WHERE email = #{email}
+    </update>
 </mapper>

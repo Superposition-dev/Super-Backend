@@ -40,6 +40,11 @@ public class UserController {
         return userService.getUserInfo(user.getUsername());
     }
 
+    @DeleteMapping
+    public void deleteUser(@AuthenticationPrincipal UserDetails user){
+        userService.deleteUser(user.getUsername());
+    }
+
     @GetMapping(value = "/isAvailable")
     @ResponseStatus(HttpStatus.OK)
     public Boolean checkUserNickname(@AuthenticationPrincipal UserDetails user){

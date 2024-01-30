@@ -81,6 +81,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public void deleteUser(String email) {
+        if(StringUtils.hasText(email)){
+            userMapper.deleteUserByEmail(email);
+        } else {
+            throw new EmptyEmailException();
+        }
+    }
+
+    @Override
     public ResponseEntity<?> regenerateToken(String email) {
         if(!StringUtils.hasText(email)) throw new EmptyEmailException();
 
