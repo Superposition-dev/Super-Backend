@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getUserInfo(String email) {
         if(StringUtils.hasText(email)){
             return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
@@ -76,11 +77,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkNickname(String email) {
         return userMapper.isAvailableChange(email);
     }
 
     @Override
+    @Transactional
     public void deleteUser(String email) {
         if(StringUtils.hasText(email)){
             userMapper.deleteUserByEmail(email);
