@@ -10,7 +10,7 @@
         VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate});
     </insert>
 
-    <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.RequestUserInfo">
+    <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.ResponseUserInfo">
         SELECT email, name, nickname, profile, gender, birth_date FROM user WHERE email = #{email}
     </select>
     
@@ -20,6 +20,10 @@
                  WHERE NOW() <![CDATA[<]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
                  AND email = #{email});
     </select>
+
+    <update id="updateUserProfile" parameterType="String">
+        UPDATE user SET profile = #{profile} WHERE email = #{email}
+    </update>
 
     <update id="deleteUserByEmail" parameterType="String">
         UPDATE user SET delete_at = NOW(), is_active = 0 WHERE email = #{email}

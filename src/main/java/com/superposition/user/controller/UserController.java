@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -38,6 +39,11 @@ public class UserController {
     @GetMapping(value = "/me")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetails user){
         return userService.getUserInfo(user.getUsername());
+    }
+
+    @PutMapping(value = "/edit/profile")
+    public String modifyProfile(@AuthenticationPrincipal UserDetails user, MultipartFile file){
+        return userService.updateUserProfile(user.getUsername(), file);
     }
 
     @DeleteMapping
