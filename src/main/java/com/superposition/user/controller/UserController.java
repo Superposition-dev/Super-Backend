@@ -41,11 +41,6 @@ public class UserController {
         return userService.getUserInfo(user.getUsername());
     }
 
-    @PutMapping(value = "/edit/profile")
-    public String modifyProfile(@AuthenticationPrincipal UserDetails user, MultipartFile file){
-        return userService.updateUserProfile(user.getUsername(), file);
-    }
-
     @DeleteMapping
     public void deleteUser(@AuthenticationPrincipal UserDetails user){
         userService.deleteUser(user.getUsername());

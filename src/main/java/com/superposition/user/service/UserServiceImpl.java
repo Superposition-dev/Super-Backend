@@ -1,8 +1,5 @@
 package com.superposition.user.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.*;
@@ -10,31 +7,21 @@ import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
-    @Value("${naver.objectStorage.bucketName}")
-    private String bucketName;
-
     private final OAuthLoginService oAuthLoginService;
     private final TokenService tokenService;
     private final UserMapper userMapper;
     private final JwtProvider jwtProvider;
-    private final AmazonS3 awsS3Client;
 
     @Override
     @Transactional
@@ -96,40 +83,6 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public boolean checkNickname(String email) {
         return userMapper.isAvailableChange(email);
-    }
-
-    @Override
-    @Transactional
-    public String updateUserProfile(String email, MultipartFile file) {
-        if(StringUtils.hasText(email)){
-            String profile = uploadToBucket(file);
-            userMapper.updateUserProfile(email, profile);
-
-            return profile;
-        } else {
-            throw new EmptyEmailException();
-        }
-    }
-
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public String uploadToBucket(MultipartFile file){
-        String originFileName = file.getOriginalFilename();
-        String extension = (originFileName != null) ? originFileName.substring(originFileName.lastIndexOf(".")) : null ;
-        String fileName = UUID.randomUUID() + extension;
-
-        try {
-            byte[] fileData = file.getBytes();
-            ObjectMetadata data = new ObjectMetadata();
-            data.setContentLength(fileData.length);
-
-            awsS3Client.putObject(new PutObjectRequest(
-                    bucketName, fileName,
-                    new ByteArrayInputStream(fileData), data));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return fileName;
     }
 
     @Override
