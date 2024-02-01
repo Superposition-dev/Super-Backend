@@ -46,9 +46,7 @@ public class SecurityConfig {
 
                 // 접근 권한 설정부
                 .and().authorizeHttpRequests()
-//                .antMatchers("/products/**").permitAll()
-                .antMatchers("/artist/**", "/about").permitAll()
-                .antMatchers("/users/**").permitAll()
+                .antMatchers("/**").permitAll() //테스트를 위해 전체 허용
                 .anyRequest().authenticated()
 
                 // JWT 토큰 예외처리부

@@ -116,7 +116,7 @@ public class KaKaoLoginService implements OAuthLoginService {
             return UserInfo.builder().
                     email(email).
                     nickname(nickname).
-                    profileImage(imageUrl).build();
+                    profile(imageUrl).build();
         } catch (ParseException e) {
             throw new ParsingException();
         }
