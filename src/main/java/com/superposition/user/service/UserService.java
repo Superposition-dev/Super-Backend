@@ -16,8 +16,6 @@ public interface UserService {
 
     boolean checkNickname(String email);
 
-    String updateUserProfile(String email, MultipartFile file);
-
     void deleteUser(String email);
 
     ResponseEntity<?> regenerateToken(String email);
