@@ -41,6 +41,7 @@ spring:
       enabled: true
     restart:
       enabled: true
+      
   #JWT Token Setting
   security:
     jwt:
@@ -55,6 +56,12 @@ spring:
             client-id: #ID
             client-secret: #시크릿키
             redirect-uri: http://localhost:3000/login/kakao
+
+#Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mappers/*.xml
@@ -65,7 +72,7 @@ mybatis:
 #  ssl:
 #    enabled: true
 #    key-store: /etc/letsencrypt/live/api.spp-art.com/keystore.p12
-#    key-store-password: H3dnchf3cRn
+#    key-store-password: #비밀번호
 #    key-store-type: PKCS12
 #    key-alias: superposition
 #  port: 443

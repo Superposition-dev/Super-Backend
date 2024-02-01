@@ -32,6 +32,9 @@ dependencies {
 	implementation 'org.apache.clerezza.ext:org.json.simple:0.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
