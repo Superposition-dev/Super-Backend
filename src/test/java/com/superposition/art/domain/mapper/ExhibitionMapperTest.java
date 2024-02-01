@@ -2,11 +2,13 @@ package com.superposition.art.domain.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.superposition.art.domain.entity.Exhibition;
 import com.superposition.art.domain.entity.ExhibitionStatus;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,5 +170,54 @@ class ExhibitionMapperTest {
                                 "MET",
                                 LocalDate.parse("2023-11-21"), LocalDate.parse("2024-01-07"), ExhibitionStatus.end,
                                 "tree.jpg"));
+    }
+
+    @Test
+    @DisplayName("전시 ID로 전시 조회 테스트")
+    @Sql({"classpath:schema.sql", "classpath:data.sql"})
+    void findExhibitionByIdTest() {
+        //given
+        long exhibitionId = 1L;
+
+        //when
+        Optional<Exhibition> exhibition = exhibitionMapper.findExhibitionById(exhibitionId);
+        Exhibition actual = exhibition.get();
+
+        //then
+        Exhibition expected = Exhibition.builder()
+                .id(exhibitionId)
+                .title("Christmas Tree and Neapolitan Baroque Crèche")
+                .subHeading(
+                        "The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.")
+                .location("MET")
+                .startDate(LocalDate.parse("2023-11-21"))
+                .endDate(LocalDate.parse("2024-01-07"))
+                .status(ExhibitionStatus.end)
+                .poster("tree.jpg")
+                .build();
+        assertAll(() -> {
+            assertThat(actual.getId()).isEqualTo(expected.getId());
+            assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
+            assertThat(actual.getSubHeading()).isEqualTo(expected.getSubHeading());
+            assertThat(actual.getLocation()).isEqualTo(expected.getLocation());
+            assertThat(actual.getStartDate()).isEqualTo(expected.getStartDate());
+            assertThat(actual.getEndDate()).isEqualTo(expected.getEndDate());
+            assertThat(actual.getStatus()).isEqualTo(expected.getStatus());
+            assertThat(actual.getPoster()).isEqualTo(expected.getPoster());
+        });
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 전시 ID로 전시 조회 테스트")
+    @Sql({"classpath:schema.sql", "classpath:data.sql"})
+    void findExhibitionByNotExistsIdTest() {
+        //given
+        long notExistsExhibitionId = 1000L;
+
+        //when
+        Optional<Exhibition> actual = exhibitionMapper.findExhibitionById(notExistsExhibitionId);
+
+        //then
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

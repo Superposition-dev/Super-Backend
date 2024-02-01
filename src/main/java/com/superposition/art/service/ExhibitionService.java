@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ExhibitionService {
     public PageInfo<ResponseExhibition> getExhibitions(final Pageable pageable, final ExhibitionStatus status);
+
+    ResponseExhibition getExhibitionById(long exhibitionId);
 }

@@ -4,6 +4,7 @@ import com.superposition.art.domain.entity.Exhibition;
 import com.superposition.art.domain.entity.ExhibitionStatus;
 import com.superposition.art.domain.mapper.ExhibitionMapper;
 import com.superposition.art.dto.ResponseExhibition;
+import com.superposition.art.exception.NoExistExhibitionException;
 import com.superposition.product.utils.PageInfo;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -36,5 +37,13 @@ public class ExhibitionServiceImpl implements ExhibitionService {
                 .totalCount(totalCount)
                 .data(data)
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseExhibition getExhibitionById(long exhibitionId) {
+        Exhibition exhibition = exhibitionMapper.findExhibitionById(exhibitionId)
+                .orElseThrow(NoExistExhibitionException::new);
+        return ResponseExhibition.from(exhibition);
     }
 }

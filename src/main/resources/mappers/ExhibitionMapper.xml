@@ -18,4 +18,10 @@
         ORDER BY exhibition_id desc
         LIMIT #{offset}, #{limit};
     </select>
+
+    <select id="findExhibitionById" parameterType="long" resultType="com.superposition.art.domain.entity.Exhibition">
+        SELECT *
+        FROM exhibition e
+        WHERE e.exhibition_id = #{exhibition_id}
+    </select>
 </mapper>
