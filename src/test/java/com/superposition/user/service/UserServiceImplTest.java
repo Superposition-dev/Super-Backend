@@ -1,33 +1,54 @@
 package com.superposition.user.service;
 
+import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.utils.Gender;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class UserServiceImplTest {
     private final UserService userService;
+    private final UserMapper userMapper;
     private RequestUserInfo userInfo;
 
     @Autowired
-    UserServiceImplTest(UserService userService) {
+    UserServiceImplTest(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
+    }
+
+    @Sql({"classpath:user.sql"})
+    @BeforeAll
+    static void setup(@Autowired DataSource dataSource) {
+        try (Connection conn = dataSource.getConnection()) {
+            ScriptUtils.executeSqlScript(conn, new ClassPathResource("user.sql"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @BeforeEach
@@ -82,5 +103,18 @@ class UserServiceImplTest {
 
         //then
         assertThat(e.getClass()).isEqualTo(EmptyEmailException.class);
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 성공 테스트")
+    void 회원_탈퇴() {
+        //given
+        String email = userService.signup(userInfo).getUserInfo().getEmail();
+
+        //when
+        userService.deleteUser(email);
+
+        //then
+
     }
 }
