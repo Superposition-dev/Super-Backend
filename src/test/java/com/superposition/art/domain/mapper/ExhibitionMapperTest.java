@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
 class ExhibitionMapperTest {
@@ -25,7 +24,6 @@ class ExhibitionMapperTest {
 
     @Test
     @DisplayName("모든 전시 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void findExhibitionsTest() {
         //given
         Pageable pageable = PageRequest.of(1, 10);
@@ -78,7 +76,6 @@ class ExhibitionMapperTest {
 
     @Test
     @DisplayName("전시중 전시들 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void findCurrentExhibitionsTest() {
         //given
         Pageable pageable = PageRequest.of(1, 10);
@@ -128,7 +125,6 @@ class ExhibitionMapperTest {
 
     @Test
     @DisplayName("전시 종료 전시들 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void findEndExhibitionsTest() {
         //given
         Pageable pageable = PageRequest.of(1, 10);
@@ -174,7 +170,6 @@ class ExhibitionMapperTest {
 
     @Test
     @DisplayName("전시 ID로 전시 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void findExhibitionByIdTest() {
         //given
         long exhibitionId = 1L;
@@ -209,7 +204,6 @@ class ExhibitionMapperTest {
 
     @Test
     @DisplayName("존재하지 않는 전시 ID로 전시 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void findExhibitionByNotExistsIdTest() {
         //given
         long notExistsExhibitionId = 1000L;
