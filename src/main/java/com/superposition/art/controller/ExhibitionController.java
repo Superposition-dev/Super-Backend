@@ -2,6 +2,7 @@ package com.superposition.art.controller;
 
 import com.superposition.art.domain.entity.ExhibitionStatus;
 import com.superposition.art.dto.ResponseExhibition;
+import com.superposition.art.dto.ResponseExhibitionDetail;
 import com.superposition.art.service.ExhibitionService;
 import com.superposition.product.utils.PageInfo;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class ExhibitionController {
 
     @GetMapping("/{exhibitionId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseExhibition getExhibitionById(@PathVariable long exhibitionId) {
+    public ResponseExhibitionDetail getExhibitionById(@PathVariable long exhibitionId) {
         return exhibitionService.getExhibitionById(exhibitionId);
     }
 }
