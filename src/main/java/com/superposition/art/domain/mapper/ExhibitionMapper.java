@@ -15,5 +15,7 @@ public interface ExhibitionMapper {
     List<Exhibition> findExhibitions(@Param("offset") int offset, @Param("limit") int limit,
                                      @Param("status") ExhibitionStatus status);
 
+    List<Exhibition> findExhibitionsByStatus(@Param("status") ExhibitionStatus status);
+
     Optional<Exhibition> findExhibitionById(@Param("exhibition_id") long exhibitionId);
 }

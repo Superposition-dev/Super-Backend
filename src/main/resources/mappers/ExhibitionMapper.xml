@@ -19,6 +19,17 @@
         LIMIT #{offset}, #{limit};
     </select>
 
+    <select id="findExhibitionsByStatus" resultType="com.superposition.art.domain.entity.Exhibition">
+        SELECT *
+        FROM exhibition
+        <where>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY exhibition_id desc
+    </select>
+
     <select id="findExhibitionById" parameterType="long" resultType="com.superposition.art.domain.entity.Exhibition">
         SELECT *
         FROM exhibition e

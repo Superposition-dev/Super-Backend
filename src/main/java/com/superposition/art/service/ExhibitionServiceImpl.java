@@ -48,6 +48,15 @@ public class ExhibitionServiceImpl implements ExhibitionService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ResponseExhibition> getExhibitionsByStatus(final ExhibitionStatus status) {
+        List<Exhibition> findExhibitions = exhibitionMapper.findExhibitionsByStatus(status);
+        return findExhibitions.stream()
+                .map(ResponseExhibition::from)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ResponseExhibitionDetail getExhibitionById(long exhibitionId) {
         Exhibition exhibition = exhibitionMapper.findExhibitionById(exhibitionId)
                 .orElseThrow(NoExistExhibitionException::new);
