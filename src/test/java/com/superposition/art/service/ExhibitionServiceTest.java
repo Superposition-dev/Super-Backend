@@ -3,10 +3,10 @@ package com.superposition.art.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.superposition.art.domain.entity.ExhibitionStatus;
 import com.superposition.art.dto.ResponseExhibition;
+import com.superposition.art.dto.ResponseExhibitionDetail;
 import com.superposition.art.exception.NoExistExhibitionException;
 import com.superposition.product.utils.PageInfo;
 import java.time.LocalDate;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
 class ExhibitionServiceTest {
@@ -83,41 +82,40 @@ class ExhibitionServiceTest {
 
     @Test
     @DisplayName("전시 ID로 전시 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void getExhibitionByIdTest() {
         //given
         long exhibitionId = 1L;
 
         //when
-        ResponseExhibition actual = exhibitionService.getExhibitionById(exhibitionId);
+        ResponseExhibitionDetail actual = exhibitionService.getExhibitionById(exhibitionId);
 
         //then
-        ResponseExhibition expected = ResponseExhibition.builder()
-                .exhibitionId(exhibitionId)
-                .title("Christmas Tree and Neapolitan Baroque Crèche")
-                .subHeading(
-                        "The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.")
-                .location("MET")
-                .startDate(LocalDate.parse("2023-11-21"))
-                .endDate(LocalDate.parse("2024-01-07"))
-                .status(ExhibitionStatus.end.getValue())
-                .poster("tree.jpg")
-                .build();
-        assertAll(() -> {
-            assertThat(actual.getExhibitionId()).isEqualTo(expected.getExhibitionId());
-            assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
-            assertThat(actual.getSubHeading()).isEqualTo(expected.getSubHeading());
-            assertThat(actual.getLocation()).isEqualTo(expected.getLocation());
-            assertThat(actual.getStartDate()).isEqualTo(expected.getStartDate());
-            assertThat(actual.getEndDate()).isEqualTo(expected.getEndDate());
-            assertThat(actual.getStatus()).isEqualTo(expected.getStatus());
-            assertThat(actual.getPoster()).isEqualTo(expected.getPoster());
-        });
+        assertThat(actual.getExhibitionId()).isEqualTo(exhibitionId);
+        assertThat(actual.getTitle()).isEqualTo("Christmas Tree and Neapolitan Baroque Crèche");
+        assertThat(actual.getSubHeading()).isEqualTo(
+                "The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.");
+        assertThat(actual.getProductInfo())
+                .hasSize(3)
+                .extracting("productId", "picture", "tags", "title", "artist")
+                .containsExactlyInAnyOrder(
+                        tuple(1L, "6e305a70-0ed7-4f40-a59e-e28bb495887d.jpg", new String[]{"청량한", "맑은", "아련한"},
+                                "roses", "문소"),
+                        tuple(13L, "e58b394b-c0dd-4992-be70-3a258a1fc061.png", new String[]{"따뜻한", "귀여운", "포근한"},
+                                "christmas in my hand", "삼이공"),
+                        tuple(20L, "14fcf569-2c1b-482f-93cf-a78c65b01aa5.jpg", new String[]{"웅장한", "묘한", "상징적인"},
+                                "You shine, protect the light", "윤지호"));
+
+        assertThat(actual.getArtistInfo())
+                .hasSize(3)
+                .extracting("name", "introduce", "instagramId")
+                .containsExactlyInAnyOrder(
+                        tuple("문소", "우리의 모습을 그립니다", "moonso___"),
+                        tuple("삼이공", "다른 세계의 희망을 보려 도약하는", "320_artwork"),
+                        tuple("윤지호", "긍정을 제시하는 표지판", "yjh_hall"));
     }
 
     @Test
     @DisplayName("존재하지 않는 전시 ID로 전시 조회 테스트")
-    @Sql({"classpath:schema.sql", "classpath:data.sql"})
     void getExhibitionByNotExistIdTest() {
         //given
         long notExistsExhibitionId = 1000L;
