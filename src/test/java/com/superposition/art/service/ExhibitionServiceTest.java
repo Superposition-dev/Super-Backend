@@ -165,8 +165,8 @@ class ExhibitionServiceTest {
     }
 
     @Test
-    @DisplayName("전시중 전시들 조회 테스트")
-    void getCurrentExhibitionsByStatusTest() {
+    @DisplayName("전시 종료 전시들 조회 테스트")
+    void getEndExhibitionsByStatusTest() {
         //given
         ExhibitionStatus status = ExhibitionStatus.end;
 
@@ -213,8 +213,8 @@ class ExhibitionServiceTest {
     }
 
     @Test
-    @DisplayName("전시 종료 전시들 조회 테스트")
-    void getEndExhibitionsByStatusTest() {
+    @DisplayName("전시중 전시들 조회 테스트")
+    void getCurrentExhibitionsByStatusTest() {
         //given
         ExhibitionStatus status = ExhibitionStatus.current;
 
@@ -223,7 +223,7 @@ class ExhibitionServiceTest {
 
         //then
         assertThat(actual)
-                .hasSize(6)
+                .hasSize(9)
                 .extracting("title", "subHeading", "location", "startDate", "endDate", "status", "poster")
                 .containsExactlyInAnyOrder(
                         tuple("Women Dressing Women",
