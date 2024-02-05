@@ -28,4 +28,16 @@
     <update id="deleteUserByEmail" parameterType="String">
         UPDATE user SET delete_at = NOW(), is_active = 0 WHERE email = #{email}
     </update>
+
+    <select id="findByEmail" parameterType="String" resultType="com.superposition.user.domain.entity.User">
+        SELECT email, name, nickname, profile, gender, birth_date, create_at, following
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <update id="updateFollow">
+        UPDATE user
+        SET following = #{following}
+        WHERE email = #{email}
+    </update>
 </mapper>

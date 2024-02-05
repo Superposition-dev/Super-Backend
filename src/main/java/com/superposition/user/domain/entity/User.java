@@ -1,11 +1,15 @@
 package com.superposition.user.domain.entity;
 
 import com.superposition.utils.Gender;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.sql.Timestamp;
-import java.util.Date;
 
 @Getter
 @Builder
@@ -17,5 +21,10 @@ public class User {
     private Gender gender;
     private Date birthDate;
     private Timestamp createAt;
-    private Timestamp updateAt;
+    private String following;
+
+    public boolean isFollowed(final String artistInstagramId) {
+        return Arrays.asList(following.split(","))
+                .contains(artistInstagramId);
+    }
 }
