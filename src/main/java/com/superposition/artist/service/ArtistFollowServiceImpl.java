@@ -2,8 +2,11 @@ package com.superposition.artist.service;
 
 import com.superposition.artist.domain.mapper.ArtistMapper;
 import com.superposition.artist.dto.ArtistFollowDto;
+import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +51,17 @@ public class ArtistFollowServiceImpl implements ArtistFollowService {
         }
 
         return existsFollowing + "," + artistInstagramId;
+    }
+
+    @Override
+    public List<ArtistInfo> getFollowingArtists(String userEmail) {
+        User findUser = userMapper.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        if (findUser.isEmptyFollowing()) {
+            return Collections.emptyList();
+        }
+        List<String> followingArtistInstagramIds = findUser.getFollowingArtistInstagramIds();
+        return artistMapper.getArtistsInfoByIds(followingArtistInstagramIds);
     }
 }

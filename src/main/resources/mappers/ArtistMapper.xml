@@ -37,5 +37,12 @@
         SELECT view FROM artist WHERE name = #{name};
     </select>
 
-
+    <select id="getArtistsInfoByIds" parameterType="list" resultType="com.superposition.artist.dto.ArtistInfo">
+        SELECT profile, name, introduce, is_display, description, instagram_id
+        FROM artist
+        WHERE instagram_id IN
+        <foreach collection="list" item="instagramId" open="(" separator="," close=")">
+            #{instagramId}
+        </foreach>
+    </select>
 </mapper>

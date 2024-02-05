@@ -5,9 +5,6 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,5 +23,14 @@ public class User {
     public boolean isFollowed(final String artistInstagramId) {
         return Arrays.asList(following.split(","))
                 .contains(artistInstagramId);
+    }
+
+    public boolean isEmptyFollowing() {
+        return following == null;
+    }
+
+    public List<String> getFollowingArtistInstagramIds() {
+        return Arrays.stream(following.split(","))
+                .toList();
     }
 }

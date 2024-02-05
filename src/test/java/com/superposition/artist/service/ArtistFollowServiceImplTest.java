@@ -3,13 +3,18 @@ package com.superposition.artist.service;
 import static org.assertj.core.api.Assertions.*;
 
 import com.superposition.artist.dto.ArtistFollowDto;
+import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.utils.Gender;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -85,6 +90,38 @@ class ArtistFollowServiceImplTest {
         Assertions.assertThatThrownBy(() -> artistFollowService.followArtist(dto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 팔로우한 작가입니다.");
+    }
+
+    @Test
+    @DisplayName("팔로잉한 작가들 조회 테스트")
+    void getFollowingArtistsTest() {
+        //given
+        User user = saveUser("320_artwork,fantasy_filter_studio,i.ru__ol");
+
+        //when
+        List<ArtistInfo> actual = artistFollowService.getFollowingArtists(user.getEmail());
+
+        //then
+        String following = userMapper.findByEmail(user.getEmail()).get().getFollowing();
+        List<String> expected = Arrays.stream(following.split(","))
+                .toList();
+        assertThat(actual)
+                .hasSize(expected.size())
+                .extracting("instagramId")
+                .containsExactlyInAnyOrder("320_artwork", "fantasy_filter_studio", "i.ru__ol");
+    }
+
+    @Test
+    @DisplayName("팔로잉한 작가가 없는 경우 팔로잉한 작가들 조회 테스트")
+    void getFollowingArtistsEmptyTest() {
+        //given
+        User user = saveUser(null);
+
+        //when
+        List<ArtistInfo> actual = artistFollowService.getFollowingArtists(user.getEmail());
+
+        //then
+        assertThat(actual.isEmpty()).isTrue();
     }
 
     private User saveUser(String following) {
