@@ -7,13 +7,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ArtistFollowDto {
-    private final String userEmail;
-    private final String artistInstagramId;
+    private final String email;
+    private final String instagramId;
 
     @Builder
-
-    public ArtistFollowDto(String userEmail, String artistInstagramId) {
-        this.userEmail = userEmail;
-        this.artistInstagramId = artistInstagramId;
+    public ArtistFollowDto(String email, String instagramId) {
+        this.email = email;
+        this.instagramId = instagramId;
     }
 }

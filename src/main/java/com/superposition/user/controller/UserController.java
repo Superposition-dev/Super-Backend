@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -62,9 +61,9 @@ public class UserController {
                 SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    @GetMapping(value = "/artist/following")
+    @GetMapping(value = "/artist/follow")
     @ResponseStatus(HttpStatus.OK)
-    public List<? extends ArtistInfo> getFollowingArtists(@AuthenticationPrincipal UserDetails user){
-        return artistFollowService.getFollowingArtists(user.getUsername());
+    public List<? extends ArtistInfo> getFollowArtists(@AuthenticationPrincipal UserDetails user) {
+        return artistFollowService.getFollowArtistsBy(user.getUsername());
     }
 }

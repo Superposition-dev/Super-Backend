@@ -7,5 +7,5 @@ import java.util.List;
 public interface ArtistFollowService {
     void followArtist(ArtistFollowDto dto);
 
-    List<ArtistInfo> getFollowingArtists(String userEmail);
+    List<ArtistInfo> getFollowArtistsBy(String email);
 }

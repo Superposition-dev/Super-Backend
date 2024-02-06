@@ -1,9 +1,10 @@
 package com.superposition.artist.service;
 
+import com.superposition.artist.domain.entity.ArtistFollow;
+import com.superposition.artist.domain.mapper.ArtistFollowMapper;
 import com.superposition.artist.domain.mapper.ArtistMapper;
 import com.superposition.artist.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ArtistInfo;
-import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import java.util.Collections;
 import java.util.List;
@@ -16,52 +17,47 @@ public class ArtistFollowServiceImpl implements ArtistFollowService {
 
     private final UserMapper userMapper;
     private final ArtistMapper artistMapper;
+    private final ArtistFollowMapper artistFollowMapper;
 
     @Override
     public void followArtist(ArtistFollowDto dto) {
-        String userEmail = dto.getUserEmail();
-        User findUser = userMapper.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        checkExistsUser(dto.getEmail());
+        checkExistsArtist(dto.getInstagramId());
+        checkAlreadyFollow(dto);
 
-        String artistInstagramId = dto.getArtistInstagramId();
-        checkExistsArtist(artistInstagramId);
-
-        checkAlreadyFollowing(findUser, artistInstagramId);
-
-        userMapper.updateFollow(userEmail, getNewFollowing(artistInstagramId, findUser));
+        artistFollowMapper.save(dto);
     }
 
-    private void checkExistsArtist(String artistInstagramId) {
-        boolean existsArtist = artistMapper.isExistsArtist(artistInstagramId);
-        if (!existsArtist) {
+    private void checkExistsUser(String email) {
+        if (!userMapper.isExistUserByEmail(email)) {
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+    }
+
+    private void checkExistsArtist(String instagramId) {
+        if (!artistMapper.isExistsArtist(instagramId)) {
             throw new IllegalArgumentException("존재하지 않는 작가입니다.");
         }
     }
 
-    private void checkAlreadyFollowing(User findUser, String artistInstagramId) {
-        if (findUser.getFollowing() != null && findUser.isFollowed(artistInstagramId)) {
+    private void checkAlreadyFollow(ArtistFollowDto dto) {
+        if (artistFollowMapper.isExistFollowBy(dto)) {
             throw new IllegalArgumentException("이미 팔로우한 작가입니다.");
         }
     }
 
-    private String getNewFollowing(String artistInstagramId, User findUser) {
-        String existsFollowing = findUser.getFollowing();
-        if (existsFollowing == null) {
-            return artistInstagramId;
-        }
-
-        return existsFollowing + "," + artistInstagramId;
-    }
-
     @Override
-    public List<ArtistInfo> getFollowingArtists(String userEmail) {
-        User findUser = userMapper.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+    public List<ArtistInfo> getFollowArtistsBy(String email) {
+        checkExistsUser(email);
 
-        if (findUser.isEmptyFollowing()) {
+        List<String> followInstagramIds = artistFollowMapper.findByEmail(email).stream()
+                .map(ArtistFollow::getInstagramId)
+                .toList();
+
+        if (followInstagramIds.isEmpty()) {
             return Collections.emptyList();
         }
-        List<String> followingArtistInstagramIds = findUser.getFollowingArtistInstagramIds();
-        return artistMapper.getArtistsInfoByIds(followingArtistInstagramIds);
+
+        return artistMapper.getArtistsInfoByIds(followInstagramIds);
     }
 }

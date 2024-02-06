@@ -50,8 +50,8 @@ public class ArtistController {
     @ResponseStatus(HttpStatus.OK)
     public void followArtist(@AuthenticationPrincipal UserDetails user, @PathVariable String instagramId) {
         ArtistFollowDto dto = ArtistFollowDto.builder()
-                .userEmail(user.getUsername())
-                .artistInstagramId(instagramId)
+                .email(user.getUsername())
+                .instagramId(instagramId)
                 .build();
         artistFollowService.followArtist(dto);
     }

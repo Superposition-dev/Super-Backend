@@ -22,6 +22,4 @@ public interface UserMapper {
     void deleteUserByEmail(@Param("email") String email);
 
     Optional<User> findByEmail(@Param("email") String email);
-
-    void updateFollow(@Param("email") String email, @Param("following") String following);
 }
