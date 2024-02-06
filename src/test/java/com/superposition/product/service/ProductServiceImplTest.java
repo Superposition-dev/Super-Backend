@@ -61,7 +61,7 @@ class ProductServiceImplTest {
         long postId = 1L;
 
         //when
-        ResponseProductDetail responseProductDetail = productService.getProductById(postId, true);
+        ResponseProductDetail responseProductDetail = productService.getProductById(postId, true, null);
 
         //then
         assertThat(responseProductDetail).isNotNull();
@@ -74,37 +74,10 @@ class ProductServiceImplTest {
 
         //when
         NoExistProductException ne = assertThrows(NoExistProductException.class,
-                        () -> productService.getProductById(postId, true));
+                        () -> productService.getProductById(postId, true, null));
 
         //then
         assertThat(ne.getClass()).isEqualTo(NoExistProductException.class);
-    }
-
-    @Test
-    void 좋아요_성공_테스트() {
-        //given
-        long productId = 1L;
-
-        //when
-        productService.likeProduct(productId, true);
-
-        //then
-        int likeCount = productMapper.getLikeCount(productId);
-        assertThat(likeCount).isEqualTo(1);
-    }
-
-    @Test
-    void 좋아요_취소_성공_테스트() {
-        //given
-        long productId = 1L;
-        productService.likeProduct(productId, true);
-
-        //when
-        productService.likeProduct(productId, false);
-
-        //then
-        int likeCount = productMapper.getLikeCount(productId);
-        assertThat(likeCount).isEqualTo(0);
     }
 
 }

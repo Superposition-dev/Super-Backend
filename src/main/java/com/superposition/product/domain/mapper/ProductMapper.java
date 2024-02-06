@@ -28,10 +28,6 @@ public interface ProductMapper {
 
     public void addQrView(@Param("productId") long productId);
 
-    public void likeProduct(@Param("productId") long productId);
-
-    public void disLikeProduct(@Param("productId") long productId);
-
     public void orderClickCount(@Param("productId") long productId);
 
     public int getLikeCount(@Param("productId") long productId);

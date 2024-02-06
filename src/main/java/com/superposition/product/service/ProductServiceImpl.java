@@ -1,23 +1,24 @@
 package com.superposition.product.service;
 
-import com.superposition.artist.exception.BadRequestException;
+import com.superposition.like.service.LikeService;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
+import com.superposition.user.exception.ForbiddenException;
 import com.superposition.utils.exception.NoSearchException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
-
-    public ProductServiceImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
+    private final LikeService likeService;
 
     @Override
     public List<ResponseProduct> getAllProducts(String search) {
@@ -29,8 +30,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseProductDetail getProductById(long productId, boolean isQr) {
-        return toResponseBuild(productId, isQr);
+    public ResponseProductDetail getProductById(long productId, boolean isQr, UserDetails user) {
+        if (user != null){
+            return toResponseBuild(productId, isQr, user.getUsername());
+        } else {
+            return toResponseBuild(productId, isQr, null);
+        }
     }
 
     @Override
@@ -39,19 +44,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Payload likeProduct(long productId, Boolean isLike) {
-        if (isLike == null) throw new BadRequestException();
-
-        if (isPlus(productId)) {
-            if (isLike) {
-                productMapper.likeProduct(productId);
-                return Payload.builder().like(true).build();
-            } else {
-                productMapper.disLikeProduct(productId);
-                return Payload.builder().like(false).build();
-            }
+    public void likeProduct(long productId, UserDetails user) {
+        if (user != null){
+            likeService.likeProduct(productId, user.getUsername());
         } else {
-            throw new RuntimeException("Mysql Error");
+            throw new ForbiddenException();
+        }
+    }
+
+    @Override
+    public void dislikeProduct(long productId, UserDetails user) {
+        if (user != null){
+            likeService.dislikeProduct(productId, user.getUsername());
+        } else {
+            throw new ForbiddenException();
         }
     }
 
@@ -103,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
         return responseProducts;
     }
 
-    private ResponseProductDetail toResponseBuild(long productId, boolean isQr) {
+    private ResponseProductDetail toResponseBuild(long productId, boolean isQr, String email) {
         if (isExistsProduct(productId)) {
             //리턴 메세지
             String message = addView(productId, isQr);
@@ -118,6 +124,9 @@ public class ProductServiceImpl implements ProductService {
             //작가 정보 세팅
             ArtistInfoInProduct artistInfo = buildInfo(productDto.getArtistName(), productDto.getInstagramId(), productDto.getProfile());
 
+            boolean like = false;
+            if(StringUtils.hasText(email)) like = likeService.isLike(productId, email);
+
             return ResponseProductDetail.builder().
                     productId(productDto.getProductId()).
                     picture(productDto.getPicture()).
@@ -127,6 +136,7 @@ public class ProductServiceImpl implements ProductService {
                     pictureInfo(pictureInfo).
                     description(productDto.getDescription()).
                     price(productDto.getPrice())
+                    .isLike(like)
                     .message(message).build();
         } else {
             throw new NoExistProductException("해당하는 게시물이 없습니다.");
@@ -150,14 +160,5 @@ public class ProductServiceImpl implements ProductService {
 
     private boolean isExistsProduct(long productId) {
         return productMapper.isExistsProduct(productId);
-    }
-
-    private boolean isPlus(long productId) {
-        int likeCount = productMapper.getLikeCount(productId);
-        if (likeCount >= 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

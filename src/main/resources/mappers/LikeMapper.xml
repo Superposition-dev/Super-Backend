@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.like.mapper.LikeMapper">
+    <insert id="likeProductByEmail">
+        INSERT INTO like(post_id, user_id) VALUES(#{productId}, #{email})
+    </insert>
+
+    <select id="getLikeProductsByEmail" parameterType="String" resultType="com.superposition.product.dto.ProductListDto">
+        SELECT p.product_id, p.picture, p.title, p.artist_name
+        FROM product p INNER JOIN `like` l
+            ON p.product_id = l.product_id
+        WHERE l.user_id = #{email};
+    </select>
+
+    <select id="isLike" resultType="boolean">
+        SELECT EXISTS(SELECT product_id, user_id FROM like WHERE product_id = #{productId} AND user_id = #{email})
+    </select>
+
+    <delete id="dislikeProductByEmail">
+        DELETE FROM like WHERE product_id = #{productId} AND user_id = #{email}
+    </delete>
+</mapper>
