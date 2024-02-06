@@ -30,14 +30,8 @@
     </update>
 
     <select id="findByEmail" parameterType="String" resultType="com.superposition.user.domain.entity.User">
-        SELECT email, name, nickname, profile, gender, birth_date, create_at, following
+        SELECT email, name, nickname, profile, gender, birth_date, create_at
         FROM user
         WHERE email = #{email}
     </select>
-
-    <update id="updateFollow">
-        UPDATE user
-        SET following = #{following}
-        WHERE email = #{email}
-    </update>
 </mapper>
