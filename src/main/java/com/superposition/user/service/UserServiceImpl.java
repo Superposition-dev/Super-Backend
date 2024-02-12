@@ -6,6 +6,9 @@ import com.superposition.user.dto.*;
 import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
+import com.superposition.user.jwt.dto.RefreshToken;
+import com.superposition.user.service.login.OAuthLoginService;
+import com.superposition.user.service.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,26 +60,14 @@ public class UserServiceImpl implements UserService{
 
         ResponseUserInfo userInfo = ResponseUserInfo.builder()
                 .email(requestUserInfo.getEmail())
-                .name(requestUserInfo.getName())
                 .nickname(requestUserInfo.getNickname())
                 .profile(requestUserInfo.getProfile())
-                .gender(requestUserInfo.getGender())
-                .birthDate(requestUserInfo.getBirthDate()).build();
+                .isArtist(false).build();
 
         return LoginResponse.builder()
                 .userInfo(userInfo)
                 .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
                 .build();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getUserInfo(String email) {
-        if(StringUtils.hasText(email)){
-            return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
-        } else {
-            throw new EmptyEmailException();
-        }
     }
 
     @Override
@@ -114,7 +105,7 @@ public class UserServiceImpl implements UserService{
                 .nickname(addIdentifier(userInfo.getNickname()))
                 .profile(userInfo.getProfile())
                 .gender(userInfo.getGender())
-                .birthDate(userInfo.getBirthDate()).build();
+                .birthYear(userInfo.getBirthYear()).build();
     }
 
     private String addIdentifier(String originNickName){

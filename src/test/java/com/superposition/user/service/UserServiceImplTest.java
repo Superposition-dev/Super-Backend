@@ -1,6 +1,5 @@
 package com.superposition.user.service;
 
-import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.exception.EmptyEmailException;
@@ -32,13 +31,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class UserServiceImplTest {
     private final UserService userService;
-    private final UserMapper userMapper;
     private RequestUserInfo userInfo;
+    private final MpageService mpageService;
 
     @Autowired
-    UserServiceImplTest(UserService userService, UserMapper userMapper) {
+    UserServiceImplTest(UserService userService, MpageService mpageService) {
         this.userService = userService;
-        this.userMapper = userMapper;
+        this.mpageService = mpageService;
     }
 
     @Sql({"classpath:user.sql"})
@@ -53,7 +52,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void beforeTest(){
-        userInfo = RequestUserInfo.builder().email("test@gamil.com").name("testName").nickname("test").profile("profile").gender(Gender.F).birthDate(new Date(2024,1, 1)).build();
+        userInfo = RequestUserInfo.builder().email("test@gamil.com").name("testName").nickname("test").profile("profile").gender(Gender.F).birthYear(2024).build();
     }
 
     @Test
@@ -86,7 +85,7 @@ class UserServiceImplTest {
         String email = userService.signup(userInfo).getUserInfo().getEmail();
 
         //when
-        ResponseEntity<?> info = userService.getUserInfo(email);
+        ResponseEntity<?> info = mpageService.getUserInfo(email);
 
         //then
         assertThat(info.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -99,7 +98,7 @@ class UserServiceImplTest {
         String email = null;
 
         //when
-        EmptyEmailException e = assertThrows(EmptyEmailException.class, () -> userService.getUserInfo(email));
+        EmptyEmailException e = assertThrows(EmptyEmailException.class, () -> mpageService.getUserInfo(email));
 
         //then
         assertThat(e.getClass()).isEqualTo(EmptyEmailException.class);

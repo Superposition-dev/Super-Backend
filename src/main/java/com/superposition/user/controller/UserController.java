@@ -36,11 +36,6 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/me")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetails user){
-        return userService.getUserInfo(user.getUsername());
-    }
-
     @DeleteMapping
     public void deleteUser(@AuthenticationPrincipal UserDetails user){
         userService.deleteUser(user.getUsername());

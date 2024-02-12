@@ -12,8 +12,6 @@ public interface UserService {
 
     void logout(String email);
 
-    ResponseEntity<?> getUserInfo(String email);
-
     boolean checkNickname(String email);
 
     void deleteUser(String email);

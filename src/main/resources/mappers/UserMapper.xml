@@ -6,12 +6,12 @@
     </select>
 
     <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
-        INSERT INTO user(email, name, nickname, profile, gender, birth_date)
-        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthDate});
+        INSERT INTO user(email, name, nickname, profile, gender, birth_year)
+        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthYear});
     </insert>
 
     <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.ResponseUserInfo">
-        SELECT email, name, nickname, profile, gender, birth_date FROM user WHERE email = #{email}
+        SELECT email, nickname, profile, is_artist FROM user WHERE email = #{email}
     </select>
     
     <select id="isAvailableChange" parameterType="String" resultType="boolean">
