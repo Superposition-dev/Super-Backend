@@ -1,24 +1,21 @@
-package com.superposition.user.service;
+package com.superposition.user.service.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.superposition.user.dto.JwtToken;
-import com.superposition.user.dto.RefreshToken;
+import com.superposition.user.jwt.dto.RefreshToken;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.exception.ParsingException;
 import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class RedisTokenService implements TokenService{
+public class RedisTokenService implements TokenService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 

@@ -1,4 +1,4 @@
-package com.superposition.user.service;
+package com.superposition.user.service.login;
 
 import com.superposition.user.dto.UserInfo;
 import com.superposition.user.exception.ApiCallFailedException;
@@ -14,8 +14,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Random;
 
 @Service
 public class KaKaoLoginService implements OAuthLoginService {

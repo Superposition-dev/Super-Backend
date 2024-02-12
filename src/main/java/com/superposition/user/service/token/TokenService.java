@@ -1,7 +1,6 @@
-package com.superposition.user.service;
+package com.superposition.user.service.token;
 
-import com.superposition.user.dto.JwtToken;
-import com.superposition.user.dto.RefreshToken;
+import com.superposition.user.jwt.dto.RefreshToken;
 
 public interface TokenService {
     public void setToeknValue(RefreshToken refreshToken);

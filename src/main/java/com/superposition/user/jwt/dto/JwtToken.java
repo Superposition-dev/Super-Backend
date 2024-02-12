@@ -1,4 +1,4 @@
-package com.superposition.user.dto;
+package com.superposition.user.jwt.dto;
 
 import lombok.Builder;
 import lombok.Getter;
