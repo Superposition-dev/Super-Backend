@@ -2,9 +2,11 @@ package com.superposition.user.jwt;
 
 import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -23,9 +25,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws IOException, ServletException {
         String jwt = resolveToken(request);
 
-        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
-            Authentication authentication = jwtProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
+                Authentication authentication = jwtProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (HttpClientErrorException he){
+            if(he.getStatusCode() == HttpStatus.UNAUTHORIZED){
+                response.sendError(401, he.getStatusText());
+            } else {
+                response.sendError(400, he.getStatusText());
+            }
         }
 
         filterChain.doFilter(request, response);

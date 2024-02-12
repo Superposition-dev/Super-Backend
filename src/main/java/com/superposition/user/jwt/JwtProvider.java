@@ -1,8 +1,8 @@
 package com.superposition.user.jwt;
 
-import com.superposition.user.dto.JwtToken;
-import com.superposition.user.dto.RefreshToken;
-import com.superposition.user.service.TokenService;
+import com.superposition.user.jwt.dto.JwtToken;
+import com.superposition.user.jwt.dto.RefreshToken;
+import com.superposition.user.service.token.TokenService;
 import com.superposition.utils.Authority;
 import com.superposition.utils.JwtUtils;
 import io.jsonwebtoken.*;
@@ -105,16 +105,16 @@ public class JwtProvider {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error("서명 혹은 구조가 잘못된 JWT");
-            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "구조가 잘못된 토큰입니다.");
         } catch (ExpiredJwtException e) {
             log.error("유효 기간이 만료된 토큰");
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "유효 기간이 만료된 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             log.error("지원하는 형식과 일치하지 않는 토큰");
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "지원하는 형식과 다른 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.error("Claims가 비어있는 토큰");
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "값이 비어있는 토큰입니다.");
         }
     }
 
