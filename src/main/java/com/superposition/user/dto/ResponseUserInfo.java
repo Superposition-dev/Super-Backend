@@ -10,9 +10,7 @@ import java.util.Date;
 @Builder
 public class ResponseUserInfo {
     private String email;
-    private String name;
     private String nickname;
     private String profile;
-    private Gender gender;
-    private Date birthDate;
+    private boolean isArtist;
 }
