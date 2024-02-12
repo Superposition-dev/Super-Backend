@@ -6,6 +6,8 @@ import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,14 +28,20 @@ public class ProductController {
 
     @GetMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(value = "isQr", defaultValue = "false") boolean isQr){
-        return productService.getProductById(productId, isQr);
+    public ResponseProductDetail getProductById(@PathVariable long productId, @RequestParam(value = "isQr", defaultValue = "false") boolean isQr, @AuthenticationPrincipal UserDetails user){
+        return productService.getProductById(productId, isQr, user);
     }
 
-    @PatchMapping("/products/{productId}/like")
+    @PostMapping("/products/{productId}/like")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Payload> likeProduct(@PathVariable long productId, @RequestBody Payload isLike){
-        return ResponseEntity.ok(productService.likeProduct(productId, isLike.getLike()));
+    public void likeProduct(@PathVariable long productId, @AuthenticationPrincipal UserDetails user){
+        productService.likeProduct(productId, user);
+    }
+
+    @PostMapping("/products/{productId}/dislike")
+    @ResponseStatus(HttpStatus.OK)
+    public void dislikeProduct(@PathVariable long productId, @AuthenticationPrincipal UserDetails user){
+        productService.dislikeProduct(productId, user);
     }
 
     @PatchMapping("/products/{productId}/google")

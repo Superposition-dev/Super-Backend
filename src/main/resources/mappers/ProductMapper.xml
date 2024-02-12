@@ -18,16 +18,11 @@
     </select>
 
     <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT p.product_id,
-               p.picture,
-               p.title,
-               a.profile,
-               p.artist_name,
-               a.instagram_id,
-               p.description,
-               p.price
+        SELECT p.product_id, p.picture, p.title,
+               a.profile, p.artist_name, a.instagram_id,
+               p.description, p.price
         FROM product p
-                 INNER JOIN artist a ON p.artist_name = a.name
+        INNER JOIN artist a ON p.artist_name = a.name
         WHERE p.product_id = #{productId}
     </select>
 
@@ -65,18 +60,6 @@
     <update id="addQrView" parameterType="long">
         UPDATE product
         SET qr_view = qr_view + 1
-        WHERE product_id = #{productId}
-    </update>
-
-    <update id="likeProduct" parameterType="long">
-        UPDATE product
-        SET like_count = like_count + 1
-        WHERE product_id = #{productId}
-    </update>
-
-    <update id="disLikeProduct" parameterType="long">
-        UPDATE product
-        SET like_count = like_count - 1
         WHERE product_id = #{productId}
     </update>
 

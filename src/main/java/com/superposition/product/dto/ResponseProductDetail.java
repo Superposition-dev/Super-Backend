@@ -17,4 +17,5 @@ public class ResponseProductDetail {
     private String description;
     private int price;
     private String message;
+    private boolean isLike;
 }
