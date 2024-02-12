@@ -14,5 +14,5 @@ public interface LikeMapper {
 
     boolean isLike(@Param("productId") long productId, @Param("email") String email);
 
-    void disLikeProductByEmail(@Param("productId") long productId, @Param("email") String email);
+    void dislikeProductByEmail(@Param("productId") long productId, @Param("email") String email);
 }
