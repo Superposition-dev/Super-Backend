@@ -19,4 +19,5 @@ public interface ArtistMapper {
     public ArtistInfo getArtistInfoById(@Param("instagramId") String instagramId);
     public void addViewCountById(@Param("instagramId") String instagramId);
     public int getViewCount(@Param("instagramId") String instagramId);
+    public List<ArtistInfo> getArtistsInfoByIds(List<String> instagramIds);
 }
