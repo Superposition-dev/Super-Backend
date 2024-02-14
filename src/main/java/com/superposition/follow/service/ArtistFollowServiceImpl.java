@@ -1,9 +1,9 @@
-package com.superposition.artist.service;
+package com.superposition.follow.service;
 
-import com.superposition.artist.domain.entity.ArtistFollow;
-import com.superposition.artist.domain.mapper.ArtistFollowMapper;
+import com.superposition.follow.domain.entity.ArtistFollow;
+import com.superposition.follow.domain.mapper.ArtistFollowMapper;
 import com.superposition.artist.domain.mapper.ArtistMapper;
-import com.superposition.artist.dto.ArtistFollowDto;
+import com.superposition.follow.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.user.domain.mapper.UserMapper;
 import java.util.Collections;

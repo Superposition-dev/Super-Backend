@@ -1,11 +1,11 @@
-package com.superposition.artist.service;
+package com.superposition.follow.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.superposition.artist.domain.mapper.ArtistFollowMapper;
-import com.superposition.artist.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ArtistInfo;
+import com.superposition.follow.domain.mapper.ArtistFollowMapper;
+import com.superposition.follow.dto.ArtistFollowDto;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.utils.Gender;

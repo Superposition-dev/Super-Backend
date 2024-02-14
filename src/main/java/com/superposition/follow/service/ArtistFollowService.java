@@ -1,6 +1,6 @@
-package com.superposition.artist.service;
+package com.superposition.follow.service;
 
-import com.superposition.artist.dto.ArtistFollowDto;
+import com.superposition.follow.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ArtistInfo;
 import java.util.List;
 
