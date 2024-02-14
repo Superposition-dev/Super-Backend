@@ -146,6 +146,74 @@ class ArtistFollowServiceImplTest {
         assertThat(actual.isEmpty()).isTrue();
     }
 
+    @Test
+    @DisplayName("팔로우 취소 테스트")
+    void test6() {
+        //given
+        User user = saveUser();
+
+        String email = user.getEmail();
+        saveArtistFollow(email, "320_artwork");
+        saveArtistFollow(email, "fantasy_filter_studio");
+        saveArtistFollow(email, "i.ru__ol");
+        ArtistFollowDto dto = ArtistFollowDto.builder()
+                .email(email)
+                .instagramId("i.ru__ol")
+                .build();
+
+        //when
+        artistFollowService.deleteArtistFollow(dto);
+
+        //then
+        List<ArtistInfo> actual = artistFollowService.getFollowArtistsBy(email);
+        assertThat(actual)
+                .hasSize(2)
+                .extracting("instagramId")
+                .containsExactlyInAnyOrder("320_artwork", "fantasy_filter_studio");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 작가 팔로우 취소 테스트")
+    void test7() {
+        // given
+        User user = saveUser();
+
+        String email = user.getEmail();
+        saveArtistFollow(email, "320_artwork");
+        saveArtistFollow(email, "fantasy_filter_studio");
+        saveArtistFollow(email, "i.ru__ol");
+        ArtistFollowDto dto = ArtistFollowDto.builder()
+                .email(email)
+                .instagramId("invalid value")
+                .build();
+
+        // then
+        assertThatThrownBy(() -> artistFollowService.deleteArtistFollow(dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 작가입니다.");
+    }
+
+    @Test
+    @DisplayName("팔로우하지 않은 작가 팔로우 취소 테스트")
+    void test8() {
+        // given
+        User user = saveUser();
+
+        String email = user.getEmail();
+        saveArtistFollow(email, "320_artwork");
+        saveArtistFollow(email, "fantasy_filter_studio");
+        saveArtistFollow(email, "i.ru__ol");
+        ArtistFollowDto dto = ArtistFollowDto.builder()
+                .email(email)
+                .instagramId("leepearl_art")
+                .build();
+
+        // then
+        assertThatThrownBy(() -> artistFollowService.deleteArtistFollow(dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("팔로우하지 않은 작가입니다.");
+    }
+
     private User saveUser() {
         User user = User.builder()
                 .email("test@gamil.com")
