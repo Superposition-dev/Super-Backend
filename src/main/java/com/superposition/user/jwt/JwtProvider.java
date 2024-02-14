@@ -8,9 +8,7 @@ import com.superposition.utils.JwtUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +16,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -26,7 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Log4j2
 @Component
 public class JwtProvider {
     private final Key key;
@@ -54,7 +50,6 @@ public class JwtProvider {
                 .email(email)
                 .grantType(JwtUtils.BEARER_PREFIX)
                 .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(generateRefreshToken(email, now))
                 .build();
     }
@@ -96,26 +91,12 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error("서명 혹은 구조가 잘못된 JWT");
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "구조가 잘못된 토큰입니다.");
-        } catch (ExpiredJwtException e) {
-            log.error("유효 기간이 만료된 토큰");
-            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "유효 기간이 만료된 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.error("지원하는 형식과 일치하지 않는 토큰");
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "지원하는 형식과 다른 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.error("Claims가 비어있는 토큰");
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "값이 비어있는 토큰입니다.");
-        }
+    public boolean validateToken(String token) throws RuntimeException{
+        Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+        return true;
     }
 
     private Claims parseClaims(String accessToken) {
