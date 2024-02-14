@@ -15,4 +15,6 @@ public interface ArtistFollowMapper {
     public boolean isExistFollowBy(ArtistFollowDto dto);
 
     public List<ArtistFollow> findByEmail(@Param("email") String email);
+
+    void deleteBy(ArtistFollowDto dto);
 }

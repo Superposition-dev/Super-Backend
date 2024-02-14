@@ -60,4 +60,19 @@ public class ArtistFollowServiceImpl implements ArtistFollowService {
 
         return artistMapper.getArtistsInfoByIds(followInstagramIds);
     }
+
+    @Override
+    public void deleteArtistFollow(ArtistFollowDto dto) {
+        checkExistsUser(dto.getEmail());
+        checkExistsArtist(dto.getInstagramId());
+        checkNotFollow(dto);
+
+        artistFollowMapper.deleteBy(dto);
+    }
+
+    private void checkNotFollow(ArtistFollowDto dto) {
+        if (!artistFollowMapper.isExistFollowBy(dto)) {
+            throw new IllegalArgumentException("팔로우하지 않은 작가입니다.");
+        }
+    }
 }

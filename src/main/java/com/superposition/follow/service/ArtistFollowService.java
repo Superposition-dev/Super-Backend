@@ -8,4 +8,6 @@ public interface ArtistFollowService {
     void followArtist(ArtistFollowDto dto);
 
     List<ArtistInfo> getFollowArtistsBy(String email);
+
+    void deleteArtistFollow(ArtistFollowDto dto);
 }

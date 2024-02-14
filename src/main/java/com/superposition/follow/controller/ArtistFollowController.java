@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,5 +37,14 @@ public class ArtistFollowController {
                 .instagramId(instagramId)
                 .build();
         artistFollowService.followArtist(dto);
+    }
+
+    @DeleteMapping("/{instagramId}/follow")
+    public void deleteArtistFollow(@AuthenticationPrincipal UserDetails user, @PathVariable String instagramId) {
+        ArtistFollowDto dto = ArtistFollowDto.builder()
+                .email(user.getUsername())
+                .instagramId(instagramId)
+                .build();
+        artistFollowService.deleteArtistFollow(dto);
     }
 }

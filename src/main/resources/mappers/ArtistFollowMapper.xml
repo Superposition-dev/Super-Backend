@@ -22,4 +22,11 @@
         FROM artist_follow
         WHERE email = #{email};
     </select>
+
+    <delete id="deleteBy" parameterType="com.superposition.follow.dto.ArtistFollowDto">
+        DELETE
+        FROM artist_follow
+        WHERE email = #{email}
+          AND instagram_id = #{instagramId};
+    </delete>
 </mapper>
