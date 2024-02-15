@@ -1,13 +1,9 @@
 package com.superposition.artist.controller;
 
-import com.superposition.artist.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
-import com.superposition.artist.service.ArtistFollowService;
 import com.superposition.artist.service.ArtistService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +11,9 @@ import java.util.List;
 @RestController
 public class ArtistController {
     private final ArtistService artistService;
-    private final ArtistFollowService artistFollowService;
 
-    public ArtistController(ArtistService artistService, ArtistFollowService artistFollowService) {
+    public ArtistController(ArtistService artistService) {
         this.artistService = artistService;
-        this.artistFollowService = artistFollowService;
     }
 
     @GetMapping("/about")
@@ -44,15 +38,5 @@ public class ArtistController {
     @ResponseStatus(HttpStatus.OK)
     public void addViewCountByName(@PathVariable String instagramId){
         artistService.addViewCountById(instagramId);
-    }
-
-    @PostMapping("/artist/{instagramId}/follow")
-    @ResponseStatus(HttpStatus.OK)
-    public void followArtist(@AuthenticationPrincipal UserDetails user, @PathVariable String instagramId) {
-        ArtistFollowDto dto = ArtistFollowDto.builder()
-                .email(user.getUsername())
-                .instagramId(instagramId)
-                .build();
-        artistFollowService.followArtist(dto);
     }
 }

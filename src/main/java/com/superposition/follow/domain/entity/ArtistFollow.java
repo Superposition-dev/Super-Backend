@@ -1,4 +1,4 @@
-package com.superposition.artist.domain.entity;
+package com.superposition.follow.domain.entity;
 
 import lombok.Getter;
 
