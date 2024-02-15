@@ -40,7 +40,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductListDto> getLikeProductsByEmail(String email) {
+    public List<Long> getLikeProductsByEmail(String email) {
         return likeMapper.getLikeProductsByEmail(email);
     }
 

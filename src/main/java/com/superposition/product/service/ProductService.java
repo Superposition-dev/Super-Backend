@@ -1,9 +1,6 @@
 package com.superposition.product.service;
 
-import com.superposition.product.dto.Payload;
-import com.superposition.product.dto.ResponseProductDetail;
-import com.superposition.product.dto.ResponseProduct;
-import com.superposition.product.dto.SimpleProduct;
+import com.superposition.product.dto.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -19,4 +16,5 @@ public interface ProductService {
 
     public void orderClickCount(long productId);
     public void addView(long productId);
+    public ResponseProduct getProductInfo(long productId);
 }

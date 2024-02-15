@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.like.service.LikeService;
 import com.superposition.product.dto.ProductListDto;
+import com.superposition.product.dto.ResponseProduct;
+import com.superposition.product.service.ProductService;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.exception.EmptyEmailException;
@@ -20,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class MpageServiceImpl implements MpageService {
     private final UserMapper userMapper;
     private final LikeService likeService;
     private final AmazonS3 awsS3Client;
+    private final ProductService productService;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,9 +50,12 @@ public class MpageServiceImpl implements MpageService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductListDto> getUserLikeProducts(String email) {
+    public List<ResponseProduct> getUserLikeProducts(String email) {
         if(StringUtils.hasText(email)){
-            return likeService.getLikeProductsByEmail(email);
+            List<Long> likeProductIds = likeService.getLikeProductsByEmail(email);
+            return likeProductIds.stream()
+                    .map(productService::getProductInfo)
+                    .collect(Collectors.toList());
         } else {
             throw new ForbiddenException();
         }

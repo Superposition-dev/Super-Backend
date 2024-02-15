@@ -5,11 +5,8 @@
         INSERT INTO `like`(product_id, user_id) VALUES(#{productId}, #{email});
     </insert>
 
-    <select id="getLikeProductsByEmail" parameterType="String" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT p.product_id, p.picture, p.title, p.artist_name
-        FROM product p INNER JOIN `like` l
-            ON p.product_id = l.product_id
-        WHERE l.user_id = #{email};
+    <select id="getLikeProductsByEmail" parameterType="String" resultType="long">
+        SELECT product_id FROM `like` WHERE user_id = #{email};
     </select>
 
     <select id="isLike" resultType="boolean">

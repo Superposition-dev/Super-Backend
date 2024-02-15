@@ -2,6 +2,7 @@ package com.superposition.user.service;
 
 import com.superposition.like.service.LikeService;
 import com.superposition.product.dto.ProductListDto;
+import com.superposition.product.dto.ResponseProduct;
 import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.exception.ForbiddenException;
@@ -77,7 +78,7 @@ class MpageServiceImplTest {
         likeService.likeProduct(1, email);
 
         //when
-        List<ProductListDto> userLikeProducts = mpageService.getUserLikeProducts(email);
+        List<ResponseProduct> userLikeProducts = mpageService.getUserLikeProducts(email);
 
         //then
         assertThat(userLikeProducts.size()).isEqualTo(1);

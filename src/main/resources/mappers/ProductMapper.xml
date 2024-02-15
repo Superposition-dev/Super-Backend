@@ -69,6 +69,10 @@
         WHERE product_id = #{productId}
     </update>
 
+    <select id="getProductInfo" parameterType="long" resultType="com.superposition.product.dto.ProductListDto">
+        SELECT product_id, picture, title, artist_name FROM product WHERE product_id = #{productId}
+    </select>
+
     <select id="getProductsByExhibitionId" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
         SELECT p.product_id,
                p.picture,

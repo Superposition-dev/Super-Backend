@@ -71,17 +71,16 @@ public class ProductServiceImpl implements ProductService {
         productMapper.addBasicView(productId);
     }
 
-    private String addView(long productId, boolean isQr) {
-        if (isQr) {
-            productMapper.addQrView(productId);
-            return "QR 코드가 인정되었습니다.";
-        } else {
-            return "일반 조회입니다.";
-        }
-    }
-
-    private List<ProductListDto> searchByKeyword(String keyword) {
-        return productMapper.getProductsByKeyword(keyword);
+    @Override
+    public ResponseProduct getProductInfo(long productId){
+        String[] tags = getTagsById(productId);
+        ProductListDto productInfo = productMapper.getProductInfo(productId);
+        return ResponseProduct.builder()
+                .productId(productId)
+                .picture(productInfo.getPicture())
+                .tags(tags)
+                .title(productInfo.getTitle())
+                .artist(productInfo.getArtistName()).build();
     }
 
     private List<ResponseProduct> toResponseProducts(List<ProductListDto> products) {
@@ -107,6 +106,19 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return responseProducts;
+    }
+
+    private String addView(long productId, boolean isQr) {
+        if (isQr) {
+            productMapper.addQrView(productId);
+            return "QR 코드가 인정되었습니다.";
+        } else {
+            return "일반 조회입니다.";
+        }
+    }
+
+    private List<ProductListDto> searchByKeyword(String keyword) {
+        return productMapper.getProductsByKeyword(keyword);
     }
 
     private ResponseProductDetail toResponseBuild(long productId, boolean isQr, String email) {
