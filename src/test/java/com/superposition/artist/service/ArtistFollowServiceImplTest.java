@@ -153,7 +153,7 @@ class ArtistFollowServiceImplTest {
                 .nickname("test")
                 .profile("profile")
                 .gender(Gender.F)
-                .birthDate(new Date(2024, 1, 1))
+                .birthYear(2004)
                 .build();
         userMapper.saveUserInfo(user);
         return user;
