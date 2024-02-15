@@ -21,16 +21,12 @@ public class ArtistFollowController {
 
     private final ArtistFollowService artistFollowService;
 
-    // todo
-    // url 변경하기
-    @GetMapping(value = "/users/artist/follow")
+    @GetMapping(value = "/users/me/follow")
     @ResponseStatus(HttpStatus.OK)
     public List<? extends ArtistInfo> getFollowArtists(@AuthenticationPrincipal UserDetails user) {
         return artistFollowService.getFollowArtistsBy(user.getUsername());
     }
 
-    // todo
-    // response status 변경하기
     @PostMapping("/artist/{instagramId}/follow")
     @ResponseStatus(HttpStatus.CREATED)
     public void followArtist(@AuthenticationPrincipal UserDetails user, @PathVariable String instagramId) {
