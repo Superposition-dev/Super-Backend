@@ -1,4 +1,4 @@
-package com.superposition.user.dto;
+package com.superposition.user.jwt.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +9,5 @@ public class JwtToken {
     private String email;
     private String grantType; // Bearer
     private String accessToken;
-    private long accessTokenExpiresIn;
     private RefreshToken refreshToken;
 }

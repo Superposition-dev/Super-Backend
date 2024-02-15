@@ -6,12 +6,21 @@ import com.superposition.user.dto.*;
 import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
+import com.superposition.user.jwt.dto.JwtToken;
+import com.superposition.user.jwt.dto.RefreshToken;
+import com.superposition.user.service.login.OAuthLoginService;
+import com.superposition.user.service.token.TokenService;
+import com.superposition.utils.CookieUtils;
+import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Random;
 
@@ -32,10 +41,13 @@ public class UserServiceImpl implements UserService{
         boolean existUser = userMapper.isExistUserByEmail(userInfo.getEmail());
         if (existUser) {
             ResponseUserInfo userInfoByEmail = userMapper.getUserInfoByEmail(userInfo.getEmail());
-            return ResponseEntity.ok(LoginResponse.builder()
-                    .userInfo(userInfoByEmail)
-                    .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
-                    .build());
+            JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
+                    .body(LoginResponse.builder()
+                        .userInfo(userInfoByEmail)
+                        .accessToken(jwtToken.getAccessToken()).build());
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
         }
@@ -52,36 +64,29 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public LoginResponse signup(RequestUserInfo requestUserInfo) {
+    public ResponseEntity<?> signup(RequestUserInfo requestUserInfo) {
         userMapper.saveUserInfo(toEntity(requestUserInfo));
 
         ResponseUserInfo userInfo = ResponseUserInfo.builder()
                 .email(requestUserInfo.getEmail())
-                .name(requestUserInfo.getName())
                 .nickname(requestUserInfo.getNickname())
                 .profile(requestUserInfo.getProfile())
-                .gender(requestUserInfo.getGender())
-                .birthDate(requestUserInfo.getBirthDate()).build();
+                .isArtist(false).build();
 
-        return LoginResponse.builder()
-                .userInfo(userInfo)
-                .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
-                .build();
-    }
+        JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
 
-    @Override
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getUserInfo(String email) {
-        if(StringUtils.hasText(email)){
-            return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
-        } else {
-            throw new EmptyEmailException();
-        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
+                .body(LoginResponse.builder()
+                        .userInfo(userInfo)
+                        .accessToken(jwtToken.getAccessToken())
+                .build());
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean checkNickname(String email) {
+        if (userMapper.isNullDate(email)) return true;
         return userMapper.isAvailableChange(email);
     }
 
@@ -96,13 +101,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<?> regenerateToken(String email) {
-        if(!StringUtils.hasText(email)) throw new EmptyEmailException();
+    public ResponseEntity<?> regenerateToken(String rt) {
+        if (!StringUtils.hasText(rt)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is blank");
 
         try {
-            RefreshToken refreshToken = tokenService.getTokenValue(
-                    email, RefreshToken.class);
-            return ResponseEntity.ok(jwtProvider.generateJwtToken(refreshToken.getEmail()).getAccessToken());
+            RefreshToken refreshToken = tokenService.getTokenValue(rt, RefreshToken.class);
+            JwtToken jwtToken = jwtProvider.generateJwtToken(refreshToken.getEmail());
+
+            return ResponseEntity.ok().body(jwtToken.getAccessToken());
         } catch (InvalidTokenException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is Expired");
         }
@@ -114,7 +120,7 @@ public class UserServiceImpl implements UserService{
                 .nickname(addIdentifier(userInfo.getNickname()))
                 .profile(userInfo.getProfile())
                 .gender(userInfo.getGender())
-                .birthDate(userInfo.getBirthDate()).build();
+                .birthYear(userInfo.getBirthYear()).build();
     }
 
     private String addIdentifier(String originNickName){
@@ -124,6 +130,20 @@ public class UserServiceImpl implements UserService{
     private int getRandomNum(){
         Random r = new Random();
         return r.nextInt(8888) + 1111;
+    }
+
+    private String setCookie(String refreshToken){
+        ResponseCookie cookie = ResponseCookie
+                .from(CookieUtils.COOKIE_HEADER_NAME, refreshToken)
+                .maxAge(JwtUtils.REFRESH_TOKEN_EXPIRE_TIME)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite(CookieUtils.COOKIE_SAME_SITE)
+                .path(CookieUtils.COOKIE_PATH)
+                .domain(CookieUtils.DOMAIN)
+                .build();
+
+        return cookie.toString();
     }
 
 }

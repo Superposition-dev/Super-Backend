@@ -14,6 +14,6 @@ public class User {
     private String nickname;
     private String profile;
     private Gender gender;
-    private Date birthDate;
+    private int birthYear;
     private Timestamp createAt;
 }

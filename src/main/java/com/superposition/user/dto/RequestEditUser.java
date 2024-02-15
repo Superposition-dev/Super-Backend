@@ -1,16 +1,12 @@
 package com.superposition.user.dto;
 
 import com.superposition.utils.Gender;
-import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
-
 @Getter
-@Builder
-public class ResponseUserInfo {
+public class RequestEditUser {
     private String email;
     private String nickname;
-    private String profile;
-    private boolean isArtist;
+    private String birthYear;
+    private Gender gender;
 }

@@ -38,7 +38,7 @@ public class ProductController {
         productService.likeProduct(productId, user);
     }
 
-    @PostMapping("/products/{productId}/dislike")
+    @DeleteMapping ("/products/{productId}/dislike")
     @ResponseStatus(HttpStatus.OK)
     public void dislikeProduct(@PathVariable long productId, @AuthenticationPrincipal UserDetails user){
         productService.dislikeProduct(productId, user);

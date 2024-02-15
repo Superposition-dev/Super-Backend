@@ -1,6 +1,7 @@
 package com.superposition.user.domain.mapper;
 
 import com.superposition.user.domain.entity.User;
+import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.dto.ResponseUserInfo;
 import java.util.Optional;
 import java.util.Set;
@@ -15,9 +16,13 @@ public interface UserMapper {
 
     ResponseUserInfo getUserInfoByEmail(@Param("email") String email);
 
+    boolean isNullDate(@Param("email") String email);
+
     boolean isAvailableChange(@Param("email") String email);
 
     void updateUserProfile(@Param("email") String email, @Param("profile") String profile);
+
+    void updateUserInfo(RequestEditUser userInfo);
 
     void deleteUserByEmail(@Param("email") String email);
 

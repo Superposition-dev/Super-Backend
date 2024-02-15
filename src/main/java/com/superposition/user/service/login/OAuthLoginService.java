@@ -1,4 +1,4 @@
-package com.superposition.user.service;
+package com.superposition.user.service.login;
 
 import com.superposition.user.dto.UserInfo;
 

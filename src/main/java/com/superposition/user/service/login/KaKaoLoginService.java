@@ -1,9 +1,12 @@
-package com.superposition.user.service;
+package com.superposition.user.service.login;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.superposition.user.dto.UserInfo;
 import com.superposition.user.exception.ApiCallFailedException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.exception.ParsingException;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,25 +18,34 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Random;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class KaKaoLoginService implements OAuthLoginService {
-    private final String KAKAO_AUTH_URI = "https://kauth.kakao.com/oauth/token";
-    private final String KAKAO_PROFILE_URI = "https://kapi.kakao.com/v2/user/me";
-
+    @Value("${spring.security.oauth2.client.registration.kakao-auth-uri}")
+    private String KAKAO_AUTH_URI;
+    @Value("${spring.security.oauth2.client.registration.kakao_profile_uri}")
+    private String KAKAO_PROFILE_URI;
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String KAKAO_CLIENT_SECRET;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String KAKAO_REDIRECT_URL;
+    @Value("${naver.objectStorage.bucketName}")
+    private String bucketName;
+
+    private final AmazonS3 awsS3Client;
 
     @Override
-    public String getAccessTokenByCode(String code){
-        if(code.isBlank()) throw new InvalidTokenException();
+    public String getAccessTokenByCode(String code) {
+        if (code.isBlank()) throw new InvalidTokenException();
 
-        try{
+        try {
             //헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -52,22 +64,22 @@ public class KaKaoLoginService implements OAuthLoginService {
             //위에 데이터를 http로 변환하여 카카오 주소로 토큰 요청
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
-                                                    KAKAO_AUTH_URI,
-                                                    HttpMethod.POST,
-                                                    httpEntity,
-                                                    String.class);
+                    KAKAO_AUTH_URI,
+                    HttpMethod.POST,
+                    httpEntity,
+                    String.class);
 
             //응답 데이터 중 토큰 획득
             return getTokenFromResponse(response.getBody());
         } catch (HttpClientErrorException he) {
             throw new InvalidTokenException();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ApiCallFailedException();
         }
     }
 
     @Override
-    public UserInfo getUserInfoByToken(String accessToken){
+    public UserInfo getUserInfoByToken(String accessToken) {
         try {
             //헤더 설정
             HttpHeaders headers = new HttpHeaders();
@@ -87,7 +99,7 @@ public class KaKaoLoginService implements OAuthLoginService {
             return jsonToDTO(response.getBody());
         } catch (HttpClientErrorException he) {
             throw new InvalidTokenException();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ApiCallFailedException();
         }
     }
@@ -102,7 +114,7 @@ public class KaKaoLoginService implements OAuthLoginService {
         }
     }
 
-    private UserInfo jsonToDTO(String response){
+    private UserInfo jsonToDTO(String response) {
         JSONParser jsonParser = new JSONParser();
         try {
             JSONObject responseObj = (JSONObject) jsonParser.parse(response);
@@ -113,12 +125,33 @@ public class KaKaoLoginService implements OAuthLoginService {
             String nickname = String.valueOf(profile.get("nickname"));
             String imageUrl = String.valueOf(profile.get("profile_image_url"));
 
+            String profileImage = uploadImageToStorage(imageUrl);
+
             return UserInfo.builder().
                     email(email).
                     nickname(nickname).
-                    profile(imageUrl).build();
+                    profile(profileImage).build();
         } catch (ParseException e) {
             throw new ParsingException();
         }
+    }
+
+    private String uploadImageToStorage(String imageUrl) {
+        String extension = imageUrl.substring(imageUrl.length() - 4);
+        String imageName = setImageName(extension);
+
+        try (InputStream in = URI.create(imageUrl).toURL().openStream()) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/jpeg");
+
+            awsS3Client.putObject(bucketName, imageName, in, metadata);
+            return imageName;
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 업로드 중 에러");
+        }
+    }
+
+    private String setImageName(String extension){
+        return UUID.randomUUID() + extension;
     }
 }

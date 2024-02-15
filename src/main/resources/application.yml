@@ -56,6 +56,8 @@ spring:
             client-id: #ID
             client-secret: #시크릿키
             redirect-uri: http://localhost:3000/login/kakao
+          kakao-auth-uri: https://kauth.kakao.com/oauth/token
+          kakao_profile_uri: https://kapi.kakao.com/v2/user/me
 
 #Swagger
   mvc:
@@ -80,3 +82,11 @@ mybatis:
 cors:
   pathPattern: /**
   allowedOrigins: https://www.spp-art.com
+#Naver Object Storage
+naver:
+  objectStorage:
+    endpoint: https://kr.object.ncloudstorage.com
+    regionName: kr-standard
+    accessKey: #액세스 키
+    secretKey: #시크릿 키
+    bucketName: superposition-bucket
