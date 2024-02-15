@@ -1,11 +1,10 @@
 package com.superposition.user.domain.entity;
 
 import com.superposition.utils.Gender;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.sql.Timestamp;
 import java.util.Date;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -17,5 +16,4 @@ public class User {
     private Gender gender;
     private int birthYear;
     private Timestamp createAt;
-    private Timestamp updateAt;
 }
