@@ -42,7 +42,7 @@ class LikeServiceTest {
                 .name("test")
                 .nickname("test")
                 .gender(Gender.F)
-                .birthDate(new Date(2004, 02, 27))
+                .birthYear(2004)
                 .profile("testProfile").build();
 
         userService.signup(user);
