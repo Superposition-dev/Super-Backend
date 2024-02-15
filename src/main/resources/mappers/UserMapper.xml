@@ -14,6 +14,12 @@
         SELECT email, nickname, profile, is_artist FROM `user` WHERE email = #{email}
     </select>
     
+    <select id="isNullDate" parameterType="String" resultType="boolean">
+        SELECT EXISTS(
+        SELECT nickname_update_at FROM `user`
+        WHERE nickname_update_at IS NULL AND email = #{email});
+    </select>
+    
     <select id="isAvailableChange" parameterType="String" resultType="boolean">
         SELECT EXISTS(
         SELECT * FROM `user`
@@ -23,6 +29,10 @@
 
     <update id="updateUserProfile" parameterType="String">
         UPDATE `user` SET profile = #{profile} WHERE email = #{email}
+    </update>
+
+    <update id="updateUserInfo" parameterType="com.superposition.user.dto.RequestEditUser">
+        UPDATE `user` SET nickname = #{nickname}, birth_year = #{birthYear}, gender = #{gender}, nickname_update_at = NOW() WHERE email = #{email}
     </update>
 
     <update id="deleteUserByEmail" parameterType="String">

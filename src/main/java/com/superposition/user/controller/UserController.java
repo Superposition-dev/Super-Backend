@@ -51,9 +51,4 @@ public class UserController {
     public ResponseEntity<?> regenerateToken(@CookieValue("Refresh_Token") String rt) {
         return userService.regenerateToken(rt);
     }
-
-    @GetMapping("/edit/profile")
-    public void updateUserProfile(MultipartFile file){
-        //프로필 이미지 수정
-    }
 }
