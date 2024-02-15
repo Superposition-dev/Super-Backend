@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.like.service.LikeService;
+import com.superposition.product.dto.ProductListDto;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.exception.EmptyEmailException;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,28 +45,30 @@ public class MpageServiceImpl implements MpageService {
 
     @Override
     @Transactional(readOnly = true)
-    public void getUserLikeProducts(String email) {
+    public List<ProductListDto> getUserLikeProducts(String email) {
         if(StringUtils.hasText(email)){
-            likeService.getLikeProductsByEmail(email);
+            return likeService.getLikeProductsByEmail(email);
         } else {
-            throw new EmptyEmailException();
+            throw new ForbiddenException();
         }
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> editUserProfile(String currentUser, MultipartFile file) {
-        String profile = uploadProfileToStorage(file);
-        userMapper.updateUserProfile(currentUser, profile);
-        return ResponseEntity.ok("");
+    public void editUserProfile(String currentUser, MultipartFile file) {
+        if (userMapper.isExistUserByEmail(currentUser)){
+            String profile = uploadProfileToStorage(file);
+            userMapper.updateUserProfile(currentUser, profile);
+        } else {
+            throw new ForbiddenException();
+        }
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> editUserInfo(String currentUser, RequestEditUser userInfo) {
+    public void editUserInfo(String currentUser, RequestEditUser userInfo) {
         if(currentUser.equals(userInfo.getEmail())){
             userMapper.updateUserInfo(userInfo);
-            return ResponseEntity.ok("Success Update");
         } else {
             throw new ForbiddenException();
         }

@@ -1,15 +1,18 @@
 package com.superposition.user.service;
 
+import com.superposition.product.dto.ProductListDto;
 import com.superposition.user.dto.RequestEditUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface MpageService {
     ResponseEntity<?> getUserInfo(String email);
 
-    void getUserLikeProducts(String email);
+    List<ProductListDto> getUserLikeProducts(String email);
 
-    ResponseEntity<?> editUserProfile(String currentUser, MultipartFile file);
+    void editUserProfile(String currentUser, MultipartFile file);
 
-    ResponseEntity<?> editUserInfo(String currentUser, RequestEditUser userInfo);
+    void editUserInfo(String currentUser, RequestEditUser userInfo);
 }
