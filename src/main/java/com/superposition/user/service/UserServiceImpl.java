@@ -10,6 +10,7 @@ import com.superposition.user.jwt.dto.JwtToken;
 import com.superposition.user.jwt.dto.RefreshToken;
 import com.superposition.user.service.login.OAuthLoginService;
 import com.superposition.user.service.token.TokenService;
+import com.superposition.utils.CookieUtils;
 import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -133,13 +134,13 @@ public class UserServiceImpl implements UserService{
 
     private String setCookie(String refreshToken){
         ResponseCookie cookie = ResponseCookie
-                .from("Refresh_Token", refreshToken)
+                .from(CookieUtils.COOKIE_HEADER_NAME, refreshToken)
                 .maxAge(JwtUtils.REFRESH_TOKEN_EXPIRE_TIME)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
-                .path("/")
-                .domain("spp-art.com")
+                .sameSite(CookieUtils.COOKIE_SAME_SITE)
+                .path(CookieUtils.COOKIE_PATH)
+                .domain(CookieUtils.DOMAIN)
                 .build();
 
         return cookie.toString();
