@@ -1,17 +1,16 @@
 package com.superposition.user.controller;
 
-import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -21,12 +20,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<LoginResponse> signup(@RequestBody @Valid RequestUserInfo userInfo){
-        return ResponseEntity.ok(userService.signup(userInfo));
+    public ResponseEntity<?> signup(@RequestBody @Valid RequestUserInfo userInfo){
+        return userService.signup(userInfo);
     }
 
     @GetMapping(value = "/login/kakao")
     public ResponseEntity<?> kakaoLogin(@RequestParam String code){
+        System.out.println("code = " + code);
         return userService.loginByKakao(code);
     }
 
@@ -48,8 +48,12 @@ public class UserController {
     }
 
     @GetMapping(value = "/regenerateToken")
-    public ResponseEntity<?> regenerateToken(@AuthenticationPrincipal UserDetails accessToken) {
-        return userService.regenerateToken(
-                SecurityContextHolder.getContext().getAuthentication().getName());
+    public ResponseEntity<?> regenerateToken(@CookieValue("Refresh_Token") String rt) {
+        return userService.regenerateToken(rt);
+    }
+
+    @GetMapping("/edit/profile")
+    public void updateUserProfile(MultipartFile file){
+        //프로필 이미지 수정
     }
 }

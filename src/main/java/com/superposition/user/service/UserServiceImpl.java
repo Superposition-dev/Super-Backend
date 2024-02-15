@@ -6,11 +6,15 @@ import com.superposition.user.dto.*;
 import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
+import com.superposition.user.jwt.dto.JwtToken;
 import com.superposition.user.jwt.dto.RefreshToken;
 import com.superposition.user.service.login.OAuthLoginService;
 import com.superposition.user.service.token.TokenService;
+import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +39,13 @@ public class UserServiceImpl implements UserService{
         boolean existUser = userMapper.isExistUserByEmail(userInfo.getEmail());
         if (existUser) {
             ResponseUserInfo userInfoByEmail = userMapper.getUserInfoByEmail(userInfo.getEmail());
-            return ResponseEntity.ok(LoginResponse.builder()
-                    .userInfo(userInfoByEmail)
-                    .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
-                    .build());
+            JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
+                    .body(LoginResponse.builder()
+                        .userInfo(userInfoByEmail)
+                        .accessToken(jwtToken.getAccessToken()).build());
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
         }
@@ -55,7 +62,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public LoginResponse signup(RequestUserInfo requestUserInfo) {
+    public ResponseEntity<?> signup(RequestUserInfo requestUserInfo) {
         userMapper.saveUserInfo(toEntity(requestUserInfo));
 
         ResponseUserInfo userInfo = ResponseUserInfo.builder()
@@ -64,10 +71,14 @@ public class UserServiceImpl implements UserService{
                 .profile(requestUserInfo.getProfile())
                 .isArtist(false).build();
 
-        return LoginResponse.builder()
-                .userInfo(userInfo)
-                .accessToken(jwtProvider.generateJwtToken(userInfo.getEmail()).getAccessToken())
-                .build();
+        JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
+                .body(LoginResponse.builder()
+                        .userInfo(userInfo)
+                        .accessToken(jwtToken.getAccessToken())
+                .build());
     }
 
     @Override
@@ -87,13 +98,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<?> regenerateToken(String email) {
-        if(!StringUtils.hasText(email)) throw new EmptyEmailException();
-
+    public ResponseEntity<?> regenerateToken(String rt) {
         try {
-            RefreshToken refreshToken = tokenService.getTokenValue(
-                    email, RefreshToken.class);
-            return ResponseEntity.ok(jwtProvider.generateJwtToken(refreshToken.getEmail()).getAccessToken());
+            RefreshToken refreshToken = tokenService.getTokenValue(rt, RefreshToken.class);
+            JwtToken jwtToken = jwtProvider.generateJwtToken(refreshToken.getEmail());
+
+            return ResponseEntity.ok().body(jwtToken.getAccessToken());
         } catch (InvalidTokenException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is Expired");
         }
@@ -115,6 +125,20 @@ public class UserServiceImpl implements UserService{
     private int getRandomNum(){
         Random r = new Random();
         return r.nextInt(8888) + 1111;
+    }
+
+    private String setCookie(String refreshToken){
+        ResponseCookie cookie = ResponseCookie
+                .from("Refresh_Token", refreshToken)
+                .maxAge(JwtUtils.REFRESH_TOKEN_EXPIRE_TIME)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .domain("spp-art.com")
+                .build();
+
+        return cookie.toString();
     }
 
 }

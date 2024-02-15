@@ -3,10 +3,11 @@ package com.superposition.user.service;
 import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface UserService {
-    LoginResponse signup(RequestUserInfo userInfo);
+    ResponseEntity<?> signup(RequestUserInfo userInfo);
 
     ResponseEntity<?> loginByKakao(String code);
 
@@ -16,5 +17,5 @@ public interface UserService {
 
     void deleteUser(String email);
 
-    ResponseEntity<?> regenerateToken(String email);
+    ResponseEntity<?> regenerateToken(String refreshToken);
 }
