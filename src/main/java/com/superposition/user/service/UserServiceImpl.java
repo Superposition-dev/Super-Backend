@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public boolean checkNickname(String email) {
+        if (userMapper.isNullDate(email)) return true;
         return userMapper.isAvailableChange(email);
     }
 
