@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Random;
 
@@ -99,6 +100,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public ResponseEntity<?> regenerateToken(String rt) {
+        if (!StringUtils.hasText(rt)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is blank");
+
         try {
             RefreshToken refreshToken = tokenService.getTokenValue(rt, RefreshToken.class);
             JwtToken jwtToken = jwtProvider.generateJwtToken(refreshToken.getEmail());

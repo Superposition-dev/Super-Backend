@@ -3,6 +3,7 @@ package com.superposition.user.service;
 import com.superposition.like.service.LikeService;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.exception.EmptyEmailException;
+import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,10 @@ public class MpageServiceImpl implements MpageService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<?> getUserInfo(String email) {
-        if(StringUtils.hasText(email)){
+        if(StringUtils.hasText(email) && userMapper.isExistUserByEmail(email)){
             return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
         } else {
-            throw new EmptyEmailException();
+            throw new ForbiddenException();
         }
     }
 
