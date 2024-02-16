@@ -1,10 +1,12 @@
 package com.superposition.like.service;
 
+import com.superposition.like.exception.DuplicationException;
 import com.superposition.like.mapper.LikeMapper;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.ProductListDto;
 import com.superposition.product.exception.NoExistProductException;
 import com.superposition.product.service.ProductService;
+import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,11 @@ public class LikeServiceImpl implements LikeService {
     public void likeProduct(long productId, String email) {
         productCheck(productId);
 
-        likeMapper.likeProductByEmail(productId, email);
+        if (!isLike(productId, email)){
+            likeMapper.likeProductByEmail(productId, email);
+        } else {
+            throw new DuplicationException();
+        }
     }
 
     @Override
@@ -50,7 +56,8 @@ public class LikeServiceImpl implements LikeService {
         return likeMapper.isLike(productId, email);
     }
 
-    private void productCheck(long productId){
+    @Transactional(readOnly = true)
+    public void productCheck(long productId){
         if (!productMapper.isExistsProduct(productId)) throw new NoExistProductException("존재하지 않는 게시물입니다.");
     }
 }
