@@ -1,7 +1,9 @@
 package com.superposition.user.service.login;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.user.dto.UserInfo;
 import com.superposition.user.exception.ApiCallFailedException;
 import com.superposition.user.exception.InvalidTokenException;
@@ -144,7 +146,9 @@ public class KaKaoLoginService implements OAuthLoginService {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
 
-            awsS3Client.putObject(bucketName, imageName, in, metadata);
+            awsS3Client.putObject(
+                    new PutObjectRequest(bucketName, imageName, in, metadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
             return imageName;
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드 중 에러");

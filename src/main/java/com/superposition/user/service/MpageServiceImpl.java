@@ -1,15 +1,14 @@
 package com.superposition.user.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.like.service.LikeService;
-import com.superposition.product.dto.ProductListDto;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.service.ProductService;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.RequestEditUser;
-import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -97,8 +95,8 @@ public class MpageServiceImpl implements MpageService {
 
             awsS3Client.putObject(new PutObjectRequest(
                     bucketName, profile,
-                    new ByteArrayInputStream(fileData), data));
-
+                    new ByteArrayInputStream(fileData), data)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
             return profile;
         } catch (IOException e) {
             throw new RuntimeException(e);
