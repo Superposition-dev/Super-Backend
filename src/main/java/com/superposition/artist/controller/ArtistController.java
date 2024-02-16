@@ -5,9 +5,8 @@ import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
 import com.superposition.artist.service.ArtistFollowService;
 import com.superposition.artist.service.ArtistService;
+import com.superposition.user.dto.CurrentUser;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,9 +47,9 @@ public class ArtistController {
 
     @PostMapping("/artist/{instagramId}/follow")
     @ResponseStatus(HttpStatus.OK)
-    public void followArtist(@AuthenticationPrincipal UserDetails user, @PathVariable String instagramId) {
+    public void followArtist(@CurrentUser String email, @PathVariable String instagramId) {
         ArtistFollowDto dto = ArtistFollowDto.builder()
-                .email(user.getUsername())
+                .email(email)
                 .instagramId(instagramId)
                 .build();
         artistFollowService.followArtist(dto);

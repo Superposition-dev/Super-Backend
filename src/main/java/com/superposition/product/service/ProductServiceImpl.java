@@ -4,7 +4,6 @@ import com.superposition.like.service.LikeService;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.user.exception.ForbiddenException;
 import com.superposition.utils.exception.NoSearchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,21 +43,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void likeProduct(long productId, UserDetails user) {
-        if (user != null){
-            likeService.likeProduct(productId, user.getUsername());
-        } else {
-            throw new ForbiddenException();
-        }
+    public void likeProduct(long productId, String email) {
+        likeService.likeProduct(productId, email);
     }
 
     @Override
-    public void dislikeProduct(long productId, UserDetails user) {
-        if (user != null){
-            likeService.dislikeProduct(productId, user.getUsername());
-        } else {
-            throw new ForbiddenException();
-        }
+    public void dislikeProduct(long productId, String email) {
+        likeService.dislikeProduct(productId, email);
     }
 
     @Override
