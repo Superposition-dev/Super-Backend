@@ -30,7 +30,6 @@ public class UserController {
 
     @GetMapping(value = "/login/kakao")
     public ResponseEntity<?> kakaoLogin(@RequestParam String code){
-        System.out.println("code = " + code);
         return userService.loginByKakao(code);
     }
 
