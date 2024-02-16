@@ -30,7 +30,7 @@ public class MpageController {
 
     @PutMapping ("/edit")
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserInfo(UserDetails user, RequestEditUser userInfo){
+    public void updateUserInfo(@AuthenticationPrincipal UserDetails user, RequestEditUser userInfo){
         mpageService.editUserInfo(user.getUsername(), userInfo);
     }
 

@@ -34,9 +34,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserDetails user){
+    @ResponseStatus(HttpStatus.OK)
+    public void logout(@AuthenticationPrincipal UserDetails user){
         userService.logout(user.getUsername());
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping
