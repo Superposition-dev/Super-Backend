@@ -13,7 +13,7 @@ public interface MpageService {
 
     List<ResponseProduct> getUserLikeProducts(String email);
 
-    void editUserProfile(String currentUser, MultipartFile file);
+    String editUserProfile(String currentUser, MultipartFile file);
 
     void editUserInfo(String currentUser, RequestEditUser userInfo);
 }

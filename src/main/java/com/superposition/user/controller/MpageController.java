@@ -5,6 +5,7 @@ import com.superposition.user.service.MpageService;
 import com.superposition.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,9 +35,9 @@ public class MpageController {
         mpageService.editUserInfo(user.getUsername(), userInfo);
     }
 
-    @PatchMapping ("/edit/profile")
+    @PatchMapping (value = "/edit/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserProfile(@AuthenticationPrincipal UserDetails user, MultipartFile file){
-        mpageService.editUserProfile(user.getUsername(), file);
+    public String updateUserProfile(@AuthenticationPrincipal UserDetails user, @RequestBody MultipartFile file){
+        return mpageService.editUserProfile(user.getUsername(), file);
     }
 }

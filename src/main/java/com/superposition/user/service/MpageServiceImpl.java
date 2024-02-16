@@ -61,10 +61,11 @@ public class MpageServiceImpl implements MpageService {
 
     @Override
     @Transactional
-    public void editUserProfile(String currentUser, MultipartFile file) {
+    public String editUserProfile(String currentUser, MultipartFile file) {
         if (userMapper.isExistUserByEmail(currentUser)){
             String profile = uploadProfileToStorage(file);
             userMapper.updateUserProfile(currentUser, profile);
+            return profile;
         } else {
             throw new ForbiddenException();
         }
