@@ -2,6 +2,7 @@ package com.superposition.user.resolver;
 
 import com.superposition.user.dto.CurrentUser;
 import com.superposition.user.exception.EmptyEmailException;
+import com.superposition.user.exception.ForbiddenException;
 import jdk.jfr.Unsigned;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,7 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        if (email == null) throw new EmptyEmailException();
+        if (email == null) throw new ForbiddenException();
         return email;
     }
 }
