@@ -30,7 +30,7 @@ public interface ProductMapper {
 
     public void orderClickCount(@Param("productId") long productId);
 
-    public int getLikeCount(@Param("productId") long productId);
+    public ProductListDto getProductInfo(@Param("productId") long productId);
 
     public List<ProductDto> getProductsByExhibitionId(@Param("exhibitionId") long exhibitionId);
 }

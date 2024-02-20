@@ -9,7 +9,7 @@ public interface LikeService {
 
     void dislikeProduct(long productId, String user);
 
-    List<ProductListDto> getLikeProductsByEmail(String email);
+    List<Long> getLikeProductsByEmail(String email);
 
     boolean isLike(long productId, String email);
 }

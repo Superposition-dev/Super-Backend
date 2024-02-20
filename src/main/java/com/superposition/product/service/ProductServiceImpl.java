@@ -4,7 +4,6 @@ import com.superposition.like.service.LikeService;
 import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.*;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.user.exception.ForbiddenException;
 import com.superposition.utils.exception.NoSearchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,21 +43,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void likeProduct(long productId, UserDetails user) {
-        if (user != null){
-            likeService.likeProduct(productId, user.getUsername());
-        } else {
-            throw new ForbiddenException();
-        }
+    public void likeProduct(long productId, String email) {
+        likeService.likeProduct(productId, email);
     }
 
     @Override
-    public void dislikeProduct(long productId, UserDetails user) {
-        if (user != null){
-            likeService.dislikeProduct(productId, user.getUsername());
-        } else {
-            throw new ForbiddenException();
-        }
+    public void dislikeProduct(long productId, String email) {
+        likeService.dislikeProduct(productId, email);
     }
 
     @Override
@@ -71,17 +62,16 @@ public class ProductServiceImpl implements ProductService {
         productMapper.addBasicView(productId);
     }
 
-    private String addView(long productId, boolean isQr) {
-        if (isQr) {
-            productMapper.addQrView(productId);
-            return "QR 코드가 인정되었습니다.";
-        } else {
-            return "일반 조회입니다.";
-        }
-    }
-
-    private List<ProductListDto> searchByKeyword(String keyword) {
-        return productMapper.getProductsByKeyword(keyword);
+    @Override
+    public ResponseProduct getProductInfo(long productId){
+        String[] tags = getTagsById(productId);
+        ProductListDto productInfo = productMapper.getProductInfo(productId);
+        return ResponseProduct.builder()
+                .productId(productId)
+                .picture(productInfo.getPicture())
+                .tags(tags)
+                .title(productInfo.getTitle())
+                .artist(productInfo.getArtistName()).build();
     }
 
     private List<ResponseProduct> toResponseProducts(List<ProductListDto> products) {
@@ -107,6 +97,19 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return responseProducts;
+    }
+
+    private String addView(long productId, boolean isQr) {
+        if (isQr) {
+            productMapper.addQrView(productId);
+            return "QR 코드가 인정되었습니다.";
+        } else {
+            return "일반 조회입니다.";
+        }
+    }
+
+    private List<ProductListDto> searchByKeyword(String keyword) {
+        return productMapper.getProductsByKeyword(keyword);
     }
 
     private ResponseProductDetail toResponseBuild(long productId, boolean isQr, String email) {

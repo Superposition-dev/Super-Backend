@@ -47,7 +47,8 @@ public class UserServiceImpl implements UserService{
                     .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
                     .body(LoginResponse.builder()
                         .userInfo(userInfoByEmail)
-                        .accessToken(jwtToken.getAccessToken()).build());
+                        .accessToken(jwtToken.getAccessToken())
+                        .message("success").build());
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
         }
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService{
                 .body(LoginResponse.builder()
                         .userInfo(userInfo)
                         .accessToken(jwtToken.getAccessToken())
-                .build());
+                        .message("success").build());
     }
 
     @Override

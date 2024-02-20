@@ -1,12 +1,14 @@
 package com.superposition.user.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.superposition.like.service.LikeService;
+import com.superposition.product.dto.ResponseProduct;
+import com.superposition.product.service.ProductService;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.RequestEditUser;
-import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class MpageServiceImpl implements MpageService {
     private final UserMapper userMapper;
     private final LikeService likeService;
     private final AmazonS3 awsS3Client;
+    private final ProductService productService;
 
     @Override
     @Transactional(readOnly = true)
@@ -43,28 +48,34 @@ public class MpageServiceImpl implements MpageService {
 
     @Override
     @Transactional(readOnly = true)
-    public void getUserLikeProducts(String email) {
+    public List<ResponseProduct> getUserLikeProducts(String email) {
         if(StringUtils.hasText(email)){
-            likeService.getLikeProductsByEmail(email);
+            List<Long> likeProductIds = likeService.getLikeProductsByEmail(email);
+            return likeProductIds.stream()
+                    .map(productService::getProductInfo)
+                    .collect(Collectors.toList());
         } else {
-            throw new EmptyEmailException();
+            throw new ForbiddenException();
         }
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> editUserProfile(String currentUser, MultipartFile file) {
-        String profile = uploadProfileToStorage(file);
-        userMapper.updateUserProfile(currentUser, profile);
-        return ResponseEntity.ok("");
+    public String editUserProfile(String currentUser, MultipartFile file) {
+        if (userMapper.isExistUserByEmail(currentUser)){
+            String profile = uploadProfileToStorage(file);
+            userMapper.updateUserProfile(currentUser, profile);
+            return profile;
+        } else {
+            throw new ForbiddenException();
+        }
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> editUserInfo(String currentUser, RequestEditUser userInfo) {
+    public void editUserInfo(String currentUser, RequestEditUser userInfo) {
         if(currentUser.equals(userInfo.getEmail())){
             userMapper.updateUserInfo(userInfo);
-            return ResponseEntity.ok("Success Update");
         } else {
             throw new ForbiddenException();
         }
@@ -85,8 +96,8 @@ public class MpageServiceImpl implements MpageService {
 
             awsS3Client.putObject(new PutObjectRequest(
                     bucketName, profile,
-                    new ByteArrayInputStream(fileData), data));
-
+                    new ByteArrayInputStream(fileData), data)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
             return profile;
         } catch (IOException e) {
             throw new RuntimeException(e);

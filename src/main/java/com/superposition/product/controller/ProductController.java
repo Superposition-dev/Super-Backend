@@ -1,11 +1,10 @@
 package com.superposition.product.controller;
 
-import com.superposition.product.dto.Payload;
 import com.superposition.product.dto.ResponseProductDetail;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.service.ProductService;
+import com.superposition.user.dto.CurrentUser;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -34,14 +33,14 @@ public class ProductController {
 
     @PostMapping("/products/{productId}/like")
     @ResponseStatus(HttpStatus.OK)
-    public void likeProduct(@PathVariable long productId, @AuthenticationPrincipal UserDetails user){
-        productService.likeProduct(productId, user);
+    public void likeProduct(@PathVariable long productId, @CurrentUser String email){
+        productService.likeProduct(productId, email);
     }
 
     @DeleteMapping ("/products/{productId}/dislike")
     @ResponseStatus(HttpStatus.OK)
-    public void dislikeProduct(@PathVariable long productId, @AuthenticationPrincipal UserDetails user){
-        productService.dislikeProduct(productId, user);
+    public void dislikeProduct(@PathVariable long productId, @CurrentUser String email){
+        productService.dislikeProduct(productId, email);
     }
 
     @PatchMapping("/products/{productId}/google")
