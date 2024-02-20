@@ -1,9 +1,7 @@
 package com.superposition.artist.controller;
 
-import com.superposition.artist.dto.ArtistFollowDto;
 import com.superposition.artist.dto.ResponseArtistDetail;
 import com.superposition.artist.dto.ResponseDisplayArtist;
-import com.superposition.artist.service.ArtistFollowService;
 import com.superposition.artist.service.ArtistService;
 import com.superposition.user.dto.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -14,11 +12,9 @@ import java.util.List;
 @RestController
 public class ArtistController {
     private final ArtistService artistService;
-    private final ArtistFollowService artistFollowService;
 
-    public ArtistController(ArtistService artistService, ArtistFollowService artistFollowService) {
+    public ArtistController(ArtistService artistService) {
         this.artistService = artistService;
-        this.artistFollowService = artistFollowService;
     }
 
     @GetMapping("/about")
@@ -44,7 +40,6 @@ public class ArtistController {
     public void addViewCountByName(@PathVariable String instagramId){
         artistService.addViewCountById(instagramId);
     }
-
     @PostMapping("/artist/{instagramId}/follow")
     @ResponseStatus(HttpStatus.OK)
     public void followArtist(@CurrentUser String email, @PathVariable String instagramId) {

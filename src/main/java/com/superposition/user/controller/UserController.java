@@ -3,9 +3,9 @@ package com.superposition.user.controller;
 import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.artist.service.ArtistFollowService;
 import com.superposition.user.dto.CurrentUser;
+import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.service.UserService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final ArtistFollowService artistFollowService;
 
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid RequestUserInfo userInfo){
@@ -51,7 +50,6 @@ public class UserController {
     public ResponseEntity<?> regenerateToken(@CookieValue("Refresh_Token") String rt) {
         return userService.regenerateToken(rt);
     }
-
     @GetMapping(value = "/artist/follow")
     @ResponseStatus(HttpStatus.OK)
     public List<? extends ArtistInfo> getFollowArtists(@CurrentUser String email) {

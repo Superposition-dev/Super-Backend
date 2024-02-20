@@ -1,4 +1,4 @@
-package com.superposition.artist.dto;
+package com.superposition.follow.dto;
 
 import lombok.Builder;
 import lombok.Getter;
