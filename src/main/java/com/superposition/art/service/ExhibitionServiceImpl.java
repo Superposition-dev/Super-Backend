@@ -14,6 +14,8 @@ import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.utils.PageInfo;
 import com.superposition.utils.exception.NoSearchException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,23 +60,24 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Override
     @Transactional(readOnly = true)
     public ResponseExhibitionDetail getExhibitionById(long exhibitionId) {
-        Exhibition exhibition = exhibitionMapper.findExhibitionById(exhibitionId)
+        Exhibition findExhibition = exhibitionMapper.findExhibitionById(exhibitionId)
                 .orElseThrow(NoExistExhibitionException::new);
 
-        List<ProductDto> productDtos = productMapper.getProductsByExhibitionId(exhibition.getId());
-        List<ResponseProduct> responseProducts = toResponseProducts(productDtos);
+        List<ProductDto> exhibitionParticipatedProducts = productMapper.getProductsByExhibitionId(
+                findExhibition.getId());
 
-        List<ArtistInfo> artistInfos = productDtos.stream()
+        Set<ArtistInfo> exhibitionParticipatedArtistInfos = exhibitionParticipatedProducts.stream()
                 .map(ProductDto::getInstagramId)
+                .distinct()
                 .map(artistMapper::getArtistInfoById)
-                .toList();
+                .collect(Collectors.toSet());
 
         return ResponseExhibitionDetail.builder()
                 .exhibitionId(exhibitionId)
-                .title(exhibition.getTitle())
-                .subHeading(exhibition.getSubHeading())
-                .productInfo(responseProducts)
-                .artistInfo(artistInfos)
+                .title(findExhibition.getTitle())
+                .subHeading(findExhibition.getSubHeading())
+                .productInfo(toResponseProducts(exhibitionParticipatedProducts))
+                .artistInfo(exhibitionParticipatedArtistInfos)
                 .build();
     }
 

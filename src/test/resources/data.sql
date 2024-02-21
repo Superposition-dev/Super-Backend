@@ -89,7 +89,7 @@ INSERT INTO product (product_id, picture, title, artist_name, description, price
 VALUES (1, '6e305a70-0ed7-4f40-a59e-e28bb495887d.jpg', 'roses', '문소', '나를 위로해주는 아름다운 장미, 그리고 음악과 함께 떠오르는 아련한 기억',
         250000, 21, 2, 2, 3, 1),
        (2, '133ce073-7a2c-4946-a125-1693940d3720.jpg', 'highway', '문소', '여행의 설레임과 즐거움 속에 언제나 함께하는 사랑스러운 너.', 350000, 10,
-        5, 3, 1, NULL),
+        5, 3, 1, 1),
        (3, 'a68ebb31-d1a3-4bfa-9ac1-66aaa247da85.jpg', '우리들', '문소', '맛있는 빵가게는 그냥 지나칠 수 없지!', 100000, 8, 6, 2, 0, NULL),
        (4, '2fe94166-0dd0-40d2-af57-f5e1ca56db0a.jpg', 'How Deep Is Your Love?', '문소', '당신의 사랑은 어느 정도 일까?', 100000, 6,
         0, 0, 0, NULL),
