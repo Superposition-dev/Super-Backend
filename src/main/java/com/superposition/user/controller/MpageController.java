@@ -28,13 +28,13 @@ public class MpageController {
 
     @PutMapping ("/edit")
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserInfo(@CurrentUser String email, RequestEditUser userInfo){
+    public void updateUserInfo(@CurrentUser String email, @RequestBody RequestEditUser userInfo){
         mpageService.editUserInfo(email, userInfo);
     }
 
     @PatchMapping (value = "/edit/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public String updateUserProfile(@CurrentUser String email, @RequestBody MultipartFile file){
+    public String updateUserProfile(@CurrentUser String email, @RequestPart(value = "file", required = false) MultipartFile file){
         return mpageService.editUserProfile(email, file);
     }
 }

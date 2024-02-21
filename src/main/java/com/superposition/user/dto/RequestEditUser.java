@@ -9,6 +9,6 @@ import lombok.Getter;
 public class RequestEditUser {
     private String email;
     private String nickname;
-    private int birthYear;
+    private Integer birthYear;
     private Gender gender;
 }
