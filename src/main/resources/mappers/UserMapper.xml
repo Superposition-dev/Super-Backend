@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.superposition.user.domain.mapper.UserMapper">
     <select id="isExistUserByEmail" parameterType="String" resultType="boolean">
-        SELECT EXISTS(SELECT email FROM `user` WHERE email = #{email} AND is_active = 1)
+        SELECT EXISTS(SELECT email FROM `user` WHERE email = #{email});
+    </select>
+    
+    <select id="isActiveUser" parameterType="String" resultType="boolean">
+        SELECT is_active FROM `user` WHERE email = #{email};
     </select>
 
     <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
@@ -11,7 +15,7 @@
     </insert>
 
     <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.ResponseUserInfo">
-        SELECT email, nickname, profile, is_artist FROM `user` WHERE email = #{email}
+        SELECT email, nickname, profile, birth_year, gender, is_artist FROM `user` WHERE email = #{email}
     </select>
     
     <select id="isNullDate" parameterType="String" resultType="boolean">
@@ -23,7 +27,7 @@
     <select id="isAvailableChange" parameterType="String" resultType="boolean">
         SELECT EXISTS(
         SELECT * FROM `user`
-                 WHERE NOW() <![CDATA[<]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
+                 WHERE NOW() <![CDATA[>]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
                  AND email = #{email});
     </select>
 
