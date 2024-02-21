@@ -12,6 +12,8 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
     boolean isExistUserByEmail(@Param("email") String email);
 
+    boolean isActiveUser(@Param("email") String email);
+
     void saveUserInfo(User user);
 
     ResponseUserInfo getUserInfoByEmail(@Param("email") String email);
