@@ -12,11 +12,14 @@ import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -63,9 +66,14 @@ public class MpageServiceImpl implements MpageService {
     @Transactional
     public String editUserProfile(String currentUser, MultipartFile file) {
         if (userMapper.isExistUserByEmail(currentUser)){
-            String profile = uploadProfileToStorage(file);
-            userMapper.updateUserProfile(currentUser, profile);
-            return profile;
+            if (file == null) {
+                userMapper.updateUserProfile(currentUser, null);
+                return null;
+            } else {
+                String profile = uploadProfileToStorage(file);
+                userMapper.updateUserProfile(currentUser, profile);
+                return profile;
+            }
         } else {
             throw new ForbiddenException();
         }
@@ -75,7 +83,11 @@ public class MpageServiceImpl implements MpageService {
     @Transactional
     public void editUserInfo(String currentUser, RequestEditUser userInfo) {
         if(currentUser.equals(userInfo.getEmail())){
-            userMapper.updateUserInfo(userInfo);
+            try {
+                userMapper.updateUserInfo(userInfo);
+            } catch (DuplicateKeyException e){
+                throw new HttpClientErrorException(HttpStatus.CONFLICT);
+            }
         } else {
             throw new ForbiddenException();
         }
@@ -83,24 +95,28 @@ public class MpageServiceImpl implements MpageService {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String uploadProfileToStorage(MultipartFile file) {
-        String fileName = file.getName();
-        String extension = fileName != null ? fileName.substring(fileName.lastIndexOf(".")) : null;
-        String profile = setFileName(extension);
+        if(file.isEmpty()) {
 
-        try {
-            byte[] fileData = file.getBytes();
-            ObjectMetadata data = new ObjectMetadata();
-            data.setContentLength(fileData.length);
+            return null;
+        } else {
+            String fileName = file.getOriginalFilename();
+            String extension = fileName != null ? fileName.substring(fileName.lastIndexOf(".")) : null;
+            String profile = setFileName(extension);
 
-            file.getName().lastIndexOf(".");
+            try {
+                byte[] fileData = file.getBytes();
+                ObjectMetadata data = new ObjectMetadata();
+                data.setContentLength(fileData.length);
+                data.setContentDisposition("inline; filename=" + profile);
 
-            awsS3Client.putObject(new PutObjectRequest(
-                    bucketName, profile,
-                    new ByteArrayInputStream(fileData), data)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-            return profile;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                awsS3Client.putObject(new PutObjectRequest(
+                        bucketName, profile,
+                        new ByteArrayInputStream(fileData), data)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                return profile;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

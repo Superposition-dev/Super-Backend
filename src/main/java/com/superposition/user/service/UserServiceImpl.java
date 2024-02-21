@@ -39,7 +39,9 @@ public class UserServiceImpl implements UserService{
         UserInfo userInfo = oAuthLoginService.getUserInfoByToken(token);
 
         boolean existUser = userMapper.isExistUserByEmail(userInfo.getEmail());
-        if (existUser) {
+        boolean activeUser = userMapper.isActiveUser(userInfo.getEmail());
+
+        if (existUser && activeUser) {
             ResponseUserInfo userInfoByEmail = userMapper.getUserInfoByEmail(userInfo.getEmail());
             JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
 
@@ -49,6 +51,8 @@ public class UserServiceImpl implements UserService{
                         .userInfo(userInfoByEmail)
                         .accessToken(jwtToken.getAccessToken())
                         .message("success").build());
+        } else if (!activeUser){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(userInfo);
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
         }

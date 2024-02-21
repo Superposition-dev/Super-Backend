@@ -12,5 +12,7 @@ public class ResponseUserInfo {
     private String email;
     private String nickname;
     private String profile;
+    private int birthYear;
+    private Gender gender;
     private boolean isArtist;
 }
