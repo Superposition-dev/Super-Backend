@@ -18,25 +18,27 @@ public class ArtistController {
 
     @GetMapping("/about")
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseDisplayArtist> getAboutArtist(){
+    public List<ResponseDisplayArtist> getAboutArtist() {
         return artistService.getAboutArtist();
     }
 
     @GetMapping("/artist")
     @ResponseStatus(HttpStatus.OK)
-    public List<? extends ResponseDisplayArtist> getAllArtist(@RequestParam(value = "search", defaultValue = " ") String search, @RequestParam(value = "isProductPage", defaultValue = "false") boolean isProductPage){
+    public List<? extends ResponseDisplayArtist> getAllArtist(
+            @RequestParam(value = "search", defaultValue = " ") String search,
+            @RequestParam(value = "isProductPage", defaultValue = "false") boolean isProductPage) {
         return artistService.getAllArtist(search.trim(), isProductPage);
     }
 
     @GetMapping("/artist/{instagramId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseArtistDetail getArtistByName(@PathVariable String instagramId){
+    public ResponseArtistDetail getArtistByName(@PathVariable String instagramId) {
         return artistService.getArtistInfoById(instagramId);
     }
 
     @PatchMapping("/artist/{instagramId}/view")
     @ResponseStatus(HttpStatus.OK)
-    public void addViewCountByName(@PathVariable String instagramId){
+    public void addViewCountByName(@PathVariable String instagramId) {
         artistService.addViewCountById(instagramId);
     }
 }

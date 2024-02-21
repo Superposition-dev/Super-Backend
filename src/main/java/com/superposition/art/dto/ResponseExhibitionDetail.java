@@ -3,6 +3,7 @@ package com.superposition.art.dto;
 import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.product.dto.ResponseProduct;
 import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,5 +16,5 @@ public class ResponseExhibitionDetail {
     private String title;
     private String subHeading;
     private List<ResponseProduct> productInfo;
-    private List<ArtistInfo> artistInfo;
+    private Set<ArtistInfo> artistInfo;
 }

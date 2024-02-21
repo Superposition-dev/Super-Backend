@@ -276,11 +276,13 @@ class ExhibitionServiceTest {
         assertThat(actual.getSubHeading()).isEqualTo(
                 "The Met continues a longstanding holiday tradition with the presentation of its Christmas tree.");
         assertThat(actual.getProductInfo())
-                .hasSize(3)
+                .hasSize(4)
                 .extracting("productId", "picture", "tags", "title", "artist")
                 .containsExactlyInAnyOrder(
                         tuple(1L, "6e305a70-0ed7-4f40-a59e-e28bb495887d.jpg", new String[]{"청량한", "맑은", "아련한"},
                                 "roses", "문소"),
+                        tuple(2L, "133ce073-7a2c-4946-a125-1693940d3720.jpg", new String[]{"청량한", "일상적인", "자유로운"},
+                                "highway", "문소"),
                         tuple(13L, "e58b394b-c0dd-4992-be70-3a258a1fc061.png", new String[]{"따뜻한", "귀여운", "포근한"},
                                 "christmas in my hand", "삼이공"),
                         tuple(20L, "14fcf569-2c1b-482f-93cf-a78c65b01aa5.jpg", new String[]{"웅장한", "묘한", "상징적인"},
