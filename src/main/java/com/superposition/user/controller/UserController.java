@@ -1,9 +1,8 @@
 package com.superposition.user.controller;
 
 import com.superposition.artist.dto.ArtistInfo;
-import com.superposition.artist.service.ArtistFollowService;
+import com.superposition.follow.service.ArtistFollowService;
 import com.superposition.user.dto.CurrentUser;
-import com.superposition.user.dto.LoginResponse;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+    private final ArtistFollowService artistFollowService;
     private final UserService userService;
 
     @PostMapping(value = "/signup")
