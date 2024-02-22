@@ -1,11 +1,10 @@
 package com.superposition.user.service;
 
+import com.superposition.exception.SuperpositionException;
 import com.superposition.like.service.LikeService;
-import com.superposition.product.dto.ProductListDto;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.user.dto.RequestEditUser;
 import com.superposition.user.dto.RequestUserInfo;
-import com.superposition.user.exception.ForbiddenException;
 import com.superposition.utils.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,11 +63,11 @@ class MpageServiceImplTest {
         String email = null;
 
         //when
-        ForbiddenException fe
-                = assertThrows(ForbiddenException.class, () -> mpageService.getUserInfo(email));
+        SuperpositionException e
+                = assertThrows(SuperpositionException.class, () -> mpageService.getUserInfo(email));
 
         //then
-        assertThat(fe.getClass()).isEqualTo(ForbiddenException.class);
+        assertThat(e.getClass()).isEqualTo(SuperpositionException.class);
     }
 
     @Test
@@ -91,11 +90,11 @@ class MpageServiceImplTest {
         String email = null;
 
         //when
-        ForbiddenException fe
-                = assertThrows(ForbiddenException.class, () -> mpageService.getUserLikeProducts(email));
+        SuperpositionException e
+                = assertThrows(SuperpositionException.class, () -> mpageService.getUserLikeProducts(email));
 
         //then
-        assertThat(fe.getClass()).isEqualTo(ForbiddenException.class);
+        assertThat(e.getClass()).isEqualTo(SuperpositionException.class);
     }
 
     @Test
@@ -109,10 +108,10 @@ class MpageServiceImplTest {
                 .gender(Gender.F).build();
 
         //when
-        ForbiddenException fe
-                = assertThrows(ForbiddenException.class, () -> mpageService.editUserInfo(email, userEditInfo));
+        SuperpositionException e
+                = assertThrows(SuperpositionException.class, () -> mpageService.editUserInfo(email, userEditInfo));
 
         //then
-        assertThat(fe.getClass()).isEqualTo(ForbiddenException.class);
+        assertThat(e.getClass()).isEqualTo(SuperpositionException.class);
     }
 }

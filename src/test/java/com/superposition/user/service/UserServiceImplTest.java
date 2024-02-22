@@ -1,7 +1,7 @@
 package com.superposition.user.service;
 
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.dto.RequestUserInfo;
-import com.superposition.user.exception.ForbiddenException;
 import com.superposition.utils.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,10 +79,10 @@ class UserServiceImplTest {
         String email = null;
 
         //when
-        ForbiddenException e = assertThrows(ForbiddenException.class, () -> mpageService.getUserInfo(email));
+        SuperpositionException e = assertThrows(SuperpositionException.class, () -> mpageService.getUserInfo(email));
 
         //then
-        assertThat(e.getClass()).isEqualTo(ForbiddenException.class);
+        assertThat(e.getClass()).isEqualTo(SuperpositionException.class);
     }
 
     @Test
@@ -96,6 +96,6 @@ class UserServiceImplTest {
         userService.deleteUser(email);
 
         //then
-        assertThrows(ForbiddenException.class, () -> mpageService.getUserInfo(email));
+        assertThrows(SuperpositionException.class, () -> mpageService.getUserInfo(email));
     }
 }

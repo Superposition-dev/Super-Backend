@@ -1,11 +1,13 @@
 package com.superposition.user.service;
 
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.*;
-import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
+import com.superposition.user.jwt.dto.AccessToken;
 import com.superposition.user.jwt.dto.JwtToken;
 import com.superposition.user.jwt.dto.RefreshToken;
 import com.superposition.user.service.login.OAuthLoginService;
@@ -13,6 +15,7 @@ import com.superposition.user.service.token.TokenService;
 import com.superposition.utils.CookieUtils;
 import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -22,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.Random;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -39,20 +44,23 @@ public class UserServiceImpl implements UserService{
         UserInfo userInfo = oAuthLoginService.getUserInfoByToken(token);
 
         boolean existUser = userMapper.isExistUserByEmail(userInfo.getEmail());
-        boolean activeUser = userMapper.isActiveUser(userInfo.getEmail());
 
-        if (existUser && activeUser) {
-            ResponseUserInfo userInfoByEmail = userMapper.getUserInfoByEmail(userInfo.getEmail());
-            JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
+        if (existUser) {
+            boolean activeUser = userMapper.isActiveUser(userInfo.getEmail());
+            if(activeUser){
+                ResponseUserInfo userInfoByEmail = userMapper.getUserInfoByEmail(userInfo.getEmail());
+                JwtToken jwtToken = jwtProvider.generateJwtToken(userInfo.getEmail());
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
-                    .body(LoginResponse.builder()
-                        .userInfo(userInfoByEmail)
-                        .accessToken(jwtToken.getAccessToken())
-                        .message("success").build());
-        } else if (!activeUser){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(userInfo);
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, setCookie(jwtToken.getRefreshToken().getRefreshToken()))
+                        .body(LoginResponse.builder()
+                                .userInfo(userInfoByEmail)
+                                .accessToken(jwtToken.getAccessToken())
+                                .message("success").build());
+            } else {
+                Date availableAt = userMapper.getAvailableAt(userInfo.getEmail());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(availableAt);
+            }
         } else {
             return ResponseEntity.status(HttpStatus.SEE_OTHER).body(userInfo);
         }
@@ -63,7 +71,7 @@ public class UserServiceImpl implements UserService{
         if(StringUtils.hasText(email)){
             tokenService.deleteTokenValue(email);
         } else {
-            throw new EmptyEmailException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -101,7 +109,7 @@ public class UserServiceImpl implements UserService{
         if(StringUtils.hasText(email)){
             userMapper.deleteUserByEmail(email);
         } else {
-            throw new EmptyEmailException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -111,11 +119,16 @@ public class UserServiceImpl implements UserService{
 
         try {
             RefreshToken refreshToken = tokenService.getTokenValue(rt, RefreshToken.class);
+
             JwtToken jwtToken = jwtProvider.generateJwtToken(refreshToken.getEmail());
 
-            return ResponseEntity.ok().body(jwtToken.getAccessToken());
+            return ResponseEntity.ok()
+                    .body(AccessToken.builder().accessToken(jwtToken.getAccessToken()).build());
         } catch (InvalidTokenException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is Expired");
+        } catch (RuntimeException e){
+            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
     }
 

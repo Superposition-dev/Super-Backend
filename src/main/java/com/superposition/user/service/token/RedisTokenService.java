@@ -2,9 +2,10 @@ package com.superposition.user.service.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.jwt.dto.RefreshToken;
 import com.superposition.user.exception.InvalidTokenException;
-import com.superposition.user.exception.ParsingException;
 import com.superposition.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,10 +23,10 @@ public class RedisTokenService implements TokenService {
     public void setToeknValue(RefreshToken refreshToken) {
         String key = refreshToken.getRefreshToken();
         try {
-            redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(refreshToken.getEmail()));
+            redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(refreshToken));
             redisTemplate.expire(key, JwtUtils.REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS); //TTL 7 days
         } catch (JsonProcessingException e) {
-            throw new ParsingException();
+            throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -35,7 +36,7 @@ public class RedisTokenService implements TokenService {
             try {
                 return objectMapper.readValue(redisValue, classType);
             } catch (JsonProcessingException e) {
-                throw new ParsingException();
+                throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
             }
         } else {
             throw new InvalidTokenException();

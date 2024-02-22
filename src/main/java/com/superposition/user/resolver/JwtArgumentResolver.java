@@ -1,13 +1,11 @@
 package com.superposition.user.resolver;
 
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.dto.CurrentUser;
-import com.superposition.user.exception.EmptyEmailException;
-import com.superposition.user.exception.ForbiddenException;
-import jdk.jfr.Unsigned;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,7 +23,7 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        if (email == null) throw new ForbiddenException();
+        if (email == null) throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         return email;
     }
 }

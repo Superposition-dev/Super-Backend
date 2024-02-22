@@ -21,5 +21,5 @@ public class RequestUserInfo {
 
     private String profile;
     private Gender gender;
-    private int birthYear;
+    private Integer birthYear;
 }

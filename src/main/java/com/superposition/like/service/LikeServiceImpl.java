@@ -1,13 +1,11 @@
 package com.superposition.like.service;
 
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.like.exception.DuplicationException;
 import com.superposition.like.mapper.LikeMapper;
 import com.superposition.product.domain.mapper.ProductMapper;
-import com.superposition.product.dto.ProductListDto;
 import com.superposition.product.exception.NoExistProductException;
-import com.superposition.product.service.ProductService;
-import com.superposition.user.domain.mapper.UserMapper;
-import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +38,7 @@ public class LikeServiceImpl implements LikeService {
         if (isLike(productId, email)) {
             likeMapper.dislikeProductByEmail(productId, email);
         } else {
-            throw new ForbiddenException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
