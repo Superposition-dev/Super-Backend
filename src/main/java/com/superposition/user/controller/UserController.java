@@ -4,6 +4,8 @@ import com.superposition.user.dto.CurrentUser;
 import com.superposition.user.dto.RequestUserInfo;
 import com.superposition.user.service.UserService;
 import javax.validation.Valid;
+
+import com.superposition.utils.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/regenerateToken")
-    public ResponseEntity<?> regenerateToken(@CookieValue("Refresh_Token") String rt) {
+    public ResponseEntity<?> regenerateToken(@CookieValue(name = CookieUtils.COOKIE_HEADER_NAME, required = false) String rt) {
         return userService.regenerateToken(rt);
     }
 }

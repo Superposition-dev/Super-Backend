@@ -22,7 +22,7 @@ public class RedisTokenService implements TokenService {
     public void setToeknValue(RefreshToken refreshToken) {
         String key = refreshToken.getRefreshToken();
         try {
-            redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(refreshToken.getEmail()));
+            redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(refreshToken));
             redisTemplate.expire(key, JwtUtils.REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS); //TTL 7 days
         } catch (JsonProcessingException e) {
             throw new ParsingException();
