@@ -4,10 +4,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.dto.UserInfo;
-import com.superposition.user.exception.ApiCallFailedException;
 import com.superposition.user.exception.InvalidTokenException;
-import com.superposition.user.exception.ParsingException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -76,7 +76,7 @@ public class KaKaoLoginService implements OAuthLoginService {
         } catch (HttpClientErrorException he) {
             throw new InvalidTokenException();
         } catch (Exception e) {
-            throw new ApiCallFailedException();
+            throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -102,7 +102,7 @@ public class KaKaoLoginService implements OAuthLoginService {
         } catch (HttpClientErrorException he) {
             throw new InvalidTokenException();
         } catch (Exception e) {
-            throw new ApiCallFailedException();
+            throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -112,7 +112,7 @@ public class KaKaoLoginService implements OAuthLoginService {
             JSONObject responseObj = (JSONObject) jsonParser.parse(response);
             return (String) responseObj.get("access_token");
         } catch (ParseException ex) {
-            throw new ParsingException();
+            throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -134,7 +134,7 @@ public class KaKaoLoginService implements OAuthLoginService {
                     nickname(nickname).
                     profile(profileImage).build();
         } catch (ParseException e) {
-            throw new ParsingException();
+            throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 

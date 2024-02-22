@@ -4,22 +4,21 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.like.service.LikeService;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.service.ProductService;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.RequestEditUser;
-import com.superposition.user.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +44,7 @@ public class MpageServiceImpl implements MpageService {
         if(StringUtils.hasText(email) && userMapper.isExistUserByEmail(email)){
             return ResponseEntity.ok(userMapper.getUserInfoByEmail(email));
         } else {
-            throw new ForbiddenException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -58,7 +57,7 @@ public class MpageServiceImpl implements MpageService {
                     .map(productService::getProductInfo)
                     .collect(Collectors.toList());
         } else {
-            throw new ForbiddenException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -75,7 +74,7 @@ public class MpageServiceImpl implements MpageService {
                 return profile;
             }
         } else {
-            throw new ForbiddenException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -86,17 +85,16 @@ public class MpageServiceImpl implements MpageService {
             try {
                 userMapper.updateUserInfo(userInfo);
             } catch (DuplicateKeyException e){
-                throw new HttpClientErrorException(HttpStatus.CONFLICT);
+                throw new SuperpositionException(CommonErrorCode.CONFLICT);
             }
         } else {
-            throw new ForbiddenException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String uploadProfileToStorage(MultipartFile file) {
         if(file.isEmpty()) {
-
             return null;
         } else {
             String fileName = file.getOriginalFilename();
@@ -115,7 +113,7 @@ public class MpageServiceImpl implements MpageService {
                         .withCannedAcl(CannedAccessControlList.PublicRead));
                 return profile;
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new SuperpositionException(CommonErrorCode.INTERNAL_SERVER_ERROR);
             }
         }
     }

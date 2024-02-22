@@ -1,9 +1,10 @@
 package com.superposition.user.service;
 
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import com.superposition.user.domain.entity.User;
 import com.superposition.user.domain.mapper.UserMapper;
 import com.superposition.user.dto.*;
-import com.superposition.user.exception.EmptyEmailException;
 import com.superposition.user.exception.InvalidTokenException;
 import com.superposition.user.jwt.JwtProvider;
 import com.superposition.user.jwt.dto.AccessToken;
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService{
         if(StringUtils.hasText(email)){
             tokenService.deleteTokenValue(email);
         } else {
-            throw new EmptyEmailException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
@@ -108,7 +109,7 @@ public class UserServiceImpl implements UserService{
         if(StringUtils.hasText(email)){
             userMapper.deleteUserByEmail(email);
         } else {
-            throw new EmptyEmailException();
+            throw new SuperpositionException(CommonErrorCode.FORBIDDEN);
         }
     }
 
