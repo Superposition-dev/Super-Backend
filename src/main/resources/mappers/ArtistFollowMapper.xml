@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.follow.domain.mapper.ArtistFollowMapper">
+    <insert id="save" parameterType="com.superposition.follow.dto.ArtistFollowDto">
+        INSERT INTO artist_follow(email, instagram_id)
+        VALUES (#{email}, #{instagramId});
+    </insert>
+
+    <select id="getFollowCount" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(*)
+        FROM artist_follow
+        WHERE email = #{email};
+    </select>
+
+    <select id="isExistFollowBy" parameterType="com.superposition.follow.dto.ArtistFollowDto" resultType="boolean">
+        SELECT EXISTS(SELECT * FROM artist_follow WHERE email = #{email} AND instagram_id = #{instagramId});
+    </select>
+
+    <select id="findByEmail" parameterType="java.lang.String"
+            resultType="com.superposition.follow.domain.entity.ArtistFollow">
+        SELECT *
+        FROM artist_follow
+        WHERE email = #{email};
+    </select>
+
+    <delete id="deleteBy" parameterType="com.superposition.follow.dto.ArtistFollowDto">
+        DELETE
+        FROM artist_follow
+        WHERE email = #{email}
+          AND instagram_id = #{instagramId};
+    </delete>
+</mapper>

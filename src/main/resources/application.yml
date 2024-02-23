@@ -1,33 +1,96 @@
-#MySQL DB Setting
 spring:
+  profiles:
+    group:
+      dev: default, common
+      test: test-profile, common
+---
+spring:
+  config:
+    activate:
+      on-profile: default
   datasource:
+    #MySQL DB Setting
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/super_position
     username: root
     password: #비밀번호
+---
+spring:
+  config:
+    activate:
+      on-profile: test-profile
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;NON_KEYWORDS=USER
+    driver-class-name: org.h2.Driver
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  #Redis
+  redis:
+    host: localhost
+    port: 6379
   #devtools
   devtools:
     livereload:
       enabled: true
     restart:
       enabled: true
+      
+  #JWT Token Setting
+  security:
+    jwt:
+      token:
+        header: Authorization
+        secret-key: eyJhbGciOiJIUzI1NiJ9eyJzdWIiOiJKb2UifQipevRNuRP6HflG8cFKnmUPtypruRC4fb1DWtoLL62SY2342daffdaeASFOIJF
+        token-validity-in-milliseconds: 86400000
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: #ID
+            client-secret: #시크릿키
+            redirect-uri: http://localhost:3000/login/kakao
+          kakao-auth-uri: https://kauth.kakao.com/oauth/token
+          kakao_profile_uri: https://kapi.kakao.com/v2/user/me
+
+#Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
 # SSL Setting
-server:
-  ssl:
-    enabled: true
-    key-store: /etc/letsencrypt/live/api.spp-art.com/keystore.p12
-    key-store-password: #비밀번호
-    key-store-type: PKCS12
-    key-alias: superposition
-  port: 443
-
+#server:
+#  ssl:
+#    enabled: true
+#    key-store: /etc/letsencrypt/live/api.spp-art.com/keystore.p12
+#    key-store-password: #비밀번호
+#    key-store-type: PKCS12
+#    key-alias: superposition
+#  port: 443
+#CORS
 cors:
   pathPattern: /**
   allowedOrigins: https://www.spp-art.com
+#Naver Object Storage
+naver:
+  objectStorage:
+    endpoint: https://kr.object.ncloudstorage.com
+    regionName: kr-standard
+    accessKey: #액세스 키
+    secretKey: #시크릿 키
+    bucketName: superposition-bucket

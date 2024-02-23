@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superposition.user.domain.mapper.UserMapper">
+    <select id="isExistUserByEmail" parameterType="String" resultType="boolean">
+        SELECT EXISTS(SELECT email FROM `user` WHERE email = #{email});
+    </select>
+    
+    <select id="isActiveUser" parameterType="String" resultType="boolean">
+        SELECT is_active FROM `user` WHERE email = #{email};
+    </select>
+
+    <select id="getAvailableAt" parameterType="String" resultType="java.util.Date">
+        SELECT DATE_ADD(delete_at, INTERVAL 90 DAY) FROM `user` WHERE email = #{email} AND is_active = 0;
+    </select>
+
+    <insert id="saveUserInfo" parameterType="com.superposition.user.domain.entity.User">
+        INSERT INTO `user`(email, name, nickname, profile, gender, birth_year)
+        VALUES(#{email}, #{name}, #{nickname}, #{profile}, #{gender}, #{birthYear});
+    </insert>
+
+    <select id="getUserInfoByEmail" parameterType="String" resultType="com.superposition.user.dto.ResponseUserInfo">
+        SELECT email, nickname, profile, birth_year, gender, is_artist FROM `user` WHERE email = #{email}
+    </select>
+    
+    <select id="isNullDate" parameterType="String" resultType="boolean">
+        SELECT EXISTS(
+        SELECT nickname_update_at FROM `user`
+        WHERE nickname_update_at IS NULL AND email = #{email});
+    </select>
+    
+    <select id="isAvailableChange" parameterType="String" resultType="boolean">
+        SELECT EXISTS(
+        SELECT * FROM `user`
+                 WHERE NOW() <![CDATA[>]]> DATE_ADD(nickname_update_at, INTERVAL 15 DAY)
+                 AND email = #{email});
+    </select>
+
+    <update id="updateUserProfile" parameterType="String">
+        UPDATE `user` SET profile = #{profile} WHERE email = #{email}
+    </update>
+
+    <update id="updateUserInfo" parameterType="com.superposition.user.dto.RequestEditUser">
+        UPDATE `user` SET nickname = #{nickname}, birth_year = #{birthYear}, gender = #{gender}, nickname_update_at = NOW() WHERE email = #{email}
+    </update>
+
+    <update id="deleteUserByEmail" parameterType="String">
+        UPDATE `user` SET delete_at = NOW(), is_active = 0 WHERE email = #{email}
+    </update>
+
+    <select id="findByEmail" parameterType="String" resultType="com.superposition.user.domain.entity.User">
+        SELECT email, name, nickname, profile, gender, birth_date, create_at
+        FROM user
+        WHERE email = #{email}
+    </select>
+</mapper>
