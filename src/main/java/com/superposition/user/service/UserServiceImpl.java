@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public ResponseEntity<?> regenerateToken(String rt) {
-        if (!StringUtils.hasText(rt)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is blank");
+        if (!StringUtils.hasText(rt)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Refresh Token is blank");
 
         try {
             RefreshToken refreshToken = tokenService.getTokenValue(rt, RefreshToken.class);
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService{
             return ResponseEntity.ok()
                     .body(AccessToken.builder().accessToken(jwtToken.getAccessToken()).build());
         } catch (InvalidTokenException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is Expired");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Refresh Token is Expired");
         } catch (RuntimeException e){
             log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
