@@ -47,20 +47,10 @@ public class ArtistFollowServiceImpl implements ArtistFollowService {
     }
 
     @Override
-    public List<ArtistInfo> getFollowArtistsBy(String email) {
-        checkExistsUser(email);
+    public List<ArtistInfo> getFollowArtistsBy(String myEmail) {
+        checkExistsUser(myEmail);
 
-        List<String> followInstagramIds = artistFollowMapper.findByEmail(email).stream()
-                .map(ArtistFollow::getInstagramId)
-                .toList();
-
-        if (followInstagramIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        // todo join으로 쿼리 바꾸기
-//        return artistMapper.getArtistsInfoByIds(followInstagramIds);
-        return null;
+        return artistFollowMapper.findFollowArtistsByMyEmail(myEmail);
     }
 
     @Override

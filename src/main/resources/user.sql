@@ -6,7 +6,7 @@ CREATE TABLE `USER` (
         `nickname` varchar(100) DEFAULT NULL,
         `profile` varchar(100) DEFAULT NULL,
         `gender` varchar(1) DEFAULT NULL,
-        `birth_date` date DEFAULT NULL,
+        `birth_year` int DEFAULT NULL,
         `is_artist` tinyint(1) NOT NULL DEFAULT '0',
         `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `nickname_update_at` date DEFAULT NULL,

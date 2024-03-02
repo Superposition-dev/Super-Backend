@@ -1,5 +1,6 @@
 package com.superposition.follow.domain.mapper;
 
+import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.follow.domain.entity.ArtistFollow;
 import com.superposition.follow.dto.ArtistFollowDto;
 import java.util.List;
@@ -15,6 +16,7 @@ public interface ArtistFollowMapper {
     public boolean isExistFollowBy(ArtistFollowDto dto);
 
     public List<ArtistFollow> findByEmail(@Param("email") String email);
+    public List<ArtistInfo> findFollowArtistsByMyEmail(@Param("email") String email);
 
     void deleteBy(ArtistFollowDto dto);
 }
