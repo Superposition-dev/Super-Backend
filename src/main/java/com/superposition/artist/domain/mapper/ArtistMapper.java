@@ -3,6 +3,7 @@ package com.superposition.artist.domain.mapper;
 import com.superposition.artist.dto.ArtistInfo;
 import com.superposition.artist.dto.ResponseArtist;
 import com.superposition.artist.dto.ResponseDisplayArtist;
+import java.util.Set;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,5 +20,5 @@ public interface ArtistMapper {
     public ArtistInfo getArtistInfoById(@Param("instagramId") String instagramId);
     public void addViewCountById(@Param("instagramId") String instagramId);
     public int getViewCount(@Param("instagramId") String instagramId);
-    public List<ArtistInfo> getArtistsInfoByIds(List<String> instagramIds);
+    public Set<ArtistInfo> getArtistsInfoByIds(List<String> instagramIds);
 }

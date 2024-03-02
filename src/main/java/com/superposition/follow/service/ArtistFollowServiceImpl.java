@@ -58,7 +58,9 @@ public class ArtistFollowServiceImpl implements ArtistFollowService {
             return Collections.emptyList();
         }
 
-        return artistMapper.getArtistsInfoByIds(followInstagramIds);
+        // todo join으로 쿼리 바꾸기
+//        return artistMapper.getArtistsInfoByIds(followInstagramIds);
+        return null;
     }
 
     @Override

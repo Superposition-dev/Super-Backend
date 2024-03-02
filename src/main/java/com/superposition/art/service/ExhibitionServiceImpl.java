@@ -16,7 +16,6 @@ import com.superposition.productexhibition.mapper.ProductExhibitionMapper;
 import com.superposition.utils.exception.NoSearchException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,23 +64,28 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         Exhibition findExhibition = exhibitionMapper.findExhibitionById(exhibitionId)
                 .orElseThrow(NoExistExhibitionException::new);
 
-        List<Long> exhibitionParticipatedProductIds = productExhibitionMapper.getProductIdsByExhibitionId(exhibitionId);
-        List<ProductDto> exhibitionParticipatedProducts = productMapper.getProductsByIds(
-                exhibitionParticipatedProductIds);
-
-        Set<ArtistInfo> exhibitionParticipatedArtistInfos = exhibitionParticipatedProducts.stream()
-                .map(ProductDto::getInstagramId)
-                .distinct()
-                .map(artistMapper::getArtistInfoById)
-                .collect(Collectors.toSet());
+        List<ProductDto> exhibitionParticipatedProducts = getExhibitionParticipatedProducts(exhibitionId);
 
         return ResponseExhibitionDetail.builder()
                 .exhibitionId(exhibitionId)
                 .title(findExhibition.getTitle())
                 .subHeading(findExhibition.getSubHeading())
                 .productInfo(toResponseProducts(exhibitionParticipatedProducts))
-                .artistInfo(exhibitionParticipatedArtistInfos)
+                .artistInfo(getExhibitionParticipatedArtistInfos(exhibitionParticipatedProducts))
                 .build();
+    }
+
+    private List<ProductDto> getExhibitionParticipatedProducts(long exhibitionId) {
+        List<Long> exhibitionParticipatedProductIds = productExhibitionMapper.getProductIdsByExhibitionId(exhibitionId);
+        return productMapper.getProductsByIds(exhibitionParticipatedProductIds);
+    }
+
+    private Set<ArtistInfo> getExhibitionParticipatedArtistInfos(List<ProductDto> exhibitionParticipatedProducts) {
+        List<String> uniqueExhibitionParticipatedArtistInstagramIds = exhibitionParticipatedProducts.stream()
+                .map(ProductDto::getInstagramId)
+                .distinct()
+                .toList();
+        return artistMapper.getArtistsInfoByIds(uniqueExhibitionParticipatedArtistInstagramIds);
     }
 
     private List<ResponseProduct> toResponseProducts(List<ProductDto> products) {
