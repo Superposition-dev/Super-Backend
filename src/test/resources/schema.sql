@@ -45,9 +45,7 @@ CREATE TABLE product
     qr_view       int           DEFAULT NULL,
     like_count    int           DEFAULT NULL,
     order_count   int           DEFAULT NULL,
-    exhibition_id int           DEFAULT NULL,
-    PRIMARY KEY (product_id),
-    FOREIGN KEY (exhibition_id) REFERENCES exhibition (exhibition_id)
+    PRIMARY KEY (product_id)
 );
 
 CREATE TABLE product_with_tag
@@ -79,4 +77,13 @@ CREATE TABLE `USER` (
 CREATE TABLE `like` (
                         `product_id` int DEFAULT NULL,
                         `user_id` varchar(100) DEFAULT NULL
+);
+
+
+CREATE TABLE product_exhibition
+(
+    product_id    int NOT NULL,
+    exhibition_id int NOT NULL,
+    created_at datetime not null default CURRENT_TIMESTAMP,
+    updated_at datetime not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

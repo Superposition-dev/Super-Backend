@@ -12,6 +12,7 @@ import com.superposition.product.domain.mapper.ProductMapper;
 import com.superposition.product.dto.ProductDto;
 import com.superposition.product.dto.ResponseProduct;
 import com.superposition.product.utils.PageInfo;
+import com.superposition.productexhibition.mapper.ProductExhibitionMapper;
 import com.superposition.utils.exception.NoSearchException;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExhibitionServiceImpl implements ExhibitionService {
 
     private final ExhibitionMapper exhibitionMapper;
+    private final ProductExhibitionMapper productExhibitionMapper;
     private final ProductMapper productMapper;
     private final ArtistMapper artistMapper;
 
@@ -63,8 +65,9 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         Exhibition findExhibition = exhibitionMapper.findExhibitionById(exhibitionId)
                 .orElseThrow(NoExistExhibitionException::new);
 
-        List<ProductDto> exhibitionParticipatedProducts = productMapper.getProductsByExhibitionId(
-                findExhibition.getId());
+        List<Long> exhibitionParticipatedProductIds = productExhibitionMapper.getProductIdsByExhibitionId(exhibitionId);
+        List<ProductDto> exhibitionParticipatedProducts = productMapper.getProductsByIds(
+                exhibitionParticipatedProductIds);
 
         Set<ArtistInfo> exhibitionParticipatedArtistInfos = exhibitionParticipatedProducts.stream()
                 .map(ProductDto::getInstagramId)
