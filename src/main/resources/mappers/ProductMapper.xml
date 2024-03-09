@@ -18,11 +18,16 @@
     </select>
 
     <select id="getProductById" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT p.product_id, p.picture, p.title,
-               a.profile, p.artist_name, a.instagram_id,
-               p.description, p.price
+        SELECT p.product_id,
+               p.picture,
+               p.title,
+               a.profile,
+               p.artist_name,
+               a.instagram_id,
+               p.description,
+               p.price
         FROM product p
-        INNER JOIN artist a ON p.artist_name = a.name
+                 INNER JOIN artist a ON p.artist_name = a.name
         WHERE p.product_id = #{productId}
     </select>
 
@@ -70,21 +75,26 @@
     </update>
 
     <select id="getProductInfo" parameterType="long" resultType="com.superposition.product.dto.ProductListDto">
-        SELECT product_id, picture, title, artist_name FROM product WHERE product_id = #{productId}
+        SELECT product_id, picture, title, artist_name
+        FROM product
+        WHERE product_id = #{productId}
     </select>
 
-    <select id="getProductsByExhibitionId" parameterType="long" resultType="com.superposition.product.dto.ProductDto">
-        SELECT p.product_id,
-               p.picture,
-               p.title,
-               a.profile,
-               p.artist_name,
-               a.instagram_id,
-               p.description,
-               p.price
-        FROM product p
-                 INNER JOIN artist a ON p.artist_name = a.name
-        WHERE p.exhibition_id = #{exhibitionId}
-        ORDER BY p.product_id
+    <select id="getProductsByIds" resultType="com.superposition.product.dto.ProductDto">
+        SELECT prod.product_id,
+        prod.picture,
+        prod.title,
+        arti.profile,
+        prod.artist_name,
+        arti.instagram_id,
+        prod.description,
+        prod.price
+        FROM product prod
+        INNER JOIN artist arti ON prod.artist_name = arti.name
+        WHERE prod.product_id IN
+        <foreach collection="list" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+        ORDER BY prod.product_id
     </select>
 </mapper>

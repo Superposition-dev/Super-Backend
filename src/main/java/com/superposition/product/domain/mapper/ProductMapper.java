@@ -32,5 +32,5 @@ public interface ProductMapper {
 
     public ProductListDto getProductInfo(@Param("productId") long productId);
 
-    public List<ProductDto> getProductsByExhibitionId(@Param("exhibitionId") long exhibitionId);
+    public List<ProductDto> getProductsByIds(List<Long> productIds);
 }

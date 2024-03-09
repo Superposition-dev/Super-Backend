@@ -44,5 +44,6 @@
         <foreach collection="list" item="instagramId" open="(" separator="," close=")">
             #{instagramId}
         </foreach>
+        ORDER BY collaboration_date asc
     </select>
 </mapper>

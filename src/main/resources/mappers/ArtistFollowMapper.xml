@@ -23,6 +23,15 @@
         WHERE email = #{email};
     </select>
 
+    <select id="findFollowArtistsByMyEmail" parameterType="java.lang.String"
+            resultType="com.superposition.artist.dto.ArtistInfo">
+        SELECT artist.profile, artist.name, artist.introduce, artist.is_display, artist.description, artist.instagram_id
+        FROM artist_follow artist_follow
+                 INNER JOIN artist artist ON artist.instagram_id = artist_follow.instagram_id
+        WHERE artist_follow.email = #{email}
+        ORDER BY artist_follow.created_at ASC;
+    </select>
+
     <delete id="deleteBy" parameterType="com.superposition.follow.dto.ArtistFollowDto">
         DELETE
         FROM artist_follow
