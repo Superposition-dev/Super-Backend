@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ExhibitionStatus {
     current("전시중"),
-    end("전시 종료");
+    end("전시 종료"),
+    upcoming("전시 예정"),
+    ;
 
     private final String value;
 
