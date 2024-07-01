@@ -3,6 +3,8 @@ package com.superposition.canex.controller;
 import com.superposition.canex.domain.entity.Email;
 import com.superposition.canex.dto.RequestSaveEmail;
 import com.superposition.canex.service.EmailService;
+import com.superposition.exception.CommonErrorCode;
+import com.superposition.exception.SuperpositionException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,11 @@ public class CanExController {
 
     @PostMapping("/emails")
     public ResponseEntity<Email> saveEmail(@Valid @RequestBody RequestSaveEmail req) {
-        Email savedEmail = emailService.saveEmail(req);
-        return new ResponseEntity<>(savedEmail, HttpStatus.CREATED);
+        try {
+            Email savedEmail = emailService.saveEmail(req);
+            return new ResponseEntity<>(savedEmail, HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new SuperpositionException(CommonErrorCode.CONFLICT);
+        }
     }
 }
