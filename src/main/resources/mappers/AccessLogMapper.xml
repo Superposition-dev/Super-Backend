@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.superposition.canex.domain.mapper.AccessLogMapper">
+
+    <insert id="save" parameterType="com.superposition.canex.domain.entity.AccessLog">
+        INSERT INTO access_log(ip_address, uri, method, registration_date)
+        VALUES (#{ipAddress}, #{uri}, #{method}, #{registrationDate})
+        ON DUPLICATE KEY
+        UPDATE update_timestamp = #{now};
+    </insert>
+</mapper>
