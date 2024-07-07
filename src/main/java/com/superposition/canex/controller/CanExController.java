@@ -5,6 +5,8 @@ import com.superposition.canex.domain.entity.Email;
 import com.superposition.canex.domain.mapper.AccessLogMapper;
 import com.superposition.canex.dto.RequestSaveEmail;
 import com.superposition.canex.service.EmailService;
+import com.superposition.canex.service.MailService;
+import com.superposition.canex.service.RequestSendMail;
 import com.superposition.exception.CommonErrorCode;
 import com.superposition.exception.SuperpositionException;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class CanExController {
 
     private final EmailService emailService;
     private final AccessLogMapper accessLogMapper;
+    private final MailService mailService;
 
     @PostMapping
     public ResponseEntity<AccessLog> collectLogs(HttpServletRequest request) {
@@ -55,5 +58,12 @@ public class CanExController {
         } catch (Exception e) {
             throw new SuperpositionException(CommonErrorCode.CONFLICT);
         }
+    }
+
+    @PostMapping("/emails/send")
+    public ResponseEntity<Void> sendEmail(@Valid @RequestBody RequestSendMail req) {
+        mailService.sendMail(req);
+
+        return ResponseEntity.noContent().build();
     }
 }
